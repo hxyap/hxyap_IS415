@@ -5,6 +5,11 @@ website:
   title: "hxyap"
   navbar:
     left:
+      - text: "exercises"
+        menu: 
+          - text: "ex1"
+            href: "exercises/ex1/ex1.html"
+    right: 
       - href: index.qmd
         text: Home
       - about.qmd
