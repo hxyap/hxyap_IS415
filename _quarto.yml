@@ -9,6 +9,10 @@ website:
         menu: 
           - text: "ex1"
             href: "exercises/ex1/ex1.html"
+      - text: "In-class Exercises"
+        menu:
+          - text: "ex1"
+            href: "In-class_Ex/ICE-1/ice1.html"
     right: 
       - href: index.qmd
         text: Home

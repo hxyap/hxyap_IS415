@@ -1,0 +1,48 @@
+---
+title: "In-class Exercise 1: Geospatial Data Science"
+author: "Yap Hong Xian"
+---
+
+```{r}
+pacman::p_load(sf, tidyverse)
+```
+
+```{r}
+mpsz = st_read(dsn = "data/MPSZ-2019", 
+                  layer = "MPSZ-2019")
+```
+
+```{r}
+# let's glimpse at the overview od the possible values for the different columns...
+glimpse(mpsz)
+```
+
+```{r}
+# now let's look at geometric features:
+st_geometry(mpsz)
+```
+
+```{r}
+
+#let's take a look at the first few entries:
+head(mpsz, n=5)  
+```
+
+```{r}
+# Let's plot the map:
+plot(mpsz)
+```
+
+```{r}
+#And now, we just wanna see the map without any of the categories:
+plot(st_geometry(mpsz))
+```
+
+```{r}
+#And now we plot only one category:
+plot(mpsz["PLN_AREA_N"])
+```
+
+```{r}
+
+```

@@ -6,3 +6,12 @@
 .quarto
 
 /.quarto/
+
+exercises/**/data/
+exercises/*/data/
+
+In-Class_Ex/**/data/
+In-Class_Ex/*/data/
+
+exercises/**/*.txt
+exercises/*/*.txt
