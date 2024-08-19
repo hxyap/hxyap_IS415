@@ -15,3 +15,9 @@ In-Class_Ex/*/data/
 
 exercises/**/*.txt
 exercises/*/*.txt
+
+In-Class_Ex/**/*.txt
+In-Class_Ex/*/*.txt
+
+_site/**/*.txt
+_site/*/*.txt
