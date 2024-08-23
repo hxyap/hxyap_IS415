@@ -1,3 +1,8 @@
+---
+title: "Geospatial Exercise 1"
+author: "Yap Hong Xian"
+---
+
 Let's start off with the preliminary dump of initial loading and exploratory analysis from class:
 
 ```{r}
