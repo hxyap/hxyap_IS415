@@ -9,6 +9,8 @@ website:
         menu: 
           - text: "ex1"
             href: "exercises/ex1/ex1.html"
+          - text: "ex2"
+            href: "exercises/ex2/ex2.html"
       - text: "In-class Exercises"
         menu:
           - text: "ex1"
