@@ -1,5 +1,5 @@
 ---
-title: "Geospatial Exercise 1"
+title: "Geospatial Exercise 2"
 author: "Yap Hong Xian"
 ---
 
