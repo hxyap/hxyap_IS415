@@ -1,3 +1,5 @@
+Let's start off with the preliminary dump of initial loading and exploratory analysis from class:
+
 ```{r}
 pacman::p_load(sf, tmap, tidyverse)
 ```
@@ -15,6 +17,36 @@ mpsz <- st_read(dsn = "data/geospatial",
 popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
 ```
 
+Let's check the data we're presented with first...
+
+```{r}
+head(popdata)
+```
+
+Checking the age ranges:
+
+```{r}
+unique_AG_values <- unique(popdata$AG)
+print(unique_AG_values)
+```
+
+Now let's check if the slicing is correct:
+
+```{r}
+old_popdata2020 <- popdata %>%
+  filter(Time == 2020) %>%
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup()%>%
+  pivot_wider(names_from=AG, 
+              values_from=POP) %>%
+  mutate(YOUNG = rowSums(.[3:6])
+         +rowSums(.[12]))
+colnames(old_popdata2020)
+```
+
+Hmm... looks off. Let's adjust:
+
 ```{r}
 popdata2020 <- popdata %>%
   filter(Time == 2020) %>%
@@ -24,9 +56,9 @@ popdata2020 <- popdata %>%
   pivot_wider(names_from=AG, 
               values_from=POP) %>%
   mutate(YOUNG = rowSums(.[3:6])
-         +rowSums(.[12])) %>%
-mutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+
-rowSums(.[13:15]))%>%
+         +rowSums(.[14])) %>%
+mutate(`ECONOMY ACTIVE` = rowSums(.[7:13])+
+rowSums(.[15]))%>%
 mutate(`AGED`=rowSums(.[16:21])) %>%
 mutate(`TOTAL`=rowSums(.[3:21])) %>%  
 mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
@@ -96,4 +128,275 @@ tm_shape(mpsz_pop2020)+
   tm_grid(alpha =0.2) +
   tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
              position = c("left", "bottom"))
+```
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons()
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY")
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY")
+
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY") +
+  tm_borders(lwd = 0.1,  alpha = 1)
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "quantile") +
+  tm_borders(alpha = 0.5)
+```
+
+This is where we shall diverge from the ctrl+c ctrl+v exercise – let's experiment around with different numbers of classes and maybe different classification methods.
+
+```{r}
+# 2 classes
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          n = 2,
+          style = "equal") +
+  tm_borders(alpha = 0.5)
+```
+
+```{r}
+# 10?
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          n = 10,
+          style = "equal") +
+  tm_borders(alpha = 0.5)
+```
+
+As we can see, we have one district is that is heavily outlier! Let's see what district it is:
+
+```{r}
+top_5_outliers <- mpsz_pop2020 %>%
+  arrange(desc(DEPENDENCY)) %>%
+  slice(1:5)
+
+print(top_5_outliers)
+```
+
+Turns out it's Paris Ris!... where the aged heavily outweigh the economically active. But why so? Let's see...
+
+```{r}
+# Trying to see if the total pop count is an outlier
+total_stats <- summary(mpsz_pop2020$TOTAL)
+print(total_stats)
+```
+
+Seems like it's skewed by the very low population there compared to the mean/median. Also note that median is quite high – right skewed dataset?
+
+Moving on! Let's do one more for fun – trying out the CS student's favourite for clustering, K-means!
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          n = 10,
+          style = "kmeans") +
+  tm_borders(alpha = 0.5)
+```
+
+Finally, playing around with grid:
+
+```{r}
+map1 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          style = "quantile",
+          palette = "Blues",
+          title = "Quantile") +
+  tm_borders(alpha = 0.5)
+
+map2 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          style = "equal",
+          palette = "Greens",
+          title = "Equal Interval") +
+  tm_borders(alpha = 0.5)
+
+map3 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          style = "jenks",
+          palette = "Reds",
+          title = "Jenks") +
+  tm_borders(alpha = 0.5)
+
+map4 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          style = "sd",
+          palette = "Purples",
+          title = "Standard Deviation") +
+  tm_borders(alpha = 0.5)
+```
+
+```{r}
+tmap_arrange(map1, map2, map3, map4, ncol = 2)
+```
+
+And ta-da! We now have some... interesting colour schemes!
+
+Moving back to your scripted data dump:
+
+```{r}
+
+summary(mpsz_pop2020$DEPENDENCY)
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          breaks = c(0, 0.60, 0.70, 0.80, 0.90, 1, 1.1, 1.5, 19)) +
+  tm_borders(alpha = 0.5)
+```
+
+ColourBrewer time!
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          n = 6,
+          style = "quantile",
+          palette = "Blues") +
+  tm_borders(alpha = 0.5)
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          style = "quantile",
+          palette = "-Greens") +
+  tm_borders(alpha = 0.5)
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "jenks", 
+          palette = "Blues", 
+          legend.hist = TRUE, 
+          legend.is.portrait = TRUE,
+          legend.hist.z = 0.1) +
+  tm_layout(main.title = "Distribution of Dependency Ratio by planning subzone \n(Jenks classification)",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            legend.outside = FALSE,
+            legend.position = c("right", "bottom"),
+            frame = FALSE) +
+  tm_borders(alpha = 0.5)
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "-Greens") +
+  tm_borders(alpha = 0.5) +
+  tmap_style("classic")
+
+```
+
+Cartographic Features
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "No. of persons") +
+  tm_layout(main.title = "Distribution of Dependency Ratio \nby planning subzone",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```
+
+```{r}
+tmap_style("white")
+```
+
+Multiple map now!
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill(c("YOUNG", "AGED"),
+          style = "equal", 
+          palette = "Blues") +
+  tm_layout(legend.position = c("right", "bottom")) +
+  tm_borders(alpha = 0.5) +
+  tmap_style("white")
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+ 
+  tm_polygons(c("DEPENDENCY","AGED"),
+          style = c("equal", "quantile"), 
+          palette = list("Blues","Greens")) +
+  tm_layout(legend.position = c("right", "bottom"))
+```
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          style = "quantile",
+          palette = "Blues",
+          thres.poly = 0) + 
+  tm_facets(by="REGION_N", 
+            free.coords=TRUE, 
+            drop.shapes=TRUE) +
+  tm_layout(legend.show = FALSE,
+            title.position = c("center", "center"), 
+            title.size = 20) +
+  tm_borders(alpha = 0.5)
+```
+
+```{r}
+youngmap <- tm_shape(mpsz_pop2020)+ 
+  tm_polygons("YOUNG", 
+              style = "quantile", 
+              palette = "Blues")
+
+agedmap <- tm_shape(mpsz_pop2020)+ 
+  tm_polygons("AGED", 
+              style = "quantile", 
+              palette = "Blues")
+
+tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
+```
+
+```{r}
+tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues", 
+          legend.hist = TRUE, 
+          legend.is.portrait = TRUE,
+          legend.hist.z = 0.1) +
+  tm_layout(legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 5.0,
+            legend.position = c("right", "bottom"),
+            frame = FALSE) +
+  tm_borders(alpha = 0.5)
 ```
