@@ -1,0 +1,111 @@
+---
+title: "ICE 2"
+author: "Yap Hong Xian"
+date: "August 26, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+We start by loading with pacman our usual packages:
+
+```{r}
+pacman::p_load(sf, tidyverse, tmap)
+
+```
+
+```{r}
+#| output: false
+mpsz14_shp <- st_read(dsn = "data/", layer = "MP14_SUBZONE_WEB_PL")
+```
+
+```{r}
+#| output: false
+mpsz14_kml <- st_write(mpsz14_shp, "data/MP14_SUBZONE_WEB_PL.kml", delete_dsn = TRUE)
+```
+
+```{r}
+
+mpsz19_shp <- st_read(dsn = "data/", layer = "MPSZ-2019")
+```
+
+```{r}
+
+mpsz19_kml <- st_read("data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml")
+
+```
+
+```{r}
+mpsz19_shp <- st_read(dsn = "data/", layer = "MPSZ-2019") %>% st_transform(crs = 3414)
+```
+
+```{r}
+preschool <- st_read("data/PreSchoolsLocation.kml") %>% st_transform(crs = 3414)
+```
+
+Let's check the coordinate system using st_crs:
+
+```{r}
+st_crs(mpsz19_shp)
+```
+
+```{r}
+respondent_data <- read_csv("data/respopagesextod2023.csv")
+```
+
+```{r}
+popdata2023 <- respondent_data %>% 
+  group_by(PA,SZ,AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup() %>%
+  pivot_wider(names_from = AG,
+              values_from = POP)%>%
+  mutate(YOUNG = rowSums(.[3:6])
+         +rowSums(.[14])) %>%
+mutate(`ECONOMY ACTIVE` = rowSums(.[7:13])+
+rowSums(.[15]))%>%
+mutate(`AGED`=rowSums(.[16:21])) %>%
+mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
+/`ECONOMY ACTIVE`) %>%
+  select(`PA`, `SZ`, `YOUNG`, 
+       `ECONOMY ACTIVE`, `AGED`, 
+       `TOTAL`, `DEPENDENCY`)
+
+```
+
+```{r}
+popdata2023 <- popdata2023 %>%
+  mutate_at(.vars = vars(PA, SZ), 
+          .funs = list(toupper)) %>%
+  filter(`ECONOMY ACTIVE` > 0)
+```
+
+```{r}
+head(popdata2023)
+```
+
+now for some loads:
+
+```{r}
+st_write(mpsz14_shp, "data/MP14_SUBZONE_WEB_PL.kml",delete_dsn = TRUE)
+```
+
+```{r}
+mpsz14_kml = st_read('data/MP14_SUBZONE_WEB_PL.kml')
+```
+
+quick shp check
+
+```{r}
+st_crs(mpsz19_shp)
+```
+
+and now, we join!
+
+```{r}
+pop2023_mpsz <- left_join(popdata2023, mpsz19_shp,
+                          by = c("SZ" = "SUBZONE_N"))
+```
