@@ -20,6 +20,8 @@ website:
             href: "In-class_Ex/ICE-1/ice1.html"
           - text: "ex2"
             href: "In-class_Ex/ICE-2/ice2.html"
+          - text: "ex3"
+            href: "In-class_Ex/ICE-3/ice3.html"
     right: 
       - href: index.qmd
         text: Home
