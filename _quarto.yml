@@ -18,6 +18,8 @@ website:
         menu:
           - text: "ex1"
             href: "In-class_Ex/ICE-1/ice1.html"
+          - text: "ex2"
+            href: "In-class_Ex/ICE-2/ice2.html"
     right: 
       - href: index.qmd
         text: Home
