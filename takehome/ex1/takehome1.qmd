@@ -1,0 +1,26 @@
+---
+title: "Takehome 1"
+author: "Yap Hong Xian"
+date: "September 02, 2024"
+date-modified: "September 02, 2024"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+```{r}
+install.packages("maptools", repos = "https://packagemanager.posit.co/cran/2023-10-13")
+```
+
+```{r}
+pacman::p_load(tmap, sf, tidyverse, raster, spatstat, maptools, sp)
+```
+
+```{r}
+acled_sf <- read_csv("data/ACLED_Myanmar.csv") %>%
+  st_as_sf(coords = c("longitude", "latitude"),
+           crs = 4326) %>%
+  st_transform(crs = 32647) %>%
+  mutate(event_date = dmy(event_date))
+```

@@ -1,0 +1,15 @@
+{
+  "hash": "db9773f09eefdc4584e111cbb17af7f2",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Takehome 1\"\nauthor: \"Yap Hong Xian\"\ndate: \"September 02, 2024\"\ndate-modified: \"September 02, 2024\"\nexecute: \n  eval: true\n  echo: true\n  freeze: true\n---\n\n::: {.cell}\n\n```{.r .cell-code}\ninstall.packages(\"maptools\", repos = \"https://packagemanager.posit.co/cran/2023-10-13\")\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nInstalling package into 'C:/Users/yapho/AppData/Local/R/win-library/4.4'\n(as 'lib' is unspecified)\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stdout}\n\n```\npackage 'maptools' successfully unpacked and MD5 sums checked\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stderr}\n\n```\nWarning: cannot remove prior installation of package 'maptools'\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stderr}\n\n```\nWarning in file.copy(savedcopy, lib, recursive = TRUE): problem copying\nC:\\Users\\yapho\\AppData\\Local\\R\\win-library\\4.4\\00LOCK\\maptools\\libs\\x64\\maptools.dll\nto\nC:\\Users\\yapho\\AppData\\Local\\R\\win-library\\4.4\\maptools\\libs\\x64\\maptools.dll:\nPermission denied\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stderr}\n\n```\nWarning: restored 'maptools'\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stdout}\n\n```\n\nThe downloaded binary packages are in\n\tC:\\Users\\yapho\\AppData\\Local\\Temp\\RtmpOsQQxE\\downloaded_packages\n```\n\n\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(tmap, sf, tidyverse, raster, spatstat, maptools, sp)\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nacled_sf <- read_csv(\"data/ACLED_Myanmar.csv\") %>%\n  st_as_sf(coords = c(\"longitude\", \"latitude\"),\n           crs = 4326) %>%\n  st_transform(crs = 32647) %>%\n  mutate(event_date = dmy(event_date))\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nRows: 55574 Columns: 31\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (20): event_id_cnty, event_date, disorder_type, event_type, sub_event_ty...\ndbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n```\n\n\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
