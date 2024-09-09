@@ -162,6 +162,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
     </ul>
   </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-takehomes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">takehomes</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-takehomes">    
+        <li>
+    <a class="dropdown-item" href="../../takehome/ex1/takehome1.html">
+ <span class="dropdown-text">ex1</span></a>
+  </li>  
+    </ul>
+  </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
@@ -184,7 +195,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction-armed-conflict-in-myanmar" id="toc-introduction-armed-conflict-in-myanmar" class="nav-link active" data-scroll-target="#introduction-armed-conflict-in-myanmar">Introduction: Armed Conflict in Myanmar</a>
+  <ul class="collapse">
+  <li><a href="#historical-context" id="toc-historical-context" class="nav-link" data-scroll-target="#historical-context">Historical Context</a></li>
+  <li><a href="#key-factors-in-myanmars-conflicts" id="toc-key-factors-in-myanmars-conflicts" class="nav-link" data-scroll-target="#key-factors-in-myanmars-conflicts">Key Factors in Myanmar’s Conflicts</a></li>
+  <li><a href="#purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to" id="toc-purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to" class="nav-link" data-scroll-target="#purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to">Purpose of the Analysis Given this complex backdrop, our geospatial analysis of armed conflict in Myanmar aims to:</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -227,7 +249,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"maptools"</span>, <span class="at">repos =</span> <span class="st">"https://packagemanager.posit.co/cran/2023-10-13"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Installing package into 'C:/Users/yapho/AppData/Local/R/win-library/4.4'
 (as 'lib' is unspecified)</code></pre>
@@ -251,18 +276,46 @@ Permission denied</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The downloaded binary packages are in
-    C:\Users\yapho\AppData\Local\Temp\RtmpOsQQxE\downloaded_packages</code></pre>
+    C:\Users\yapho\AppData\Local\Temp\Rtmp8o7VoP\downloaded_packages</code></pre>
 </div>
 </div>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tmap, sf, tidyverse, raster, spatstat, maptools, sp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
+<section id="introduction-armed-conflict-in-myanmar" class="level1">
+<h1>Introduction: Armed Conflict in Myanmar</h1>
+<p>Myanmar, formerly known as Burma, is a country in Southeast Asia with a rich cultural heritage and a complex, often troubled modern history. With a population of about 54 million people and over 135 distinct ethnic groups, Myanmar is a tapestry of diverse cultures, languages, and traditions. However, this diversity has also been a source of long-standing tensions and conflicts.</p>
+<section id="historical-context" class="level2">
+<h2 class="anchored" data-anchor-id="historical-context">Historical Context</h2>
+<p>Since gaining independence from British rule in 1948, Myanmar has grappled with numerous internal conflicts. For decades, the country was under military rule, which ended officially in 2011 with a transition to a quasi-civilian government. However, in February 2021, the military (Tatmadaw) seized power again in a coup, plunging the country back into political turmoil and reigniting many dormant conflicts.</p>
+</section>
+<section id="key-factors-in-myanmars-conflicts" class="level2">
+<h2 class="anchored" data-anchor-id="key-factors-in-myanmars-conflicts">Key Factors in Myanmar’s Conflicts</h2>
+<p>Our analysis of armed conflict in Myanmar focuses on three primary factors that have historically been, and continue to be, major drivers of instability:</p>
+<p>1. <strong>Religious Tensions</strong>: Myanmar is predominantly Buddhist, but with significant Muslim, Christian, and animist minorities. Religious tensions, particularly between Buddhists and Muslims, have led to violent conflicts, most notably the persecution of the Rohingya Muslim minority in Rakhine State.</p>
+<p>2. <strong>Ethnic Tensions</strong>: The country’s ethnic diversity has been a source of both cultural richness and conflict. Many ethnic minority groups, particularly in border areas, have long sought greater autonomy or independence from the central government dominated by the Bamar majority. These tensions have resulted in some of the world’s longest-running civil wars.</p>
+<p>3. <strong>Drug Trade and Infrastructure Development</strong>: Myanmar is part of the Golden Triangle, one of the world’s largest drug-producing regions. The drug trade, particularly methamphetamine and opium, has fueled conflicts and corrupted institutions. Simultaneously, infrastructure development projects, often involving foreign investment, have sometimes exacerbated local tensions over land rights and resource allocation.</p>
+</section>
+<section id="purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to" class="level2">
+<h2 class="anchored" data-anchor-id="purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to">Purpose of the Analysis Given this complex backdrop, our geospatial analysis of armed conflict in Myanmar aims to:</h2>
+<p>1. Identify patterns and hotspots of conflict related to religious and ethnic tensions.</p>
+<p>2. Explore the spatial relationship between conflict events and known areas of drug production or trafficking.</p>
+<p>3. Investigate how infrastructure development projects correlate with conflict patterns.</p>
+<p>4. Examine how these factors interact and potentially exacerbate each other in different regions of the country.</p>
+<p>5. Track changes in conflict patterns over time, particularly in relation to significant political events like the 2021 military coup.</p>
+<p>By focusing on these aspects, we hope to provide valuable insights that can inform humanitarian responses, contribute to a better understanding of conflict dynamics, and assist in developing more effective strategies for peace-building and development in the region.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>acled_sf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ACLED_Myanmar.csv"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">crs =</span> <span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">event_date =</span> <span class="fu">dmy</span>(event_date))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 55574 Columns: 31
 ── Column specification ────────────────────────────────────────────────────────
@@ -274,8 +327,74 @@ dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>tmap mode set to plotting</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>acled_sf <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2023</span> <span class="sc">|</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>           event_type <span class="sc">==</span> <span class="st">"Political violence"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>() <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(acled_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 55,574
+Columns: 30
+$ event_id_cnty      &lt;chr&gt; "MMR56099", "MMR56222", "MMR56370", "MMR56376", "MM…
+$ event_date         &lt;date&gt; 2023-12-31, 2023-12-31, 2023-12-31, 2023-12-31, 20…
+$ year               &lt;dbl&gt; 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 202…
+$ time_precision     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ disorder_type      &lt;chr&gt; "Political violence", "Political violence", "Politi…
+$ event_type         &lt;chr&gt; "Explosions/Remote violence", "Explosions/Remote vi…
+$ sub_event_type     &lt;chr&gt; "Shelling/artillery/missile attack", "Shelling/arti…
+$ actor1             &lt;chr&gt; "Military Forces of Myanmar (2021-)", "Military For…
+$ assoc_actor_1      &lt;chr&gt; NA, NA, NA, NA, NA, NA, "Daw Na Column; YGF: Ye Gue…
+$ inter1             &lt;dbl&gt; 1, 1, 3, 6, 1, 1, 3, 1, 2, 1, 1, 2, 2, 1, 1, 3, 3, …
+$ actor2             &lt;chr&gt; NA, "Civilians (Myanmar)", "Military Forces of Myan…
+$ assoc_actor_2      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ inter2             &lt;dbl&gt; 0, 7, 1, 0, 7, 0, 1, 0, 1, 7, 7, 1, 1, 0, 0, 1, 1, …
+$ interaction        &lt;dbl&gt; 10, 17, 13, 60, 17, 10, 13, 10, 12, 17, 17, 12, 12,…
+$ civilian_targeting &lt;chr&gt; NA, "Civilian targeting", NA, NA, NA, NA, NA, NA, N…
+$ iso                &lt;dbl&gt; 104, 104, 104, 104, 104, 104, 104, 104, 104, 104, 1…
+$ region             &lt;chr&gt; "Southeast Asia", "Southeast Asia", "Southeast Asia…
+$ country            &lt;chr&gt; "Myanmar", "Myanmar", "Myanmar", "Myanmar", "Myanma…
+$ admin1             &lt;chr&gt; "Mon", "Rakhine", "Bago-West", "Sagaing", "Bago-Wes…
+$ admin2             &lt;chr&gt; "Mawlamyine", "Maungdaw", "Thayarwady", "Yinmarbin"…
+$ admin3             &lt;chr&gt; "Ye", "Maungdaw", "Nattalin", "Salingyi", "Nattalin…
+$ location           &lt;chr&gt; "Aing Shey", "Kaing Gyi (NaTaLa)", "Kyauk Pyoke", "…
+$ geo_precision      &lt;dbl&gt; 1, 2, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, …
+$ source             &lt;chr&gt; "Democratic Voice of Burma", "Development Media Gro…
+$ source_scale       &lt;chr&gt; "National", "Subnational", "National", "National", …
+$ notes              &lt;chr&gt; "On 31 December 2023, in Aing Shey village (Ye town…
+$ fatalities         &lt;dbl&gt; 0, 0, 4, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2, …
+$ tags               &lt;chr&gt; NA, NA, NA, "crowd size=no report", NA, NA, NA, NA,…
+$ timestamp          &lt;dbl&gt; 1704831212, 1704831213, 1704831214, 1704831214, 170…
+$ geometry           &lt;POINT [m]&gt; POINT (393190.2 1690159), POINT (-183852.6 23…</code></pre>
+</div>
+</div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -7,6 +7,10 @@ execute:
   eval: true
   echo: true
   freeze: true
+format:
+  html:
+    toc: true
+    code-fold: true
 ---
 
 ```{r}
@@ -17,10 +21,55 @@ install.packages("maptools", repos = "https://packagemanager.posit.co/cran/2023-
 pacman::p_load(tmap, sf, tidyverse, raster, spatstat, maptools, sp)
 ```
 
+# Introduction: Armed Conflict in Myanmar
+
+Myanmar, formerly known as Burma, is a country in Southeast Asia with a rich cultural heritage and a complex, often troubled modern history. With a population of about 54 million people and over 135 distinct ethnic groups, Myanmar is a tapestry of diverse cultures, languages, and traditions. However, this diversity has also been a source of long-standing tensions and conflicts.
+
+## Historical Context
+
+Since gaining independence from British rule in 1948, Myanmar has grappled with numerous internal conflicts. For decades, the country was under military rule, which ended officially in 2011 with a transition to a quasi-civilian government. However, in February 2021, the military (Tatmadaw) seized power again in a coup, plunging the country back into political turmoil and reigniting many dormant conflicts.
+
+## Key Factors in Myanmar's Conflicts
+
+Our analysis of armed conflict in Myanmar focuses on three primary factors that have historically been, and continue to be, major drivers of instability:
+
+1\. **Religious Tensions**: Myanmar is predominantly Buddhist, but with significant Muslim, Christian, and animist minorities. Religious tensions, particularly between Buddhists and Muslims, have led to violent conflicts, most notably the persecution of the Rohingya Muslim minority in Rakhine State.
+
+2\. **Ethnic Tensions**: The country's ethnic diversity has been a source of both cultural richness and conflict. Many ethnic minority groups, particularly in border areas, have long sought greater autonomy or independence from the central government dominated by the Bamar majority. These tensions have resulted in some of the world's longest-running civil wars.
+
+3\. **Drug Trade and Infrastructure Development**: Myanmar is part of the Golden Triangle, one of the world's largest drug-producing regions. The drug trade, particularly methamphetamine and opium, has fueled conflicts and corrupted institutions. Simultaneously, infrastructure development projects, often involving foreign investment, have sometimes exacerbated local tensions over land rights and resource allocation.
+
+## Purpose of the Analysis Given this complex backdrop, our geospatial analysis of armed conflict in Myanmar aims to:
+
+1\. Identify patterns and hotspots of conflict related to religious and ethnic tensions.
+
+2\. Explore the spatial relationship between conflict events and known areas of drug production or trafficking.
+
+3\. Investigate how infrastructure development projects correlate with conflict patterns.
+
+4\. Examine how these factors interact and potentially exacerbate each other in different regions of the country.
+
+5\. Track changes in conflict patterns over time, particularly in relation to significant political events like the 2021 military coup.
+
+By focusing on these aspects, we hope to provide valuable insights that can inform humanitarian responses, contribute to a better understanding of conflict dynamics, and assist in developing more effective strategies for peace-building and development in the region.
+
 ```{r}
 acled_sf <- read_csv("data/ACLED_Myanmar.csv") %>%
   st_as_sf(coords = c("longitude", "latitude"),
            crs = 4326) %>%
   st_transform(crs = 32647) %>%
   mutate(event_date = dmy(event_date))
+```
+
+```{r}
+tmap_mode("plot")
+acled_sf %>%
+  filter(year == 2023 |
+           event_type == "Political violence") %>%
+  tm_shape() +
+  tm_dots()
+```
+
+```{r}
+glimpse(acled_sf)
 ```
