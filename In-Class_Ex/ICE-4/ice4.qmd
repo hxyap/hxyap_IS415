@@ -1,0 +1,134 @@
+---
+title: "Exercise 4"
+author: "Yap Hong Xian"
+date: "September 9, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+```{r}
+pacman::p_load(sf, raster, spatstat, tmap, tidyverse, sparr)
+```
+
+```{r}
+kbb <- st_read(dsn = "data/rawdata", layer = "Kepulauan_Bangka_Belitung")
+```
+
+```{r}
+kbb_sf <- st_read(dsn = 'data/rawdata', layer = "Kepulauan_Bangka_Belitung") %>%
+  st_union() %>%
+  st_zm(drop = TRUE, what = "ZM") %>%
+  st_transform(crs = 32748)
+```
+
+```{r}
+# Step 2: Create owin object from KBB boundary
+kbb_owin <- as.owin(kbb_sf)
+kbb_owin
+```
+
+```{r}
+class(kbb_owin)
+```
+
+```{r}
+
+fire_sf <- read_csv("data/rawdata/forestfires.csv") %>%
+  st_as_sf(coords = c("longitude", "latitude"),
+           crs=4326) %>%
+  st_transform(crs = 32748)
+```
+
+```{r}
+fire_sf <- fire_sf %>%
+  mutate(DayOfYear = yday(acq_date)) %>%
+  mutate(Month_num = month(acq_date)) %>%
+  mutate(Month_fac = month(acq_date, label = TRUE, abbr = FALSE))
+```
+
+```{r}
+fire_sf
+```
+
+```{r}
+tm_shape(kbb_sf) +
+  tm_polygons() +
+tm_shape(fire_sf) +
+  tm_dots()
+```
+
+by month
+
+```{r}
+tm_shape(kbb_sf) + tm_polygons() +tm_shape(fire_sf) + tm_dots(size=0.1) + tm_facets(by = "Month_fac", free.coords=FALSE, drop.units = TRUE)
+```
+
+```{r}
+fire_month <- fire_sf %>% 
+  select(Month_num)
+```
+
+```{r}
+fire_month_ppp <- as.ppp(fire_month)
+```
+
+```{r}
+summary(fire_month_ppp)
+```
+
+```{r}
+fire_month_ppp
+```
+
+```{r}
+any(duplicated(fire_month_ppp))
+```
+
+```{r}
+fire_month_owin <- fire_month_ppp[kbb_owin]
+fire_month_owin
+```
+
+```{r}
+st_kde <- spattemp.density(fire_month_owin)
+summary(st_kde)
+```
+
+```{r}
+#| fig-width: 12
+#| fig-height: 10
+
+tims <- c(7,8,9,10,11,12)
+par(mfcol = c(2,3))
+for(i in tims){
+  plot(st_kde, i,
+       override.par = FALSE,
+       fix.range = TRUE,
+       main = paste("KDE at month", i))
+}
+```
+
+## Create daily ppp object
+
+```{r}
+fire_yday_ppp <- fire_sf %>%
+  select(DayOfYear) %>%
+  as.ppp()
+```
+
+```{r}
+fire_yday_owin <- fire_yday_ppp[kbb_owin]
+summary(fire_yday_owin)
+```
+
+```{r}
+kde_yday <- spattemp.density(fire_yday_owin)
+summary(kde_yday)
+```
+
+```{r}
+
+```
