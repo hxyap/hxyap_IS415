@@ -43,13 +43,9 @@ Our analysis of armed conflict in Myanmar focuses on three primary factors that 
 
 1\. Identify patterns and hotspots of conflict related to religious and ethnic tensions.
 
-2\. Explore the spatial relationship between conflict events and known areas of drug production or trafficking.
+2\. Examine how these factors interact and potentially exacerbate each other in different regions of the country.
 
-3\. Investigate how infrastructure development projects correlate with conflict patterns.
-
-4\. Examine how these factors interact and potentially exacerbate each other in different regions of the country.
-
-5\. Track changes in conflict patterns over time, particularly in relation to significant political events like the 2021 military coup.
+3\. Track changes in conflict patterns over time, particularly in relation to significant political events like the 2021 military coup.
 
 By focusing on these aspects, we hope to provide valuable insights that can inform humanitarian responses, contribute to a better understanding of conflict dynamics, and assist in developing more effective strategies for peace-building and development in the region.
 
@@ -73,3 +69,7 @@ acled_sf %>%
 ```{r}
 glimpse(acled_sf)
 ```
+```{r}
+
+```
+
