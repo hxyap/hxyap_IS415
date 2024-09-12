@@ -55,6 +55,12 @@ tmap_arrange(basemap, gdppc, asp=1, ncol=2)
 
 This section focuses on using `poly2nb` to compute contiguity spatial weights for a study area. This function is used to create a spatial weights matrix based on polygon contiguity. The `queen` option is used to specify that the spatial weights matrix should be based on queen contiguity.
 
+::: callout-note
+Note:
+
+**Rook adjacency refers to neighbors that share a line segment (or border).** **Queen adjacency refers to neighbors that share a line segment (or border) or a point (or vertex)**
+:::
+
 ### Computing (QUEEN) Contiguity Based Neighbors
 
 ```{r}
@@ -111,10 +117,6 @@ plot(wm_q, coords, pch = 19, cex = 0.6, add = TRUE, col= "red")
 
 ### Plotting Rook Contiguity Weights
 
-```         
-::: {.callout-caution collapse="true"} ## Expand To Learn About Collapse  This is an example of a 'folded' caution callout that can be expanded by the user. You can use `collapse="true"` to collapse it by default or `collapse="false"` to make a collapsible callout that is expanded by default. :::
-```
-
 ```{r}
 plot(hunan_join$geometry, border="lightgrey")
 plot(wm_r, coords, pch = 19, cex = 0.6, add = TRUE, col = "red")
@@ -149,7 +151,7 @@ wm_d62
 The average number of links refer to the average number of neighbors for each polygon in the study area. The average number of links for the queen contiguity spatial weights matrix is 5.5, while the average number of links for the rook contiguity spatial weights matrix is 3.5. The average distance between neighboring polygons is 0.5 degrees for the distance-based spatial weights matrix.
 
 ```{r}
-str(wm_d62)
+# str(wm_d62)
 ```
 
 ```{r}
@@ -232,6 +234,12 @@ summary(unlist(rswm_ids$weights))
 ```
 
 ### Spatial Lag with Row-standardized Weights
+
+::: callout-note
+```         
+**Spatial Lag** refers to the process of incorporating the influence of neighboring observations into the value of a given observation. When using **row-standardized weights**, each observation's neighbors are weighted such that the sum of the weights for each observation equals 1.  ### Key Points: - **Row-standardized weights** ensure that the influence of neighboring observations is averaged. - The spatial lag of an observation is calculated as the weighted average of its neighbors' values. - This method smooths the data by considering the spatial context, which can be particularly useful in spatial econometrics and geographic data analysis.  ### Formula: If \( W \) is the row-standardized spatial weights matrix and \( y \) is the vector of observations, the spatial lag \( Wy \) is given by: \[ (Wy)_i = \sum_{j} w_{ij} y_j \] where \( w_{ij} \) are the elements of the weights matrix \( W \).  ### Example: Consider a simple 3x3 grid of observations. After row-standardizing the weights matrix, the spatial lag for each observation is computed as the average of its neighbors' values.
+```
+:::
 
 ```{r}
 GDPPC.lag <- lag.listw(rswm_q, hunan_join$GDPPC)
