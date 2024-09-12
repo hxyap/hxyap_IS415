@@ -70,6 +70,26 @@ acled_sf %>%
 glimpse(acled_sf)
 ```
 ```{r}
+# Filter the data for the specified date range
+acled_filtered <- acled_sf %>%
+  filter(event_date >= as.Date("2021-01-01") & event_date <= as.Date("2024-06-30"))
+```
+
+```{r}
+distinct_actor1 <- acled_filtered %>% 
+  st_drop_geometry() %>%
+  distinct(actor1) %>%
+  filter(!is.na(actor1))
+print(distinct_actor1)
+```
+```{r}
+distinct_actor2 <- acled_filtered %>% 
+  st_drop_geometry() %>%
+  distinct(actor2) %>%
+  filter(!is.na(actor2))
+print(distinct_actor2)
+```
+```{r}
 
 ```
 
