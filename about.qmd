@@ -9,8 +9,8 @@ Welcome to my IS415 Geospatial Analytics and Applications portfolio! This Quarto
 
 ## What You'll Find Here
 
-- **Course Projects**: A collection of hands-on projects completed during the IS415 course.
-- **Technical Skills:** Demonstrations of various geospatial analysis techniques and tools.
-- **Personal Insights**: My reflections on learning geospatial analytics and its applications.
+-   **Course Projects**: A collection of hands-on projects completed during the IS415 course.
+-   **Technical Skills:** Demonstrations of various geospatial analysis techniques and tools.
+-   **Personal Insights**: My reflections on learning geospatial analytics and its applications.
 
 I hope this portfolio provides insight into my growth and capabilities in geospatial analytics. Feel free to explore the projects and reach out if you have any questions!
