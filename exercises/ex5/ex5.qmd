@@ -206,7 +206,7 @@ plot(knn6, coords, pch = 19, cex = 0.6, add = TRUE, col = "red")
 ```{r}
 dist <- nbdists(wm_q, coords, longlat = TRUE)
 ids <- lapply(dist, function(x) 1/(x))
-ids
+# ids
 ```
 
 ## Row-standardized Spatial Weights Matrix
