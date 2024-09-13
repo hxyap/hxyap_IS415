@@ -21,3 +21,5 @@ In-Class_Ex/*/*.txt
 
 _site/**/*.txt
 _site/*/*.txt
+
+**/data/

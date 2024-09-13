@@ -79,9 +79,9 @@
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About",
+    "title": "Hong Xian’s IS415 Geospatial Analytics and Applications portfolio",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "# About This Portfolio\nWelcome to my IS415 Geospatial Analytics and Applications portfolio! This Quarto page showcases my journey and projects in the field of geospatial analytics."
   },
   {
     "objectID": "In-Class_Ex/ICE-3/ice3.html",
@@ -173,5 +173,12 @@
     "title": "IS415 - Geospatial Workspace by Hong Xian",
     "section": "",
     "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "about.html#what-youll-find-here",
+    "href": "about.html#what-youll-find-here",
+    "title": "Hong Xian’s IS415 Geospatial Analytics and Applications portfolio",
+    "section": "What You’ll Find Here",
+    "text": "What You’ll Find Here\n\n**Course Projects**: A collection of hands-on projects completed during the IS415 course.\n**Technical Skills**: Demonstrations of various geospatial analysis techniques and tools.\n**Personal Insights**: My reflections on learning geospatial analytics and its applications.\n\nI hope this portfolio provides insight into my growth and capabilities in geospatial analytics. Feel free to explore the projects and reach out if you have any questions!"
   }
 ]

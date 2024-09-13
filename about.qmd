@@ -1,9 +1,16 @@
 ---
-title: "About"
+title: "Hong Xian's IS415 Geospatial Analytics and Applications portfolio"
+author: "Yap Hong Xian"
 ---
 
-About this site
+\# About This Portfolio
 
-```{r}
-1 + 1
-```
+Welcome to my IS415 Geospatial Analytics and Applications portfolio! This Quarto page showcases my journey and projects in the field of geospatial analytics.
+
+## What You'll Find Here
+
+- **Course Projects**: A collection of hands-on projects completed during the IS415 course.
+- **Technical Skills:** Demonstrations of various geospatial analysis techniques and tools.
+- **Personal Insights**: My reflections on learning geospatial analytics and its applications.
+
+I hope this portfolio provides insight into my growth and capabilities in geospatial analytics. Feel free to explore the projects and reach out if you have any questions!
