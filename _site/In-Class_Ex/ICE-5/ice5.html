@@ -6,10 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Yap Hong Xian">
-<meta name="dcterms.date" content="2024-09-02">
+<meta name="dcterms.date" content="2024-09-16">
 
-<title>hxyap - Takehome 1</title>
+<title>hxyap - ICE5</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -211,11 +210,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction-armed-conflict-in-myanmar" id="toc-introduction-armed-conflict-in-myanmar" class="nav-link active" data-scroll-target="#introduction-armed-conflict-in-myanmar">Introduction: Armed Conflict in Myanmar</a>
+  <li><a href="#geographically-weighted-statistics" id="toc-geographically-weighted-statistics" class="nav-link active" data-scroll-target="#geographically-weighted-statistics">Geographically Weighted Statistics</a>
   <ul class="collapse">
-  <li><a href="#historical-context" id="toc-historical-context" class="nav-link" data-scroll-target="#historical-context">Historical Context</a></li>
-  <li><a href="#key-factors-in-myanmars-conflicts" id="toc-key-factors-in-myanmars-conflicts" class="nav-link" data-scroll-target="#key-factors-in-myanmars-conflicts">Key Factors in Myanmar’s Conflicts</a></li>
-  <li><a href="#purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to" id="toc-purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to" class="nav-link" data-scroll-target="#purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to">Purpose of the Analysis Given this complex backdrop, our geospatial analysis of armed conflict in Myanmar aims to:</a></li>
+  <li><a href="#installlaunch-r-packages" id="toc-installlaunch-r-packages" class="nav-link" data-scroll-target="#installlaunch-r-packages">Install/Launch R Packages</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -225,31 +222,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Takehome 1</h1>
+<h1 class="title">ICE5</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Yap Hong Xian </p>
-          </div>
-  </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 2, 2024</p>
+      <p class="date">September 16, 2024</p>
     </div>
   </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 2, 2024</p>
+      <p class="date-modified">September 16, 2024</p>
     </div>
   </div>
     
@@ -260,130 +251,106 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="geographically-weighted-statistics" class="level1">
+<h1>Geographically Weighted Statistics</h1>
+<section id="installlaunch-r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="installlaunch-r-packages">Install/Launch R Packages</h2>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"maptools"</span>, <span class="at">repos =</span> <span class="st">"https://packagemanager.posit.co/cran/2023-10-13"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Installing package into 'C:/Users/yapho/AppData/Local/R/win-library/4.4'
-(as 'lib' is unspecified)</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, spdep, tmap, tidyverse, knitr, GWmodel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hunan_sf  <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>, <span class="at">layer =</span>  <span class="st">"Hunan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hunan2012 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_2012.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Join the dataframes together:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hunan_sf <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan_sf,hunan2012)<span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">31</span>, <span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>save file</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(hunan_sf, <span class="st">"data/rds/hunan_sf.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hunan_sf <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/hunan_sf.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>hunan_sp <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(hunan_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>bw_AIC <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hunan_sp, <span class="at">approach =</span> <span class="st">"AIC"</span>, <span class="at">adaptive =</span> <span class="cn">TRUE</span>, <span class="at">kernel =</span> <span class="st">"bisquare"</span>, <span class="at">longlat =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>package 'maptools' successfully unpacked and MD5 sums checked
-
-The downloaded binary packages are in
-    C:\Users\yapho\AppData\Local\Temp\RtmpMlf9EO\downloaded_packages</code></pre>
+<pre><code>Adaptive bandwidth (number of nearest neighbours): 62 AICc value: 1923.156 
+Adaptive bandwidth (number of nearest neighbours): 46 AICc value: 1920.469 
+Adaptive bandwidth (number of nearest neighbours): 36 AICc value: 1917.324 
+Adaptive bandwidth (number of nearest neighbours): 29 AICc value: 1916.661 
+Adaptive bandwidth (number of nearest neighbours): 26 AICc value: 1914.897 
+Adaptive bandwidth (number of nearest neighbours): 22 AICc value: 1914.045 
+Adaptive bandwidth (number of nearest neighbours): 22 AICc value: 1914.045 </code></pre>
 </div>
 </div>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tmap, sf, tidyverse, raster, spatstat, maptools, sp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<section id="introduction-armed-conflict-in-myanmar" class="level1">
-<h1>Introduction: Armed Conflict in Myanmar</h1>
-<p>Myanmar, formerly known as Burma, is a country in Southeast Asia with a rich cultural heritage and a complex, often troubled modern history. With a population of about 54 million people and over 135 distinct ethnic groups, Myanmar is a tapestry of diverse cultures, languages, and traditions. However, this diversity has also been a source of long-standing tensions and conflicts.</p>
-<section id="historical-context" class="level2">
-<h2 class="anchored" data-anchor-id="historical-context">Historical Context</h2>
-<p>Since gaining independence from British rule in 1948, Myanmar has grappled with numerous internal conflicts. For decades, the country was under military rule, which ended officially in 2011 with a transition to a quasi-civilian government. However, in February 2021, the military (Tatmadaw) seized power again in a coup, plunging the country back into political turmoil and reigniting many dormant conflicts.</p>
-</section>
-<section id="key-factors-in-myanmars-conflicts" class="level2">
-<h2 class="anchored" data-anchor-id="key-factors-in-myanmars-conflicts">Key Factors in Myanmar’s Conflicts</h2>
-<p>Our analysis of armed conflict in Myanmar focuses on three primary factors that have historically been, and continue to be, major drivers of instability:</p>
-<p>1. <strong>Religious Tensions</strong>: Myanmar is predominantly Buddhist, but with significant Muslim, Christian, and animist minorities. Religious tensions, particularly between Buddhists and Muslims, have led to violent conflicts, most notably the persecution of the Rohingya Muslim minority in Rakhine State.</p>
-<p>2. <strong>Ethnic Tensions</strong>: The country’s ethnic diversity has been a source of both cultural richness and conflict. Many ethnic minority groups, particularly in border areas, have long sought greater autonomy or independence from the central government dominated by the Bamar majority. These tensions have resulted in some of the world’s longest-running civil wars.</p>
-<p>3. <strong>Drug Trade and Infrastructure Development</strong>: Myanmar is part of the Golden Triangle, one of the world’s largest drug-producing regions. The drug trade, particularly methamphetamine and opium, has fueled conflicts and corrupted institutions. Simultaneously, infrastructure development projects, often involving foreign investment, have sometimes exacerbated local tensions over land rights and resource allocation.</p>
-</section>
-<section id="purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to" class="level2">
-<h2 class="anchored" data-anchor-id="purpose-of-the-analysis-given-this-complex-backdrop-our-geospatial-analysis-of-armed-conflict-in-myanmar-aims-to">Purpose of the Analysis Given this complex backdrop, our geospatial analysis of armed conflict in Myanmar aims to:</h2>
-<p>1. Identify patterns and hotspots of conflict related to religious and ethnic tensions.</p>
-<p>2. Examine how these factors interact and potentially exacerbate each other in different regions of the country.</p>
-<p>3. Track changes in conflict patterns over time, particularly in relation to significant political events like the 2021 military coup.</p>
-<p>By focusing on these aspects, we hope to provide valuable insights that can inform humanitarian responses, contribute to a better understanding of conflict dynamics, and assist in developing more effective strategies for peace-building and development in the region.</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>acled_sf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ACLED_Myanmar.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">crs =</span> <span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">event_date =</span> <span class="fu">dmy</span>(event_date))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 55574 Columns: 31
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-chr (20): event_id_cnty, event_date, disorder_type, event_type, sub_event_ty...
-dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bw_AIC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 22</code></pre>
 </div>
 </div>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>tmap mode set to plotting</code></pre>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bw_CV <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hunan_sp, <span class="at">approach =</span> <span class="st">"CV"</span>, <span class="at">adaptive =</span> <span class="cn">TRUE</span>, <span class="at">kernel =</span> <span class="st">"bisquare"</span>, <span class="at">longlat =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Adaptive bandwidth: 62 CV score: 15515442343 
+Adaptive bandwidth: 46 CV score: 14937956887 
+Adaptive bandwidth: 36 CV score: 14408561608 
+Adaptive bandwidth: 29 CV score: 14198527496 
+Adaptive bandwidth: 26 CV score: 13898800611 
+Adaptive bandwidth: 22 CV score: 13662299974 
+Adaptive bandwidth: 22 CV score: 13662299974 </code></pre>
 </div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>acled_sf <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2023</span> <span class="sc">|</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>           event_type <span class="sc">==</span> <span class="st">"Political violence"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>() <span class="sc">+</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bw_CV</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 22</code></pre>
+</div>
+</div>
+<p>fixed bandwidth</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bw_AIC <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hunan_sp, <span class="at">approach =</span> <span class="st">"AIC"</span>, <span class="at">adaptive =</span> <span class="cn">FALSE</span>, <span class="at">kernel =</span> <span class="st">"bisquare"</span>, <span class="at">longlat =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>bw_CV <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hunan_sp, <span class="at">approach =</span> <span class="st">"CV"</span>, <span class="at">adaptive =</span> <span class="cn">FALSE</span>, <span class="at">kernel =</span> <span class="st">"bisquare"</span>, <span class="at">longlat =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>geoweighted summary stats</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>gwstat <span class="ot">&lt;-</span> <span class="fu">gwss</span>(<span class="at">data =</span> hunan_sp, <span class="at">vars =</span> <span class="st">"GDPPC"</span>, <span class="at">bw =</span> bw_AIC, <span class="at">kernel =</span> <span class="st">"bisquare"</span>, <span class="at">adaptive =</span> <span class="cn">TRUE</span>, <span class="at">longlat =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>gwstat_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(gwstat<span class="sc">$</span>SDF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>hunan_gstat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(hunan_sf,gwstat_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>viz</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(hunan_gstat) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"GDPPC_LM"</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">n =</span> <span class="dv">5</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">style =</span> <span class="st">"quantile"</span>) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Dist of geoweighted mean"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="fl">1.0</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.text.size =</span><span class="fl">0.8</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.height =</span> <span class="fl">1.0</span> ,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.width =</span> <span class="fl">1.0</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">frame =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="takehome1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="ice5_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(acled_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 55,574
-Columns: 30
-$ event_id_cnty      &lt;chr&gt; "MMR56099", "MMR56222", "MMR56370", "MMR56376", "MM…
-$ event_date         &lt;date&gt; 2023-12-31, 2023-12-31, 2023-12-31, 2023-12-31, 20…
-$ year               &lt;dbl&gt; 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 202…
-$ time_precision     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
-$ disorder_type      &lt;chr&gt; "Political violence", "Political violence", "Politi…
-$ event_type         &lt;chr&gt; "Explosions/Remote violence", "Explosions/Remote vi…
-$ sub_event_type     &lt;chr&gt; "Shelling/artillery/missile attack", "Shelling/arti…
-$ actor1             &lt;chr&gt; "Military Forces of Myanmar (2021-)", "Military For…
-$ assoc_actor_1      &lt;chr&gt; NA, NA, NA, NA, NA, NA, "Daw Na Column; YGF: Ye Gue…
-$ inter1             &lt;dbl&gt; 1, 1, 3, 6, 1, 1, 3, 1, 2, 1, 1, 2, 2, 1, 1, 3, 3, …
-$ actor2             &lt;chr&gt; NA, "Civilians (Myanmar)", "Military Forces of Myan…
-$ assoc_actor_2      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-$ inter2             &lt;dbl&gt; 0, 7, 1, 0, 7, 0, 1, 0, 1, 7, 7, 1, 1, 0, 0, 1, 1, …
-$ interaction        &lt;dbl&gt; 10, 17, 13, 60, 17, 10, 13, 10, 12, 17, 17, 12, 12,…
-$ civilian_targeting &lt;chr&gt; NA, "Civilian targeting", NA, NA, NA, NA, NA, NA, N…
-$ iso                &lt;dbl&gt; 104, 104, 104, 104, 104, 104, 104, 104, 104, 104, 1…
-$ region             &lt;chr&gt; "Southeast Asia", "Southeast Asia", "Southeast Asia…
-$ country            &lt;chr&gt; "Myanmar", "Myanmar", "Myanmar", "Myanmar", "Myanma…
-$ admin1             &lt;chr&gt; "Mon", "Rakhine", "Bago-West", "Sagaing", "Bago-Wes…
-$ admin2             &lt;chr&gt; "Mawlamyine", "Maungdaw", "Thayarwady", "Yinmarbin"…
-$ admin3             &lt;chr&gt; "Ye", "Maungdaw", "Nattalin", "Salingyi", "Nattalin…
-$ location           &lt;chr&gt; "Aing Shey", "Kaing Gyi (NaTaLa)", "Kyauk Pyoke", "…
-$ geo_precision      &lt;dbl&gt; 1, 2, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, …
-$ source             &lt;chr&gt; "Democratic Voice of Burma", "Development Media Gro…
-$ source_scale       &lt;chr&gt; "National", "Subnational", "National", "National", …
-$ notes              &lt;chr&gt; "On 31 December 2023, in Aing Shey village (Ye town…
-$ fatalities         &lt;dbl&gt; 0, 0, 4, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2, …
-$ tags               &lt;chr&gt; NA, NA, NA, "crowd size=no report", NA, NA, NA, NA,…
-$ timestamp          &lt;dbl&gt; 1704831212, 1704831213, 1704831214, 1704831214, 170…
-$ geometry           &lt;POINT [m]&gt; POINT (393190.2 1690159), POINT (-183852.6 23…</code></pre>
 </div>
 </div>
 

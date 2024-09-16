@@ -18,6 +18,8 @@ website:
             href: "exercises/ex3/ex3.html"
           - text: "ex5"
             href: "exercises/ex5/ex5.html"
+          - text: "ex6"
+            href: "exercises/ex6/ex6.html"
       - text: "In-class Exercises"
         menu:
           - text: "ex1"
