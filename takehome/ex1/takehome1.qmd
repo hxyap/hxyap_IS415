@@ -14,7 +14,7 @@ install.packages("maptools", repos = "https://packagemanager.posit.co/cran/2023-
 ```
 
 ```{r}
-pacman::p_load(tmap, sf, tidyverse, raster, spatstat, maptools, sp, sparr)
+pacman::p_load(sf, raster, spatstat, tmap, tidyverse, viridis, classInt, maptools, OpenStreetMap, stars, spdep, prophet, tmaptools, sparr, igraph, ggraph)
 ```
 
 # Introduction: Armed Conflict in Myanmar
@@ -35,7 +35,7 @@ Our analysis of armed conflict in Myanmar focuses on three primary factors that 
 
 3\. **Drug Trade and Infrastructure Development**: Myanmar is part of the Golden Triangle, one of the world's largest drug-producing regions. The drug trade, particularly methamphetamine and opium, has fueled conflicts and corrupted institutions. Simultaneously, infrastructure development projects, often involving foreign investment, have sometimes exacerbated local tensions over land rights and resource allocation.
 
-## Purpose of the Analysis 
+## Purpose of the Analysis
 
 Given this complex backdrop, our geospatial analysis of armed conflict in Myanmar aims to:
 
@@ -97,6 +97,8 @@ myanmar_boundary_sf <- st_zm(myanmar_boundary_sf, drop = TRUE, what = "ZM")
 # print(st_crs(myanmar_boundary_sf))
 ```
 
+Now that our data is formatted in the same way, we can start slowly plotting our boundary to do our initial analysis of the conflict!
+
 ```{r}
 # Create a simple plot of the Myanmar boundary
 tm_shape(myanmar_boundary_sf) +
@@ -109,7 +111,7 @@ tm_shape(myanmar_boundary_sf) +
 
 Let's check if our event types exist as defined:
 
-Here we check for unique events:
+Here we check for unique events to ensure we are capturing the correct event types:
 
 ```{r}
 unique_event_types <- unique(acled_sf$event_type)
@@ -131,10 +133,16 @@ acled_filtered <- acled_sf %>%
 
 # Defining our KDE function, and ppp
 
+To gain a better understanding of where we should look at to find the hotspot of the conflict, we should use KDE here to visualize the "hot-cold" spots on the map, where redder points have more conflict and "colder" bluer points have less. Furthermore, KDE also smoothes out the data, making it easier to visualize on the map where we should pay attention to.
+
+We'll first convert to ppp (planar point pattern) so we can do use it for our KDE analysis.
+
 ```{r}
 # Create window for ppp objects
 myanmar_window <- as.owin(myanmar_boundary_sf)
 ```
+
+Here, we create the quarter column in order to break down the conflict into distinct time bounded quarters. This will come in handy later should we choose to do snapshots at every quarter to visualize how conflict has evolved in Myanmar over time, as well as facilitating temporal analysis. Note that we are using numeric quarters here since it makes it easier later on for us to plot spatiotemporal KDE!
 
 ```{r}
 # Create the Quarter column
@@ -155,6 +163,8 @@ acled_quarter <- st_sf(
 acled_quarter_ppp <- as.ppp(acled_quarter)
 ```
 
+In order to avoid duplicated data point on the same location messing with our analysis, we separate them via jittering as below:
+
 ```{r}
 # Apply jittering
 acled_q_ppp_jit <- rjitter(acled_quarter_ppp, retry=TRUE, nsim=1, drop=TRUE)
@@ -166,6 +176,8 @@ if (any(duplicated(acled_q_ppp_jit))) {
   warning("Some duplicates remain after jittering")
 }
 ```
+
+Finally, we segragate the data into our previous Myanmar boundary window so we ensure everything can be plotted within the borders of Myanmar.
 
 ```{r}
 armed_q_owin <- acled_q_ppp_jit[myanmar_window]
@@ -180,16 +192,20 @@ plot(armed_q_owin)
 
 ### Plotting stkde for quarterly kde
 
+We now do spatio-temporal KDE here with st_kde as it'll provide the baseline for our later spatio-temporal visualizations.
+
 ```{r}
 st_kde <- spattemp.density(armed_q_owin)
 summary(st_kde)
 ```
 
 ::: callout-note
-In my initial run, there were duplicate points. Since ACLED collects from a variety of sources, I have considered the possibilkity of multiple sources reporting the same event, but for sake of time I have jittered them earlier on. Below, we shall embark on plotting out the graph. Note that I decided on representation as 1-12 since tt only takes in numeric so quarter() from tidyverse would not work well with it...
+In my initial run, there were duplicate points. Since ACLED collects from a variety of sources, I have considered the possibility of multiple sources reporting the same event, but for sake of time I have jittered them earlier on. Below, we shall embark on plotting out the graph. Note that I decided on representation as 1-12 since tt only takes in numeric so quarter() from tidyverse would not work well with it...
 :::
 
 ## Quarterly KDE
+
+Let's now move onto our quarterly KDE analysis, now that our kde and st_kde objects are set up in our environments.
 
 ```{r}
 kde <- density(armed_q_owin,
@@ -197,6 +213,27 @@ kde <- density(armed_q_owin,
                    edge=TRUE,
                    kernel="gaussian")
 summary(kde)
+```
+
+Here, we plot 3 quarters as a time for a compact side-by-side view of progression of conflict from a spatial standpoint.
+
+```{r}
+
+# Function to plot 3 quarters
+plot_kde_quarters <- function(start_quarter) {
+  quarters <- start_quarter:(start_quarter + 2)
+  par(mfrow=c(1,3), mar=c(2,2,2,1))
+  
+  for(i in quarters) {
+    plot(kde, i, 
+         override.par=FALSE, 
+         fix.range=TRUE, 
+         main=paste("KDE (non-spatial) Q", i, "(", floor((i-1)/4 + 2021), "Q", (i-1)%% 4 + 1, ")"),
+         ribbon=TRUE)  # Turned ribbon back on for more informative plots
+  }
+  
+  par(mfrow=c(1,1))  # Reset plot layout
+}
 ```
 
 ```{r}
@@ -238,7 +275,11 @@ plot_kde_quarters(7)  # Quarters 7,8,9
 plot_kde_quarters(10) # Quarters 10,11,12
 ```
 
+As we can see, there are some pin points of conflict in the central regions and south region of Myanmar, but nothing really conclusive. Thus, we fall back onto our spatio-temporal KDE for detailed analysis of the conflict. Let's dive in!
+
 ## Quarterly spatiotemporal KDE
+
+This function ahead will help us chunk down and plot 3 side-by-side quarters:
 
 ```{r}
 # Function to plot 3 quarters
@@ -274,6 +315,22 @@ plot_quarters(7)  # Quarters 7, 8, 9
 ```{r}
 plot_quarters(10)  # Quarters 10, 11, 12
 ```
+
+Wow! It's now much clearer that our thesis of the hotspots being central and maybe south regions of Myanmar looks more viable now. Based on the charts, we can actually point out some interesting trends:
+
+1.  There's been a large hotspot for conflict in central Vietnam, but there has been a sudden migration and flare up in conflict in 2023 Q4, spreading from Central Regions to the east too.
+
+2.  From 2023 Q1 onwards, the conflict really seems to have died down in the south region of Myanmar, with the exception of the sudden outburst again in 2023 Q4.
+
+Peeking outside of our data, we can see that this is probably linked to Operation 1027:
+
+<https://thediplomat.com/2023/10/operation-1027-a-turning-point-for-myanmars-resistance-struggle/>
+
+::: callout-note
+### But what is Operation 1027?
+
+Operation 1027 is an ongoing military offensive launched on October 27, 2023, by the Three Brotherhood Alliance (3BTA), which includes the Arakan Army (AA), Myanmar National Democratic Alliance Army (MNDAA), and Ta’ang National Liberation Army (TNLA). The operation targets the State Administration Council (SAC), Myanmar’s ruling military junta, and aims to capture strategic locations in northern Shan State, near the Myanmar-China border.
+:::
 
 ```{r}
 # now let's animate this
@@ -430,72 +487,189 @@ G_mw.csr <- envelope(Mandalay_ppp, Gest, nsim = 99)
 plot(G_mw.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
-## Combining KDE and St KDE
+# Visualization of Conflict Density Using OpenStreetMap
+
+Now that we've had the basic analysis, let's use OpenStreetMap to let us see in greater detail what's going on.
 
 ```{r}
-plot_kde_stkde_quarters <- function(ppp_obj, time_data, start_quarter, bandwidth_space = NULL, bandwidth_time = NULL) {
+
+# Function to fetch OpenStreetMap base map
+get_osm_map <- function(bbox) {
+  osm_map <- read_osm(bbox, type = "osm", zoom = NULL)
+  return(osm_map)
+}
+
+plot_kde_quarters_tmap <- function(kde, start_quarter) {
   quarters <- start_quarter:(start_quarter + 2)
   
-  # Create a list to store individual maps
-  map_list <- list()
+  # Get bounding box from kde object
+  bbox_utm <- c(kde$xrange[1], kde$yrange[1], kde$xrange[2], kde$yrange[2])
   
-  # Convert ppp object to STIDF for spatio-temporal analysis
-  stidf <- as.stidf(ppp_obj, time = time_data)
+  # Create a SpatialPolygons object for the bounding box
+  bbox_sp <- as(extent(bbox_utm), "SpatialPolygons")
+  proj4string(bbox_sp) <- CRS("+proj=utm +zone=47 +datum=WGS84 +units=m +no_defs")
   
-  # Calculate bandwidths if not provided
-  if (is.null(bandwidth_space)) {
-    bandwidth_space <- bw.stoyan(ppp_obj)
-  }
-  if (is.null(bandwidth_time)) {
-    bandwidth_time <- bw.nrd0(time_data)
-  }
+  # Transform bbox to WGS84
+  bbox_wgs84 <- st_as_sf(bbox_sp) %>% st_transform(4326) %>% st_bbox()
   
-  for(i in seq_along(quarters)) {
-    q <- quarters[i]
+  # Fetch OpenStreetMap data
+  osm_map <- get_osm_map(bbox_wgs84)
+  
+  # Create a list to store individual plots
+  plot_list <- list()
+  
+  for (i in quarters) {
+    # Convert im object to a raster
+    r <- raster(kde)
     
-    # Calculate time range for the current quarter
-    time_range <- c((q-1)*3, q*3)  # Assuming each quarter is 3 months
+    # Set the CRS for the raster
+    crs(r) <- CRS("+proj=utm +zone=47 +datum=WGS84 +units=m +no_defs")
     
-    # Perform KDE
-    kde <- density(ppp_obj, sigma = bandwidth_space)
+    # Project raster to WGS84
+    r_wgs84 <- projectRaster(r, crs = CRS("+proj=longlat +datum=WGS84"))
     
-    # Perform ST-KDE
-    stkde <- density.stidf(stidf, sigma_spatial = bandwidth_space, sigma_temporal = bandwidth_time, 
-                           time = time_range, dimyx = 128, divt = 1)
+    # Create tmap object
+    tm <- tm_shape(osm_map) +
+      tm_rgb() +
+      tm_shape(r_wgs84) +
+      tm_raster(palette = "viridis", alpha = 0.6, title = "Density") +
+      tm_layout(main.title = paste("KDE Q", i, "(", floor((i-1)/4 + 2021), "Q", (i-1)%% 4 + 1, ")"),
+                main.title.size = 0.8,
+                legend.outside = TRUE,
+                legend.outside.position = "right")
     
-    # Convert KDE and ST-KDE to rasters
-    kde_raster <- raster(kde)
-    stkde_raster <- raster(stkde$v)
-    
-    # Ensure both rasters have the same extent and resolution
-    stkde_raster <- resample(stkde_raster, kde_raster)
-    
-    # Create the map
-    map <- tm_shape(st_as_sf(ppp_obj)) +
-      tm_dots(col = "black", size = 0.1, alpha = 0.5) +
-      tm_shape(kde_raster) +
-      tm_raster(alpha = 0.5, palette = "viridis", title = "KDE") +
-      tm_shape(stkde_raster) +
-      tm_raster(alpha = 0.5, palette = "magma", title = "ST-KDE") +
-      tm_basemap("OpenStreetMap") +
-      tm_layout(
-        main.title = paste("Q", q, "(", floor((q-1)/4 + 2021), "Q", (q-1) %% 4 + 1, ")"),
-        main.title.size = 1.2,
-        legend.outside = TRUE
-      )
-    
-    map_list[[i]] <- map
+    plot_list[[i - start_quarter + 1]] <- tm
   }
   
-  # Arrange the three maps in a single plot
-  tmap_arrange(map_list, ncol = 3)
+  # Arrange plots in a row
+  tmap_arrange(plot_list, ncol = 3)
 }
+
+# Usage
+tmap_mode("plot")
+plot_kde_quarters_tmap(kde, start_quarter = 1)
 ```
 
 ```{r}
-# plot_kde_stkde_quarters(armed_q_owin, time_data, 1)  # For quarters 1-3
+plot_kde_quarters_tmap(kde, start_quarter = 4)
 ```
 
 ```{r}
-# plot_kde_stkde_quarters(armed_q_owin, time_data, 4)  # For quarters 1-3
+plot_kde_quarters_tmap(kde, start_quarter = 7)
 ```
+
+```{r}
+plot_kde_quarters_tmap(kde, start_quarter = 10)
+```
+
+```{r}
+
+# Usage for static plots
+# tmap_mode("plot")
+# plot_stkde_quarters(st_kde, start_quarter = 1)
+
+# Usage for animation
+# plot_stkde_quarters(st_kde, animate = TRUE)
+```
+
+# Bonus section: Network analysis
+
+I'm starting this analysis to understand the complex dynamics of the Myanmar conflict, particularly focusing on Operation 1027 which began in October 2023. By looking at Q4 (which I assume is represented by QuarterNumeric == 12 in our data), I can capture the initial phase and immediate aftermath of this operation.
+
+I'm using network analysis because conflicts often involve multiple actors with complex relationships. This method can help me visualize and quantify these relationships.
+
+```{r}
+# Filter data for Quarter 12
+acled_q12 <- acled_filtered %>%
+  filter(QuarterNumeric == 12)
+
+```
+
+We first filter by Q12 (2023 Q4) to first look at Operation 1027 data.
+
+```{r}
+# 1. Network Graph of Actor Interactions
+
+edge_list <- acled_q12 %>%
+  select(actor1, actor2) %>%
+  filter(actor1 != "", actor2 != "") %>%
+  group_by(actor1, actor2) %>%
+  summarise(weight = n(), .groups = "drop")
+
+```
+
+This step is about identifying interactions between actors. Each time two actors are involved in an event, it's counted as an interaction. The 'weight' tells me how often these actors interacted.
+
+In the context of Operation 1027, this could reveal new alliances or intensified conflicts between certain groups. For example, I might see increased interactions between the Three Brotherhood Alliance (who initiated Operation 1027) and the Myanmar military.
+
+# 1. Network Graph of Actor Interactions
+
+```{r}
+# Create graph
+g <- graph_from_data_frame(edge_list, directed = TRUE)
+
+# Calculate node metrics, focusing on out-degree (initiations)
+node_metrics <- data.frame(
+  actor = V(g)$name,
+  initiations = degree(g, mode = "out")
+) %>%
+  arrange(desc(initiations)) %>%
+  slice_head(n = 10)  # Focus on top 10 initiators
+
+# Create subgraph with top 10 initiators
+top_actors <- node_metrics$actor
+g_sub <- induced_subgraph(g, top_actors)
+
+```
+
+```{r}
+# Function to simplify actor names
+simplify_name <- function(name) {
+  if (str_detect(name, ":")) {
+    return(str_trim(str_split(name, ":", n = 2)[[1]][1]))
+  } else {
+    return(name)
+  }
+}
+
+# Create the network visualization with simplified names
+p_network <- ggraph(g_sub, layout = "fr") +
+  geom_edge_link(aes(width = weight), 
+                 alpha = 0.2, 
+                 arrow = arrow(length = unit(2, "mm"), type = "closed")) +
+  geom_node_point(aes(size = degree(g_sub, mode = "out"), 
+                      color = degree(g_sub, mode = "out"))) +
+  geom_node_text(aes(label = sapply(name, simplify_name)), 
+                 repel = TRUE, size = 4) +
+  scale_edge_width(range = c(0.5, 3)) +
+  scale_size_continuous(range = c(5, 15)) +
+  scale_color_viridis_c() +
+  theme_void() +
+  labs(title = "Top 10 Initiators in Myanmar Conflict (October)",
+       subtitle = "Node size and color: Number of initiated events\nEdge width: Frequency of interactions",
+       size = "Initiations", color = "Initiations")
+
+# Print the plot
+print(p_network)
+
+# Summary of top initiators
+cat("Top 10 Initiators in Myanmar Conflict (October):\n")
+print(node_metrics)
+```
+
+```{}
+```
+
+As we can see, the center of the visualization is the Brotherhood Alliance, represented by the largest node, indicating its role as the primary initiator of conflict events during this period. This aligns with reports of the Alliance spearheading a coordinated offensive against the military government.
+
+Interesting, key ethnic armed organizations such as the United League of Arakan/Arakan Army (ULA/AA) and Kachin Independence Organization/Army (KIO/KIA) are prominently featured, highlighting the operation's broad ethnic base. Their connections to the Brotherhood Alliance node visually represent the unprecedented level of coordination among these groups during the offensive.
+
+The presence of nodes like "Unidentified Anti-Coup Armed Group" and "GZP-Mandalay" (Generation Z Power) also suggest involvement from pro-democracy forces and local resistance groups, indicating the diverse coalition that Operation 1027 has roped in to fight against the military.
+
+Lastly, varying thicknesses of connecting lines between nodes depict the frequency of interactions. Notably, the thicker lines between the Brotherhood Alliance and other major groups corroborate reports of enhanced coordination, a factor that contributed to the operation's initial success and the significant territorial gains made by resistance forces.
+
+# Conclusions
+
+## Acknowledgements/references
+
+1.  Claude.ai <https://claude.ai/new>
