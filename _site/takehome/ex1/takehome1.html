@@ -237,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#visualization-of-conflict-density-using-openstreetmap" id="toc-visualization-of-conflict-density-using-openstreetmap" class="nav-link" data-scroll-target="#visualization-of-conflict-density-using-openstreetmap">Visualization of Conflict Density Using OpenStreetMap</a></li>
   <li><a href="#bonus-section-network-analysis" id="toc-bonus-section-network-analysis" class="nav-link" data-scroll-target="#bonus-section-network-analysis">Bonus section: Network analysis</a></li>
-  <li><a href="#network-graph-of-actor-interactions" id="toc-network-graph-of-actor-interactions" class="nav-link" data-scroll-target="#network-graph-of-actor-interactions">1. Network Graph of Actor Interactions</a></li>
+  <li><a href="#network-graph-of-actor-interactions" id="toc-network-graph-of-actor-interactions" class="nav-link" data-scroll-target="#network-graph-of-actor-interactions">Network Graph of Actor Interactions</a></li>
   <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a>
   <ul class="collapse">
   <li><a href="#acknowledgementsreferences" id="toc-acknowledgementsreferences" class="nav-link" data-scroll-target="#acknowledgementsreferences">Acknowledgements/references</a></li>
@@ -310,7 +310,7 @@ Permission denied</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The downloaded binary packages are in
-    C:\Users\yapho\AppData\Local\Temp\RtmpKg8vpO\downloaded_packages</code></pre>
+    C:\Users\yapho\AppData\Local\Temp\RtmpUz3o2l\downloaded_packages</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -337,6 +337,7 @@ The downloaded binary packages are in
 <p>2. Examine how these factors interact and potentially exacerbate each other in different regions of the country.</p>
 <p>3. Track changes in conflict patterns over time, particularly in relation to significant political events like the 2021 military coup.</p>
 <p>By focusing on these aspects, we hope to provide valuable insights that can inform humanitarian responses, contribute to a better understanding of conflict dynamics, and assist in developing more effective strategies for peace-building and development in the region.</p>
+<p>We first begin by using read_csv to read our aspatial csv data into our sf frame.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>acled_sf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ACLED_Myanmar.csv"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
@@ -354,6 +355,7 @@ dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
+<p>Now that we’ve load the sf, let’s check if our boundary for Myanmar works:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -372,6 +374,7 @@ dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
 </div>
 </div>
 </div>
+<p>We’ll next use glimpse so we know what aspects of the data we can work around to try to glean more insights about the Myanmar crisis.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(acled_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -409,6 +412,7 @@ $ timestamp          &lt;dbl&gt; 1704831212, 1704831213, 1704831214, 1704831214,
 $ geometry           &lt;POINT [m]&gt; POINT (393190.2 1690159), POINT (-183852.6 23…</code></pre>
 </div>
 </div>
+<p>For later analysis, we’ll also be using the regional boundaries as well, so I’ve conveniently placed this chunk below to load our regional boundaries.</p>
 <p>Let’s load our boundary:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>myanmar_boundary_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/mmr_polbnda_adm0_250k_mimu_1"</span>, </span>
@@ -428,12 +432,14 @@ Geodetic CRS:  WGS 84</code></pre>
 </section>
 <section id="compare-crs" class="level1">
 <h1>Compare CRS</h1>
-<p>Since we’ve gotten our data from different sources, let’s find out if they follow Myanmar’s crs system WGS84 to ensure consistency for our analysis!</p>
+<p>Since we’ve gotten our data from different sources, let’s find out if they follow Myanmar’s crs system to ensure consistency for our analysis!</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check CRS of acled_sf</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print("CRS of ACLED data:")</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># print(st_crs(acled_sf))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># print(st_crs(acled_sf))</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># WGS84</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Hmm… this might differ from the boundaries of the Myanmar boundary. Let’s do a quick st_transform to change the CRS used.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transform Myanmar boundary to match ACLED data CRS</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>myanmar_boundary_sf <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(myanmar_boundary_sf, <span class="fu">st_crs</span>(acled_sf))</span>
@@ -526,15 +532,15 @@ Geodetic CRS:  WGS 84</code></pre>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>armed_q_owin <span class="ot">&lt;-</span> acled_q_ppp_jit[myanmar_window]</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(armed_q_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Marked planar point pattern:  35611 points
-Average intensity 5.317348e-08 points per square unit
+<pre><code>Marked planar point pattern:  35606 points
+Average intensity 5.316602e-08 points per square unit
 
 Coordinates are given to 16 decimal places
 
 marks are numeric, of type 'double'
 Summary:
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   4.000   7.000   6.839  10.000  12.000 
+  1.000   4.000   7.000   6.838  10.000  12.000 
 
 Window: polygonal boundary
 563 separate polygons (3 holes)
@@ -1135,11 +1141,11 @@ Conditioning on time...Done.</code></pre>
 <pre><code>Spatiotemporal Kernel Density Estimate
 
 Bandwidths
-  h = 45800.76 (spatial)
+  h = 45784.57 (spatial)
   lambda = 0.0047 (temporal)
 
 No. of observations
-  35611 
+  35606 
 
 Spatial bound
   Type: polygonal
@@ -1150,7 +1156,7 @@ Temporal bound
 
 Evaluation
   128 x 128 x 12 trivariate lattice
-  Density range: [7.254991e-24, 1.543849e-10]</code></pre>
+  Density range: [6.782504e-24, 1.543807e-10]</code></pre>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1186,9 +1192,9 @@ Image is defined on a subset of the rectangular grid
 Subset area = 669515348322.876 square units
 Subset area fraction = 0.343
 Pixel values (inside window):
-    range = [-1.404673e-21, 6.712878e-06]
-    integral = 34663
-    mean = 5.177327e-08</code></pre>
+    range = [-1.363178e-21, 6.712878e-06]
+    integral = 34672
+    mean = 5.178671e-08</code></pre>
 </div>
 </div>
 <p>Here, we plot 3 quarters as a time for a compact side-by-side view of progression of conflict from a spatial standpoint.</p>
@@ -1401,7 +1407,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>As we can see, it seems like above Mandalay and below Sagaing there seems to be a hotspot of armed conflict events, with some initial conflict in Yangon in the earlier quarters. However, there seems to be a flare up in the conflict in the last quarter we have in the dataset. We should now dig deeper with 2nd order analysis in the highlighted areas. We’ll look at Sagaing, Chin, Magway and Mandalay.</p>
+<p>As we can see, it seems like above Mandalay and below Sagaing there seems to be a hotspot of armed conflict events, with some initial conflict in Yangon in the earlier quarters. However, there seems to be a flare up in the conflict in the last quarter we have in the dataset. We should now dig deeper with 2nd order analysis in the highlighted areas. We’ll look at Mandalay as it’s the primary region of the conflict.</p>
 </div>
 </div>
 </section>
@@ -1517,6 +1523,19 @@ PROJCRS["WGS 84 / UTM zone 47N",
 </div>
 </div>
 <p>Recalling our hotspot analysis, let’s find the hottest region.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note on commented out blocks
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Feel free to uncomment the below chunk! For the sake of not exploding my github repo, I’ve decided to cull memory usage by not running the below chunk, but if you run it, you should probably also see that it is centered by Mandalay :)</p>
+</div>
+</div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the centroid of all conflict points</span></span>
 <span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="co"># conflict_center &lt;- st_centroid(st_union(conflict_r_sf))</span></span>
@@ -1560,8 +1579,8 @@ PROJCRS["WGS 84 / UTM zone 47N",
 <div class="cell">
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Mandalay_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Marked planar point pattern:  3068 points
-Average intensity 9.897222e-08 points per square unit
+<pre><code>Marked planar point pattern:  3064 points
+Average intensity 9.884318e-08 points per square unit
 
 Coordinates are given to 11 decimal places
 
@@ -1578,6 +1597,7 @@ Window area = 30998600000 square units
 Fraction of frame area: 0.37</code></pre>
 </div>
 </div>
+<p>We’ll convert to km here using rescale, since previously, using the base unit (metres) had issues with plotting the second order functions.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>Mandalay_ppp_km <span class="ot">&lt;-</span> <span class="fu">rescale</span>(Mandalay_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1591,9 +1611,23 @@ Fraction of frame area: 0.37</code></pre>
 </div>
 </div>
 </div>
+<p>We’ll first start by using the L function:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+L-function:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The L function, a variant of Ripley’s K function, examines spatial dependence over a range of distances. It measures the number of points within increasing radii from each point, providing insight into patterns at multiple scales simultaneously.</p>
+</div>
+</div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>L_ck <span class="ot">=</span> <span class="fu">Lest</span>(Mandalay_ppp_km, <span class="at">correction =</span> <span class="st">"Ripley"</span>)</span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(L_ck, . <span class="sc">-</span>r <span class="sc">~</span> r, </span>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>L_mw <span class="ot">=</span> <span class="fu">Lest</span>(Mandalay_ppp_km, <span class="at">correction =</span> <span class="st">"Ripley"</span>)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(L_mw, . <span class="sc">-</span>r <span class="sc">~</span> r, </span>
 <span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"L(d)-r"</span>, <span class="at">xlab =</span> <span class="st">"d(m)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -1603,9 +1637,28 @@ Fraction of frame area: 0.37</code></pre>
 </div>
 </div>
 </div>
-<p>Let’s see how true this strong degree of clustering is in Mandalay with Gest.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>G_mw.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(Mandalay_ppp, Gest, <span class="at">nsim =</span> <span class="dv">99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># L_mw.csr &lt;- envelope(Mandalay_ppp_km, Lest, nsim = 99, rank = 1, glocal=TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(L_mw.csr, . - r ~ r, xlab="d", ylab="L(d)-r")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Since our function fell outside our envelope, this means there’s a significant deviation from the Complete Spatial Randomness (CSR) at various distance scales, providing significant evidence of clustering at those distances. Let’s confirm this by backing it up with the G-function:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+G function
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The G function analyzes the distribution of distances to the nearest neighbor for each point in a spatial pattern. It focuses on first-order spatial effects, primarily capturing local, small-scale patterns.</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>G_mw.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(Mandalay_ppp, Gest, <span class="at">nsim =</span> <span class="dv">99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Generating 99 simulations of CSR  ...
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -1619,102 +1672,7 @@ Done.</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(G_mw.csr, . <span class="sc">-</span> r <span class="sc">~</span> r, <span class="at">xlab=</span><span class="st">"d"</span>, <span class="at">ylab=</span><span class="st">"K(d)-r"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="takehome1_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-</section>
-</section>
-<section id="visualization-of-conflict-density-using-openstreetmap" class="level1">
-<h1>Visualization of Conflict Density Using OpenStreetMap</h1>
-<p>Now that we’ve had the basic analysis, let’s use OpenStreetMap to let us see in greater detail what’s going on.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to fetch OpenStreetMap base map</span></span>
-<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>get_osm_map <span class="ot">&lt;-</span> <span class="cf">function</span>(bbox) {</span>
-<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>  osm_map <span class="ot">&lt;-</span> <span class="fu">read_osm</span>(bbox, <span class="at">type =</span> <span class="st">"osm"</span>, <span class="at">zoom =</span> <span class="cn">NULL</span>)</span>
-<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(osm_map)</span>
-<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>plot_kde_quarters_tmap <span class="ot">&lt;-</span> <span class="cf">function</span>(kde, start_quarter) {</span>
-<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>  quarters <span class="ot">&lt;-</span> start_quarter<span class="sc">:</span>(start_quarter <span class="sc">+</span> <span class="dv">2</span>)</span>
-<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get bounding box from kde object</span></span>
-<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a>  bbox_utm <span class="ot">&lt;-</span> <span class="fu">c</span>(kde<span class="sc">$</span>xrange[<span class="dv">1</span>], kde<span class="sc">$</span>yrange[<span class="dv">1</span>], kde<span class="sc">$</span>xrange[<span class="dv">2</span>], kde<span class="sc">$</span>yrange[<span class="dv">2</span>])</span>
-<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb73-13"><a href="#cb73-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a SpatialPolygons object for the bounding box</span></span>
-<span id="cb73-14"><a href="#cb73-14" aria-hidden="true" tabindex="-1"></a>  bbox_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(<span class="fu">extent</span>(bbox_utm), <span class="st">"SpatialPolygons"</span>)</span>
-<span id="cb73-15"><a href="#cb73-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">proj4string</span>(bbox_sp) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+proj=utm +zone=47 +datum=WGS84 +units=m +no_defs"</span>)</span>
-<span id="cb73-16"><a href="#cb73-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb73-17"><a href="#cb73-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Transform bbox to WGS84</span></span>
-<span id="cb73-18"><a href="#cb73-18" aria-hidden="true" tabindex="-1"></a>  bbox_wgs84 <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(bbox_sp) <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">4326</span>) <span class="sc">%&gt;%</span> <span class="fu">st_bbox</span>()</span>
-<span id="cb73-19"><a href="#cb73-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb73-20"><a href="#cb73-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fetch OpenStreetMap data</span></span>
-<span id="cb73-21"><a href="#cb73-21" aria-hidden="true" tabindex="-1"></a>  osm_map <span class="ot">&lt;-</span> <span class="fu">get_osm_map</span>(bbox_wgs84)</span>
-<span id="cb73-22"><a href="#cb73-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb73-23"><a href="#cb73-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a list to store individual plots</span></span>
-<span id="cb73-24"><a href="#cb73-24" aria-hidden="true" tabindex="-1"></a>  plot_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb73-25"><a href="#cb73-25" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb73-26"><a href="#cb73-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> quarters) {</span>
-<span id="cb73-27"><a href="#cb73-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert im object to a raster</span></span>
-<span id="cb73-28"><a href="#cb73-28" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">raster</span>(kde)</span>
-<span id="cb73-29"><a href="#cb73-29" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb73-30"><a href="#cb73-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the CRS for the raster</span></span>
-<span id="cb73-31"><a href="#cb73-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">crs</span>(r) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+proj=utm +zone=47 +datum=WGS84 +units=m +no_defs"</span>)</span>
-<span id="cb73-32"><a href="#cb73-32" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb73-33"><a href="#cb73-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Project raster to WGS84</span></span>
-<span id="cb73-34"><a href="#cb73-34" aria-hidden="true" tabindex="-1"></a>    r_wgs84 <span class="ot">&lt;-</span> <span class="fu">projectRaster</span>(r, <span class="at">crs =</span> <span class="fu">CRS</span>(<span class="st">"+proj=longlat +datum=WGS84"</span>))</span>
-<span id="cb73-35"><a href="#cb73-35" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb73-36"><a href="#cb73-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create tmap object</span></span>
-<span id="cb73-37"><a href="#cb73-37" aria-hidden="true" tabindex="-1"></a>    tm <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(osm_map) <span class="sc">+</span></span>
-<span id="cb73-38"><a href="#cb73-38" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_rgb</span>() <span class="sc">+</span></span>
-<span id="cb73-39"><a href="#cb73-39" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_shape</span>(r_wgs84) <span class="sc">+</span></span>
-<span id="cb73-40"><a href="#cb73-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_raster</span>(<span class="at">palette =</span> <span class="st">"viridis"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">title =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
-<span id="cb73-41"><a href="#cb73-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="fu">paste</span>(<span class="st">"KDE Q"</span>, i, <span class="st">"("</span>, <span class="fu">floor</span>((i<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">4</span> <span class="sc">+</span> <span class="dv">2021</span>), <span class="st">"Q"</span>, (i<span class="dv">-1</span>)<span class="sc">%%</span> <span class="dv">4</span> <span class="sc">+</span> <span class="dv">1</span>, <span class="st">")"</span>),</span>
-<span id="cb73-42"><a href="#cb73-42" aria-hidden="true" tabindex="-1"></a>                <span class="at">main.title.size =</span> <span class="fl">0.8</span>,</span>
-<span id="cb73-43"><a href="#cb73-43" aria-hidden="true" tabindex="-1"></a>                <span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb73-44"><a href="#cb73-44" aria-hidden="true" tabindex="-1"></a>                <span class="at">legend.outside.position =</span> <span class="st">"right"</span>)</span>
-<span id="cb73-45"><a href="#cb73-45" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb73-46"><a href="#cb73-46" aria-hidden="true" tabindex="-1"></a>    plot_list[[i <span class="sc">-</span> start_quarter <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;-</span> tm</span>
-<span id="cb73-47"><a href="#cb73-47" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb73-48"><a href="#cb73-48" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb73-49"><a href="#cb73-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Arrange plots in a row</span></span>
-<span id="cb73-50"><a href="#cb73-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tmap_arrange</span>(plot_list, <span class="at">ncol =</span> <span class="dv">3</span>)</span>
-<span id="cb73-51"><a href="#cb73-51" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb73-52"><a href="#cb73-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb73-53"><a href="#cb73-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage</span></span>
-<span id="cb73-54"><a href="#cb73-54" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>tmap mode set to plotting</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_kde_quarters_tmap</span>(kde, <span class="at">start_quarter =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
-Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="takehome1_files/figure-html/unnamed-chunk-48-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_kde_quarters_tmap</span>(kde, <span class="at">start_quarter =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
-Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
-Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(G_mw.csr, . <span class="sc">-</span> r <span class="sc">~</span> r, <span class="at">xlab=</span><span class="st">"d"</span>, <span class="at">ylab=</span><span class="st">"K(d)-r"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1723,11 +1681,90 @@ Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2,
 </div>
 </div>
 </div>
+<p>Since our observed G function falls within the envelope, it suggests that the nearest neighbor distances in the observed pattern do not significantly differ from what would be expected under CSR at the local, first-order level.</p>
+<p>Hmmm… Although the G-function is within our expected envelope, however, our L function is not. What does this mean? I think a reasonable take is that:</p>
+<ul>
+<li>At the very local scale (nearest neighbors), conflicts appear to be randomly distributed. This suggests no immediate spatial dependency between individual conflict events.</li>
+</ul>
+<!-- -->
+<ul>
+<li>However, at larger scales, there is significant clustering of conflicts. This indicates that while individual events might not be directly influencing each other’s locations, there are broader factors creating areas of higher conflict density.</li>
+</ul>
+<!-- -->
+<ul>
+<li>This pattern could be explained by the presence of “hot zones” of conflict activity. Within these zones, individual conflicts might occur in seemingly random locations, but the zones themselves represent areas of heightened risk or activity.</li>
+</ul>
+<p>Thus, I think the reasonable conclusion here is that even at the region level, perhaps due to the nature of resources/ locations being held by the different actors in the Myanmar civil conflict, the conflicts are “grouped” in hotspots, but within those hotspots, the reported location can vary, which suggests a structure to how either conflicts are reported in the region, or by what locations are important within a region, especially in a hotspot region like the Mandalay region.</p>
+</section>
+</section>
+</section>
+<section id="visualization-of-conflict-density-using-openstreetmap" class="level1">
+<h1>Visualization of Conflict Density Using OpenStreetMap</h1>
+<p>Now that we’ve had the basic analysis, let’s use OpenStreetMap to let us see in greater detail what’s going on. We use get_osm_map to get our basemap from OpenStreetMap, then do some CRS conversion as well as list making/raster conversion to stack our images to present a more nuanced graph!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_kde_quarters_tmap</span>(kde, <span class="at">start_quarter =</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to fetch OpenStreetMap base map</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>get_osm_map <span class="ot">&lt;-</span> <span class="cf">function</span>(bbox) {</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>  osm_map <span class="ot">&lt;-</span> <span class="fu">read_osm</span>(bbox, <span class="at">type =</span> <span class="st">"osm"</span>, <span class="at">zoom =</span> <span class="cn">NULL</span>)</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(osm_map)</span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>plot_kde_quarters_tmap <span class="ot">&lt;-</span> <span class="cf">function</span>(kde, start_quarter) {</span>
+<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a>  quarters <span class="ot">&lt;-</span> start_quarter<span class="sc">:</span>(start_quarter <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb75-10"><a href="#cb75-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get bounding box from kde object</span></span>
+<span id="cb75-11"><a href="#cb75-11" aria-hidden="true" tabindex="-1"></a>  bbox_utm <span class="ot">&lt;-</span> <span class="fu">c</span>(kde<span class="sc">$</span>xrange[<span class="dv">1</span>], kde<span class="sc">$</span>yrange[<span class="dv">1</span>], kde<span class="sc">$</span>xrange[<span class="dv">2</span>], kde<span class="sc">$</span>yrange[<span class="dv">2</span>])</span>
+<span id="cb75-12"><a href="#cb75-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb75-13"><a href="#cb75-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a SpatialPolygons object for the bounding box</span></span>
+<span id="cb75-14"><a href="#cb75-14" aria-hidden="true" tabindex="-1"></a>  bbox_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(<span class="fu">extent</span>(bbox_utm), <span class="st">"SpatialPolygons"</span>)</span>
+<span id="cb75-15"><a href="#cb75-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">proj4string</span>(bbox_sp) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+proj=utm +zone=47 +datum=WGS84 +units=m +no_defs"</span>)</span>
+<span id="cb75-16"><a href="#cb75-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb75-17"><a href="#cb75-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Transform bbox to WGS84</span></span>
+<span id="cb75-18"><a href="#cb75-18" aria-hidden="true" tabindex="-1"></a>  bbox_wgs84 <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(bbox_sp) <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">4326</span>) <span class="sc">%&gt;%</span> <span class="fu">st_bbox</span>()</span>
+<span id="cb75-19"><a href="#cb75-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb75-20"><a href="#cb75-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fetch OpenStreetMap data</span></span>
+<span id="cb75-21"><a href="#cb75-21" aria-hidden="true" tabindex="-1"></a>  osm_map <span class="ot">&lt;-</span> <span class="fu">get_osm_map</span>(bbox_wgs84)</span>
+<span id="cb75-22"><a href="#cb75-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb75-23"><a href="#cb75-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a list to store individual plots</span></span>
+<span id="cb75-24"><a href="#cb75-24" aria-hidden="true" tabindex="-1"></a>  plot_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb75-25"><a href="#cb75-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb75-26"><a href="#cb75-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> quarters) {</span>
+<span id="cb75-27"><a href="#cb75-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert im object to a raster</span></span>
+<span id="cb75-28"><a href="#cb75-28" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">raster</span>(kde)</span>
+<span id="cb75-29"><a href="#cb75-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb75-30"><a href="#cb75-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the CRS for the raster</span></span>
+<span id="cb75-31"><a href="#cb75-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">crs</span>(r) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+proj=utm +zone=47 +datum=WGS84 +units=m +no_defs"</span>)</span>
+<span id="cb75-32"><a href="#cb75-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb75-33"><a href="#cb75-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Project raster to WGS84</span></span>
+<span id="cb75-34"><a href="#cb75-34" aria-hidden="true" tabindex="-1"></a>    r_wgs84 <span class="ot">&lt;-</span> <span class="fu">projectRaster</span>(r, <span class="at">crs =</span> <span class="fu">CRS</span>(<span class="st">"+proj=longlat +datum=WGS84"</span>))</span>
+<span id="cb75-35"><a href="#cb75-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb75-36"><a href="#cb75-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create tmap object</span></span>
+<span id="cb75-37"><a href="#cb75-37" aria-hidden="true" tabindex="-1"></a>    tm <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(osm_map) <span class="sc">+</span></span>
+<span id="cb75-38"><a href="#cb75-38" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_rgb</span>() <span class="sc">+</span></span>
+<span id="cb75-39"><a href="#cb75-39" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_shape</span>(r_wgs84) <span class="sc">+</span></span>
+<span id="cb75-40"><a href="#cb75-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_raster</span>(<span class="at">palette =</span> <span class="st">"viridis"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">title =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb75-41"><a href="#cb75-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="fu">paste</span>(<span class="st">"KDE Q"</span>, i, <span class="st">"("</span>, <span class="fu">floor</span>((i<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">4</span> <span class="sc">+</span> <span class="dv">2021</span>), <span class="st">"Q"</span>, (i<span class="dv">-1</span>)<span class="sc">%%</span> <span class="dv">4</span> <span class="sc">+</span> <span class="dv">1</span>, <span class="st">")"</span>),</span>
+<span id="cb75-42"><a href="#cb75-42" aria-hidden="true" tabindex="-1"></a>                <span class="at">main.title.size =</span> <span class="fl">0.8</span>,</span>
+<span id="cb75-43"><a href="#cb75-43" aria-hidden="true" tabindex="-1"></a>                <span class="at">legend.outside =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb75-44"><a href="#cb75-44" aria-hidden="true" tabindex="-1"></a>                <span class="at">legend.outside.position =</span> <span class="st">"right"</span>)</span>
+<span id="cb75-45"><a href="#cb75-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb75-46"><a href="#cb75-46" aria-hidden="true" tabindex="-1"></a>    plot_list[[i <span class="sc">-</span> start_quarter <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;-</span> tm</span>
+<span id="cb75-47"><a href="#cb75-47" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb75-48"><a href="#cb75-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb75-49"><a href="#cb75-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Arrange plots in a row</span></span>
+<span id="cb75-50"><a href="#cb75-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tmap_arrange</span>(plot_list, <span class="at">ncol =</span> <span class="dv">3</span>)</span>
+<span id="cb75-51"><a href="#cb75-51" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb75-52"><a href="#cb75-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-53"><a href="#cb75-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage</span></span>
+<span id="cb75-54"><a href="#cb75-54" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>tmap mode set to plotting</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_kde_quarters_tmap</span>(kde, <span class="at">start_quarter =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
-Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
 Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
 </div>
 <div class="cell-output-display">
@@ -1739,7 +1776,7 @@ Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2,
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_kde_quarters_tmap</span>(kde, <span class="at">start_quarter =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_kde_quarters_tmap</span>(kde, <span class="at">start_quarter =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
 Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
@@ -1754,12 +1791,43 @@ Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2,
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage for static plots</span></span>
-<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_mode("plot")</span></span>
-<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_stkde_quarters(st_kde, start_quarter = 1)</span></span>
-<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage for animation</span></span>
-<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_stkde_quarters(st_kde, animate = TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_kde_quarters_tmap</span>(kde, <span class="at">start_quarter =</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
+Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
+Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome1_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_kde_quarters_tmap</span>(kde, <span class="at">start_quarter =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
+Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
+Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2, 0.2. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome1_files/figure-html/unnamed-chunk-53-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This chunk is broken for now but should be fixed later :’)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage for static plots</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_mode("plot")</span></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_stkde_quarters(st_kde, start_quarter = 1)</span></span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage for animation</span></span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_stkde_quarters(st_kde, animate = TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="bonus-section-network-analysis" class="level1">
@@ -1767,83 +1835,95 @@ Legend labels were too wide. The labels have been resized to 0.2, 0.2, 0.2, 0.2,
 <p>I’m starting this analysis to understand the complex dynamics of the Myanmar conflict, particularly focusing on Operation 1027 which began in October 2023. By looking at Q4 (which I assume is represented by QuarterNumeric == 12 in our data), I can capture the initial phase and immediate aftermath of this operation.</p>
 <p>I’m using network analysis because conflicts often involve multiple actors with complex relationships. This method can help me visualize and quantify these relationships.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter data for Quarter 12</span></span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>acled_q12 <span class="ot">&lt;-</span> acled_filtered <span class="sc">%&gt;%</span></span>
-<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(QuarterNumeric <span class="sc">==</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter data for Quarter 12</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>acled_q12 <span class="ot">&lt;-</span> acled_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(QuarterNumeric <span class="sc">==</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We first filter by Q12 (2023 Q4) to first look at Operation 1027 data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Network Graph of Actor Interactions</span></span>
-<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>edge_list <span class="ot">&lt;-</span> acled_q12 <span class="sc">%&gt;%</span></span>
-<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(actor1, actor2) <span class="sc">%&gt;%</span></span>
-<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(actor1 <span class="sc">!=</span> <span class="st">""</span>, actor2 <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(actor1, actor2) <span class="sc">%&gt;%</span></span>
-<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">weight =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Network Graph of Actor Interactions</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>edge_list <span class="ot">&lt;-</span> acled_q12 <span class="sc">%&gt;%</span></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(actor1, actor2) <span class="sc">%&gt;%</span></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(actor1 <span class="sc">!=</span> <span class="st">""</span>, actor2 <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(actor1, actor2) <span class="sc">%&gt;%</span></span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">weight =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This step is about identifying interactions between actors. Each time two actors are involved in an event, it’s counted as an interaction. The ‘weight’ tells me how often these actors interacted.</p>
 <p>In the context of Operation 1027, this could reveal new alliances or intensified conflicts between certain groups. For example, I might see increased interactions between the Three Brotherhood Alliance (who initiated Operation 1027) and the Myanmar military.</p>
 </section>
 <section id="network-graph-of-actor-interactions" class="level1">
-<h1>1. Network Graph of Actor Interactions</h1>
+<h1>Network Graph of Actor Interactions</h1>
+<p>Now that we have our edge list, let’s create a pruned actor graph!</p>
+<p>First, let’s make a directed graph from an edge list. In the context of conflict analysis, this represents interactions between actors, where the direction matters (e.g., who initiated an action against whom). Then, we’ll calculate the out-degree for each node (actor), which represents the number of actions initiated by each actor and select the top 10. This is crucial because:</p>
+<ul>
+<li><p>It identifies the most active conflict initiators</p></li>
+<li><p>It allows us to focus on key players, simplifying a potentially complex network</p></li>
+<li><p>It provides a quantitative measure of each actor’s role in driving the conflict</p></li>
+</ul>
+<p>Lastly, we’ll create a subgraph with those 10, to focus on their relationships and patterns.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create graph</span></span>
-<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(edge_list, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate node metrics, focusing on out-degree (initiations)</span></span>
-<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>node_metrics <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">actor =</span> <span class="fu">V</span>(g)<span class="sc">$</span>name,</span>
-<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">initiations =</span> <span class="fu">degree</span>(g, <span class="at">mode =</span> <span class="st">"out"</span>)</span>
-<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(initiations)) <span class="sc">%&gt;%</span></span>
-<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)  <span class="co"># Focus on top 10 initiators</span></span>
-<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create subgraph with top 10 initiators</span></span>
-<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a>top_actors <span class="ot">&lt;-</span> node_metrics<span class="sc">$</span>actor</span>
-<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a>g_sub <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(g, top_actors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create graph</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(edge_list, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate node metrics, focusing on out-degree (initiations)</span></span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>node_metrics <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">actor =</span> <span class="fu">V</span>(g)<span class="sc">$</span>name,</span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">initiations =</span> <span class="fu">degree</span>(g, <span class="at">mode =</span> <span class="st">"out"</span>)</span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(initiations)) <span class="sc">%&gt;%</span></span>
+<span id="cb89-10"><a href="#cb89-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)  <span class="co"># Focus on top 10 initiators</span></span>
+<span id="cb89-11"><a href="#cb89-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-12"><a href="#cb89-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create subgraph with top 10 initiators</span></span>
+<span id="cb89-13"><a href="#cb89-13" aria-hidden="true" tabindex="-1"></a>top_actors <span class="ot">&lt;-</span> node_metrics<span class="sc">$</span>actor</span>
+<span id="cb89-14"><a href="#cb89-14" aria-hidden="true" tabindex="-1"></a>g_sub <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(g, top_actors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to simplify actor names</span></span>
-<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>simplify_name <span class="ot">&lt;-</span> <span class="cf">function</span>(name) {</span>
-<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(name, <span class="st">":"</span>)) {</span>
-<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">str_trim</span>(<span class="fu">str_split</span>(name, <span class="st">":"</span>, <span class="at">n =</span> <span class="dv">2</span>)[[<span class="dv">1</span>]][<span class="dv">1</span>]))</span>
-<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(name)</span>
-<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the network visualization with simplified names</span></span>
-<span id="cb88-11"><a href="#cb88-11" aria-hidden="true" tabindex="-1"></a>p_network <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(g_sub, <span class="at">layout =</span> <span class="st">"fr"</span>) <span class="sc">+</span></span>
-<span id="cb88-12"><a href="#cb88-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> weight), </span>
-<span id="cb88-13"><a href="#cb88-13" aria-hidden="true" tabindex="-1"></a>                 <span class="at">alpha =</span> <span class="fl">0.2</span>, </span>
-<span id="cb88-14"><a href="#cb88-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="dv">2</span>, <span class="st">"mm"</span>), <span class="at">type =</span> <span class="st">"closed"</span>)) <span class="sc">+</span></span>
-<span id="cb88-15"><a href="#cb88-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> <span class="fu">degree</span>(g_sub, <span class="at">mode =</span> <span class="st">"out"</span>), </span>
-<span id="cb88-16"><a href="#cb88-16" aria-hidden="true" tabindex="-1"></a>                      <span class="at">color =</span> <span class="fu">degree</span>(g_sub, <span class="at">mode =</span> <span class="st">"out"</span>))) <span class="sc">+</span></span>
-<span id="cb88-17"><a href="#cb88-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sapply</span>(name, simplify_name)), </span>
-<span id="cb88-18"><a href="#cb88-18" aria-hidden="true" tabindex="-1"></a>                 <span class="at">repel =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb88-19"><a href="#cb88-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_edge_width</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">3</span>)) <span class="sc">+</span></span>
-<span id="cb88-20"><a href="#cb88-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_continuous</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">15</span>)) <span class="sc">+</span></span>
-<span id="cb88-21"><a href="#cb88-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_c</span>() <span class="sc">+</span></span>
-<span id="cb88-22"><a href="#cb88-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
-<span id="cb88-23"><a href="#cb88-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 10 Initiators in Myanmar Conflict (October)"</span>,</span>
-<span id="cb88-24"><a href="#cb88-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Node size and color: Number of initiated events</span><span class="sc">\n</span><span class="st">Edge width: Frequency of interactions"</span>,</span>
-<span id="cb88-25"><a href="#cb88-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">size =</span> <span class="st">"Initiations"</span>, <span class="at">color =</span> <span class="st">"Initiations"</span>)</span>
-<span id="cb88-26"><a href="#cb88-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-27"><a href="#cb88-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the plot</span></span>
-<span id="cb88-28"><a href="#cb88-28" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p_network)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to simplify actor names</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>simplify_name <span class="ot">&lt;-</span> <span class="cf">function</span>(name) {</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(name, <span class="st">":"</span>)) {</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">str_trim</span>(<span class="fu">str_split</span>(name, <span class="st">":"</span>, <span class="at">n =</span> <span class="dv">2</span>)[[<span class="dv">1</span>]][<span class="dv">1</span>]))</span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(name)</span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-10"><a href="#cb90-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the network visualization with simplified names</span></span>
+<span id="cb90-11"><a href="#cb90-11" aria-hidden="true" tabindex="-1"></a>p_network <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(g_sub, <span class="at">layout =</span> <span class="st">"fr"</span>) <span class="sc">+</span></span>
+<span id="cb90-12"><a href="#cb90-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> weight), </span>
+<span id="cb90-13"><a href="#cb90-13" aria-hidden="true" tabindex="-1"></a>                 <span class="at">alpha =</span> <span class="fl">0.2</span>, </span>
+<span id="cb90-14"><a href="#cb90-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="dv">2</span>, <span class="st">"mm"</span>), <span class="at">type =</span> <span class="st">"closed"</span>)) <span class="sc">+</span></span>
+<span id="cb90-15"><a href="#cb90-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> <span class="fu">degree</span>(g_sub, <span class="at">mode =</span> <span class="st">"out"</span>), </span>
+<span id="cb90-16"><a href="#cb90-16" aria-hidden="true" tabindex="-1"></a>                      <span class="at">color =</span> <span class="fu">degree</span>(g_sub, <span class="at">mode =</span> <span class="st">"out"</span>))) <span class="sc">+</span></span>
+<span id="cb90-17"><a href="#cb90-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sapply</span>(name, simplify_name)), </span>
+<span id="cb90-18"><a href="#cb90-18" aria-hidden="true" tabindex="-1"></a>                 <span class="at">repel =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb90-19"><a href="#cb90-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_edge_width</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">3</span>)) <span class="sc">+</span></span>
+<span id="cb90-20"><a href="#cb90-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_continuous</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">15</span>)) <span class="sc">+</span></span>
+<span id="cb90-21"><a href="#cb90-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb90-22"><a href="#cb90-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
+<span id="cb90-23"><a href="#cb90-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 10 Initiators in Myanmar Conflict (October)"</span>,</span>
+<span id="cb90-24"><a href="#cb90-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Node size and color: Number of initiated events</span><span class="sc">\n</span><span class="st">Edge width: Frequency of interactions"</span>,</span>
+<span id="cb90-25"><a href="#cb90-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">size =</span> <span class="st">"Initiations"</span>, <span class="at">color =</span> <span class="st">"Initiations"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Great! Let’s print out our plot out right now.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the plot</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p_network)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="takehome1_files/figure-html/unnamed-chunk-56-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="takehome1_files/figure-html/unnamed-chunk-59-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of top initiators</span></span>
-<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Top 10 Initiators in Myanmar Conflict (October):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of top initiators</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Top 10 Initiators in Myanmar Conflict (October):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Top 10 Initiators in Myanmar Conflict (October):</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(node_metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(node_metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                                                                                                                              actor
 Military Forces of Myanmar (2021-)                                                                               Military Forces of Myanmar (2021-)
@@ -1869,7 +1949,6 @@ Brotherhood Alliance                                                            
 GZP-Mandalay: Generation Z Power (Mandalay)                                         3</code></pre>
 </div>
 </div>
-<pre><code></code></pre>
 <p>As we can see, the center of the visualization is the Brotherhood Alliance, represented by the largest node, indicating its role as the primary initiator of conflict events during this period. This aligns with reports of the Alliance spearheading a coordinated offensive against the military government.</p>
 <p>Interesting, key ethnic armed organizations such as the United League of Arakan/Arakan Army (ULA/AA) and Kachin Independence Organization/Army (KIO/KIA) are prominently featured, highlighting the operation’s broad ethnic base. Their connections to the Brotherhood Alliance node visually represent the unprecedented level of coordination among these groups during the offensive.</p>
 <p>The presence of nodes like “Unidentified Anti-Coup Armed Group” and “GZP-Mandalay” (Generation Z Power) also suggest involvement from pro-democracy forces and local resistance groups, indicating the diverse coalition that Operation 1027 has roped in to fight against the military.</p>
@@ -1877,6 +1956,25 @@ GZP-Mandalay: Generation Z Power (Mandalay)                                     
 </section>
 <section id="conclusions" class="level1">
 <h1>Conclusions</h1>
+<p>Let’s quickly sum up some takeaways we’ve had from this:</p>
+<ol type="1">
+<li><p>Kernel Density Estimation (KDE): We used KDE to visualize the spatial intensity of conflict events across Myanmar. This method helped identify hotspots of conflict activity, revealing areas with higher concentrations of incidents. KDE provided a smoothed representation of event density, allowing us to discern broad patterns in the geographical distribution of conflicts.</p></li>
+<li><p>Spatiotemporal KDE: By incorporating the temporal dimension into our KDE analysis, we examined how conflict hotspots evolved over time. This approach revealed the dynamic nature of the conflict, showing how areas of intense activity shifted or persisted across different periods. Spatiotemporal KDE helped us understand the conflict’s progression and identify potential seasonal or cyclical patterns in violence.</p></li>
+<li><p>Second-order functions (L and G functions): These functions allowed us to analyze the spatial dependence and clustering of conflict events:</p></li>
+<li><p>The G function focused on nearest neighbor distances, providing insights into local, small-scale patterns.</p></li>
+<li><p>The L function examined spatial relationships across multiple scales, revealing broader clustering patterns.</p></li>
+</ol>
+<p>The combination of these functions showed that while conflicts might appear randomly distributed at very local scales, they exhibit significant clustering at larger scales. This suggests the presence of underlying factors influencing conflict distribution beyond immediate event-to-event interactions.</p>
+<p>Network graphs for top 10 actors:</p>
+<p>We constructed network graphs to visualize the relationships and interactions among the top 10 actors involved in the conflict. This approach helped us understand the complex web of alliances, confrontations, and power dynamics driving the conflict. By identifying key players and their connections, we gained insights into the conflict’s structure and potential points of influence or intervention.</p>
+<p>By combining these analytical methods, we developed a comprehensive understanding of the Myanmar conflict:</p>
+<ul>
+<li><p>Spatial patterns: We identified key conflict hotspots and their evolution over time, providing a geographical context to the violence.</p></li>
+<li><p>Multi-scale dynamics: Our analysis revealed how local randomness in event locations exists within larger-scale clustering, pointing to broader environmental or socio-political factors influencing conflict distribution.</p></li>
+<li><p>Temporal trends: Spatiotemporal analysis helped us track the conflict’s progression and identify any cyclical patterns or significant shifts in activity.</p></li>
+<li><p>Actor relationships: Network analysis of key players provided insights into the conflict’s human dimension, highlighting important relationships and power structures.</p></li>
+</ul>
+<p>Through this, I hope you’ve learnt along with me how R and geospatial analysis can really help deepen our understanding of such dire events like these, and gain a better more nuanced standpoint on what’s going on beyond what’s presented in the news, with potential for a complex and deep understanding on the groups to target/help to hopefully put to an end to such a tragic conflict for Myanmar and her people.</p>
 <section id="acknowledgementsreferences" class="level2">
 <h2 class="anchored" data-anchor-id="acknowledgementsreferences">Acknowledgements/references</h2>
 <ol type="1">

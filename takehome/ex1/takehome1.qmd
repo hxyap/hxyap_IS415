@@ -47,6 +47,8 @@ Given this complex backdrop, our geospatial analysis of armed conflict in Myanma
 
 By focusing on these aspects, we hope to provide valuable insights that can inform humanitarian responses, contribute to a better understanding of conflict dynamics, and assist in developing more effective strategies for peace-building and development in the region.
 
+We first begin by using read_csv to read our aspatial csv data into our sf frame.
+
 ```{r}
 acled_sf <- read_csv("data/ACLED_Myanmar.csv") %>%
   st_as_sf(coords = c("longitude", "latitude"),
@@ -54,6 +56,8 @@ acled_sf <- read_csv("data/ACLED_Myanmar.csv") %>%
   st_transform(crs = 32647) %>%
   mutate(event_date = dmy(event_date))
 ```
+
+Now that we've load the sf, let's check if our boundary for Myanmar works:
 
 ```{r}
 tmap_mode("plot")
@@ -64,9 +68,13 @@ acled_sf %>%
   tm_dots()
 ```
 
+We'll next use glimpse so we know what aspects of the data we can work around to try to glean more insights about the Myanmar crisis.
+
 ```{r}
 glimpse(acled_sf)
 ```
+
+For later analysis, we'll also be using the regional boundaries as well, so I've conveniently placed this chunk below to load our regional boundaries.
 
 Let's load our boundary:
 
@@ -77,13 +85,16 @@ myanmar_boundary_sf <- st_read(dsn = "data/mmr_polbnda_adm0_250k_mimu_1",
 
 # Compare CRS
 
-Since we've gotten our data from different sources, let's find out if they follow Myanmar's crs system WGS84 to ensure consistency for our analysis!
+Since we've gotten our data from different sources, let's find out if they follow Myanmar's crs system to ensure consistency for our analysis!
 
 ```{r}
 # Check CRS of acled_sf
 #print("CRS of ACLED data:")
 # print(st_crs(acled_sf))
+# WGS84
 ```
+
+Hmm... this might differ from the boundaries of the Myanmar boundary. Let's do a quick st_transform to change the CRS used.
 
 ```{r}
 # Transform Myanmar boundary to match ACLED data CRS
@@ -365,7 +376,7 @@ knitr::include_graphics("kde_plot_animation.gif")
 ```
 
 ::: callout-note
-As we can see, it seems like above Mandalay and below Sagaing there seems to be a hotspot of armed conflict events, with some initial conflict in Yangon in the earlier quarters. However, there seems to be a flare up in the conflict in the last quarter we have in the dataset. We should now dig deeper with 2nd order analysis in the highlighted areas. We'll look at Sagaing, Chin, Magway and Mandalay.
+As we can see, it seems like above Mandalay and below Sagaing there seems to be a hotspot of armed conflict events, with some initial conflict in Yangon in the earlier quarters. However, there seems to be a flare up in the conflict in the last quarter we have in the dataset. We should now dig deeper with 2nd order analysis in the highlighted areas. We'll look at Mandalay as it's the primary region of the conflict.
 :::
 
 ## Second order analysis
@@ -412,6 +423,12 @@ ggplot() +
 ```
 
 Recalling our hotspot analysis, let's find the hottest region.
+
+::: callout-note
+### Note on commented out blocks
+
+Feel free to uncomment the below chunk! For the sake of not exploding my github repo, I've decided to cull memory usage by not running the below chunk, but if you run it, you should probably also see that it is centered by Mandalay :)
+:::
 
 ```{r}
 
@@ -462,6 +479,8 @@ Mandalay_ppp <- acled_q_ppp_jit[Mandalay_owin]
 summary(Mandalay_ppp)
 ```
 
+We'll convert to km here using rescale, since previously, using the base unit (metres) had issues with plotting the second order functions.
+
 ```{r}
 Mandalay_ppp_km <- rescale(Mandalay_ppp, 1000, "km")
 ```
@@ -471,13 +490,35 @@ plot(Mandalay_ppp_km)
 
 ```
 
+We'll first start by using the L function:
+
+::: callout-note
+### L-function:
+
+The L function, a variant of Ripley's K function, examines spatial dependence over a range of distances. It measures the number of points within increasing radii from each point, providing insight into patterns at multiple scales simultaneously.
+:::
+
 ```{r}
-L_ck = Lest(Mandalay_ppp_km, correction = "Ripley")
-plot(L_ck, . -r ~ r, 
+L_mw = Lest(Mandalay_ppp_km, correction = "Ripley")
+plot(L_mw, . -r ~ r, 
      ylab= "L(d)-r", xlab = "d(m)")
 ```
 
-Let's see how true this strong degree of clustering is in Mandalay with Gest.
+```{r}
+# L_mw.csr <- envelope(Mandalay_ppp_km, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+# plot(L_mw.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+```
+
+Since our function fell outside our envelope, this means there's a significant deviation from the Complete Spatial Randomness (CSR) at various distance scales, providing significant evidence of clustering at those distances. Let's confirm this by backing it up with the G-function:
+
+::: callout-note
+### G function
+
+The G function analyzes the distribution of distances to the nearest neighbor for each point in a spatial pattern. It focuses on first-order spatial effects, primarily capturing local, small-scale patterns.
+:::
 
 ```{r}
 G_mw.csr <- envelope(Mandalay_ppp, Gest, nsim = 99)
@@ -487,9 +528,27 @@ G_mw.csr <- envelope(Mandalay_ppp, Gest, nsim = 99)
 plot(G_mw.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ```
 
+Since our observed G function falls within the envelope, it suggests that the nearest neighbor distances in the observed pattern do not significantly differ from what would be expected under CSR at the local, first-order level.
+
+Hmmm... Although the G-function is within our expected envelope, however, our L function is not. What does this mean? I think a reasonable take is that:
+
+-   At the very local scale (nearest neighbors), conflicts appear to be randomly distributed. This suggests no immediate spatial dependency between individual conflict events.
+
+```{=html}
+<!-- -->
+```
+-   However, at larger scales, there is significant clustering of conflicts. This indicates that while individual events might not be directly influencing each other's locations, there are broader factors creating areas of higher conflict density.
+
+```{=html}
+<!-- -->
+```
+-   This pattern could be explained by the presence of "hot zones" of conflict activity. Within these zones, individual conflicts might occur in seemingly random locations, but the zones themselves represent areas of heightened risk or activity.
+
+Thus, I think the reasonable conclusion here is that even at the region level, perhaps due to the nature of resources/ locations being held by the different actors in the Myanmar civil conflict, the conflicts are "grouped" in hotspots, but within those hotspots, the reported location can vary, which suggests a structure to how either conflicts are reported in the region, or by what locations are important within a region, especially in a hotspot region like the Mandalay region.
+
 # Visualization of Conflict Density Using OpenStreetMap
 
-Now that we've had the basic analysis, let's use OpenStreetMap to let us see in greater detail what's going on.
+Now that we've had the basic analysis, let's use OpenStreetMap to let us see in greater detail what's going on. We use get_osm_map to get our basemap from OpenStreetMap, then do some CRS conversion as well as list making/raster conversion to stack our images to present a more nuanced graph!
 
 ```{r}
 
@@ -562,6 +621,8 @@ plot_kde_quarters_tmap(kde, start_quarter = 7)
 plot_kde_quarters_tmap(kde, start_quarter = 10)
 ```
 
+This chunk is broken for now but should be fixed later :')
+
 ```{r}
 
 # Usage for static plots
@@ -602,7 +663,19 @@ This step is about identifying interactions between actors. Each time two actors
 
 In the context of Operation 1027, this could reveal new alliances or intensified conflicts between certain groups. For example, I might see increased interactions between the Three Brotherhood Alliance (who initiated Operation 1027) and the Myanmar military.
 
-# 1. Network Graph of Actor Interactions
+# Network Graph of Actor Interactions
+
+Now that we have our edge list, let's create a pruned actor graph!
+
+First, let's make a directed graph from an edge list. In the context of conflict analysis, this represents interactions between actors, where the direction matters (e.g., who initiated an action against whom). Then, we'll calculate the out-degree for each node (actor), which represents the number of actions initiated by each actor and select the top 10. This is crucial because:
+
+-   It identifies the most active conflict initiators
+
+-   It allows us to focus on key players, simplifying a potentially complex network
+
+-   It provides a quantitative measure of each actor's role in driving the conflict
+
+Lastly, we'll create a subgraph with those 10, to focus on their relationships and patterns.
 
 ```{r}
 # Create graph
@@ -649,15 +722,20 @@ p_network <- ggraph(g_sub, layout = "fr") +
        subtitle = "Node size and color: Number of initiated events\nEdge width: Frequency of interactions",
        size = "Initiations", color = "Initiations")
 
+```
+
+Great! Let's print out our plot out right now.
+
+```{r}
 # Print the plot
 print(p_network)
+```
 
+```{r}
 # Summary of top initiators
 cat("Top 10 Initiators in Myanmar Conflict (October):\n")
 print(node_metrics)
-```
 
-```{}
 ```
 
 As we can see, the center of the visualization is the Brotherhood Alliance, represented by the largest node, indicating its role as the primary initiator of conflict events during this period. This aligns with reports of the Alliance spearheading a coordinated offensive against the military government.
@@ -669,6 +747,36 @@ The presence of nodes like "Unidentified Anti-Coup Armed Group" and "GZP-Mandala
 Lastly, varying thicknesses of connecting lines between nodes depict the frequency of interactions. Notably, the thicker lines between the Brotherhood Alliance and other major groups corroborate reports of enhanced coordination, a factor that contributed to the operation's initial success and the significant territorial gains made by resistance forces.
 
 # Conclusions
+
+Let's quickly sum up some takeaways we've had from this:
+
+1.  Kernel Density Estimation (KDE): We used KDE to visualize the spatial intensity of conflict events across Myanmar. This method helped identify hotspots of conflict activity, revealing areas with higher concentrations of incidents. KDE provided a smoothed representation of event density, allowing us to discern broad patterns in the geographical distribution of conflicts.
+
+2.  Spatiotemporal KDE: By incorporating the temporal dimension into our KDE analysis, we examined how conflict hotspots evolved over time. This approach revealed the dynamic nature of the conflict, showing how areas of intense activity shifted or persisted across different periods. Spatiotemporal KDE helped us understand the conflict's progression and identify potential seasonal or cyclical patterns in violence.
+
+3.  Second-order functions (L and G functions): These functions allowed us to analyze the spatial dependence and clustering of conflict events:
+
+4.  The G function focused on nearest neighbor distances, providing insights into local, small-scale patterns.
+
+5.  The L function examined spatial relationships across multiple scales, revealing broader clustering patterns.
+
+The combination of these functions showed that while conflicts might appear randomly distributed at very local scales, they exhibit significant clustering at larger scales. This suggests the presence of underlying factors influencing conflict distribution beyond immediate event-to-event interactions.
+
+Network graphs for top 10 actors:
+
+We constructed network graphs to visualize the relationships and interactions among the top 10 actors involved in the conflict. This approach helped us understand the complex web of alliances, confrontations, and power dynamics driving the conflict. By identifying key players and their connections, we gained insights into the conflict's structure and potential points of influence or intervention.
+
+By combining these analytical methods, we developed a comprehensive understanding of the Myanmar conflict:
+
+-   Spatial patterns: We identified key conflict hotspots and their evolution over time, providing a geographical context to the violence.
+
+-   Multi-scale dynamics: Our analysis revealed how local randomness in event locations exists within larger-scale clustering, pointing to broader environmental or socio-political factors influencing conflict distribution.
+
+-   Temporal trends: Spatiotemporal analysis helped us track the conflict's progression and identify any cyclical patterns or significant shifts in activity.
+
+-   Actor relationships: Network analysis of key players provided insights into the conflict's human dimension, highlighting important relationships and power structures.
+
+Through this, I hope you've learnt along with me how R and geospatial analysis can really help deepen our understanding of such dire events like these, and gain a better more nuanced standpoint on what's going on beyond what's presented in the news, with potential for a complex and deep understanding on the groups to target/help to hopefully put to an end to such a tragic conflict for Myanmar and her people.
 
 ## Acknowledgements/references
 
