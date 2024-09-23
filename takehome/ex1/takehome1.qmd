@@ -534,14 +534,12 @@ Hmmm... Although the G-function is within our expected envelope, however, our L 
 
 -   At the very local scale (nearest neighbors), conflicts appear to be randomly distributed. This suggests no immediate spatial dependency between individual conflict events.
 
-```{=html}
 <!-- -->
-```
+
 -   However, at larger scales, there is significant clustering of conflicts. This indicates that while individual events might not be directly influencing each other's locations, there are broader factors creating areas of higher conflict density.
 
-```{=html}
 <!-- -->
-```
+
 -   This pattern could be explained by the presence of "hot zones" of conflict activity. Within these zones, individual conflicts might occur in seemingly random locations, but the zones themselves represent areas of heightened risk or activity.
 
 Thus, I think the reasonable conclusion here is that even at the region level, perhaps due to the nature of resources/ locations being held by the different actors in the Myanmar civil conflict, the conflicts are "grouped" in hotspots, but within those hotspots, the reported location can vary, which suggests a structure to how either conflicts are reported in the region, or by what locations are important within a region, especially in a hotspot region like the Mandalay region.

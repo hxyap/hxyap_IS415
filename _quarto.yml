@@ -31,7 +31,9 @@ website:
           - text: "ex4"
             href: "In-class_Ex/ICE-4/ice4.html"
           - text: "ex5"
-            href: "In-class_Ex/ICE-5/ice4.html"
+            href: "In-class_Ex/ICE-5/ice5.html"
+          - text: "ex6"
+            href: "In-class_Ex/ICE-6/ice6.html"
       - text: "takehomes"
         menu:
             - text: "ex1"
