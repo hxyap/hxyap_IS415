@@ -180,6 +180,18 @@ wm_q_DUC22 <- wm_q_druguse22 %>%
 
 ```
 
+## **1.1.1 Global Measures of Spatial Autocorrelation: Moran’s I**
+
+Moran's I is a global measure of spatial autocorrelation that helps determine whether similar values cluster together in space (positive spatial autocorrelation), disperse (negative spatial autocorrelation), or are randomly distributed. The statistic ranges from -1 to +1:
+
+-   Values close to +1 indicate strong positive spatial autocorrelation (clustering)
+
+-   Values close to -1 indicate strong negative spatial autocorrelation (dispersion)
+
+-   Values near 0 suggest random spatial distribution
+
+By using Moran's I, we can determine if the number of drug cases across Thailand's regions are spatially correlated. This will reveal if high (or low) case numbers tend to cluster together geographically. Let's perform a simple Moran's and then a monte-carlo sim to check our claim stands:
+
 ```{r}
 moranI_DUC22 <- global_moran(wm_q_DUC22$no_cases, wm_q_DUC22$nb, wm_q_DUC22$wt)
 
@@ -198,8 +210,22 @@ set.seed(42069)
 ```
 
 ```{r}
-global_moran_perm(wm_q_DUC22$no_cases, wm_q_DUC22$nb, wm_q_DUC22$wt, nsim = 99)
+global_moran <- global_moran_perm(wm_q_DUC22$no_cases, wm_q_DUC22$nb, wm_q_DUC22$wt, nsim = 99)
+
+global_moran
 ```
+
+Based off our Moran's test as well as our simulations, we can deduce that:
+
+-   Since our Moran's value is positive (\>0 ) but only moderately, there is evidence for a moderate positive spatial autocorrelation, meaning that similar values tend to cluster together in space more than would be expected by chance.
+
+    -   These results are both statistically significant with both having very small p-values that are definitely \<0.05.
+
+    -   This is further supported by the simulation, as the observed rank of 100 out of 100 simulations means that the observed Moran's I value was higher than all simulated values under the null hypothesis of no spatial autocorrelation.
+
+# 2.0 Local Measures
+
+We will now confirm this with local measures.
 
 ```{r}
 lisa_DUC22 <- wm_q_DUC22 %>% 
@@ -320,70 +346,33 @@ tm_shape(HCSA_sig_DUC22) +
   tm_borders(alpha = 0.4)
 ```
 
-```{r}
+Interesting. So there is a cold spot here? let's find their name:\
 
+```{r}
+cold_spot <- HotColdSpotAnalysis_DUC22 %>%
+  filter(p_sim < 0.05) %>%
+  arrange(gi_star) %>%
+  slice(1)
 ```
 
 ```{r}
+print(cold_spot$province_en)
+```
 
+And there we have it! A cursory google search finds us that Nakhon Sawan is home the the central point of where Thailand's waterways meet to form the Chao Phraya River. It has an army unit stationed there as well as well a large wetland. A possible explanation is that the combination of few people, hard to cross wetlands, as well as not much to be done or lack of foreign activity there means there is little incentive for drug dealers to use that location for much else but drug transit. As drugs are only there in a transitory matter, all the drug cases happen elsewhere in Thailand instead.
+
+We know from previous current knowledge that the northern hotspot can be attributed to the well known Golden Triangle. But then why is there a random hot spot at the south of Thailand?
+
+Let's find that southern spot:
+
+```{r}
+spots_1_to_2 <- HotColdSpotAnalysis_DUC22 %>%
+  filter(gi_star >= 1 & gi_star < 2) %>%
+  filter(p_sim < 0.05)  # This ensures the results are statistically significant
 ```
 
 ```{r}
-
+spots_1_to_2$province_en
 ```
 
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
+Interesting. A cursory news search (<https://www.bernama.com/en/news.php?id=2304082>) suggests that this could be due to drug lords making Phattalung, a relatively landlocked state, a possible escapade location due to it's lack of accessibility (only accessible by rail and land, no airports).

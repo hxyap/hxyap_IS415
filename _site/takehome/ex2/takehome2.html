@@ -231,7 +231,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#introduction-drug-abuse-in-thailand" id="toc-introduction-drug-abuse-in-thailand" class="nav-link active" data-scroll-target="#introduction-drug-abuse-in-thailand">Introduction : Drug Abuse in Thailand</a></li>
-  <li><a href="#analyzing-the-impact-of-the-drug-offenses-act" id="toc-analyzing-the-impact-of-the-drug-offenses-act" class="nav-link" data-scroll-target="#analyzing-the-impact-of-the-drug-offenses-act">1.0 Analyzing the impact of the Drug Offenses Act</a></li>
+  <li><a href="#analyzing-the-impact-of-the-drug-offenses-act" id="toc-analyzing-the-impact-of-the-drug-offenses-act" class="nav-link" data-scroll-target="#analyzing-the-impact-of-the-drug-offenses-act">1.0 Analyzing the impact of the Drug Offenses Act</a>
+  <ul class="collapse">
+  <li><a href="#global-measures-of-spatial-autocorrelation-morans-i" id="toc-global-measures-of-spatial-autocorrelation-morans-i" class="nav-link" data-scroll-target="#global-measures-of-spatial-autocorrelation-morans-i"><strong>1.1.1 Global Measures of Spatial Autocorrelation: Moran’s I</strong></a></li>
+  </ul></li>
+  <li><a href="#local-measures" id="toc-local-measures" class="nav-link" data-scroll-target="#local-measures">2.0 Local Measures</a></li>
   </ul>
 </nav>
     </div>
@@ -258,7 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 11, 2024</p>
+      <p class="date-modified">October 12, 2024</p>
     </div>
   </div>
     
@@ -558,6 +562,15 @@ Geodetic CRS:  WGS 84
 <span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">wt =</span> <span class="fu">st_weights</span>(nb, <span class="at">style =</span> <span class="st">"W"</span>),</span>
 <span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">.before =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<section id="global-measures-of-spatial-autocorrelation-morans-i" class="level2">
+<h2 class="anchored" data-anchor-id="global-measures-of-spatial-autocorrelation-morans-i"><strong>1.1.1 Global Measures of Spatial Autocorrelation: Moran’s I</strong></h2>
+<p>Moran’s I is a global measure of spatial autocorrelation that helps determine whether similar values cluster together in space (positive spatial autocorrelation), disperse (negative spatial autocorrelation), or are randomly distributed. The statistic ranges from -1 to +1:</p>
+<ul>
+<li><p>Values close to +1 indicate strong positive spatial autocorrelation (clustering)</p></li>
+<li><p>Values close to -1 indicate strong negative spatial autocorrelation (dispersion)</p></li>
+<li><p>Values near 0 suggest random spatial distribution</p></li>
+</ul>
+<p>By using Moran’s I, we can determine if the number of drug cases across Thailand’s regions are spatially correlated. This will reveal if high (or low) case numbers tend to cluster together geographically. Let’s perform a simple Moran’s and then a monte-carlo sim to check our claim stands:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>moranI_DUC22 <span class="ot">&lt;-</span> <span class="fu">global_moran</span>(wm_q_DUC22<span class="sc">$</span>no_cases, wm_q_DUC22<span class="sc">$</span>nb, wm_q_DUC22<span class="sc">$</span>wt)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -589,7 +602,9 @@ Moran I statistic       Expectation          Variance
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42069</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">global_moran_perm</span>(wm_q_DUC22<span class="sc">$</span>no_cases, wm_q_DUC22<span class="sc">$</span>nb, wm_q_DUC22<span class="sc">$</span>wt, <span class="at">nsim =</span> <span class="dv">99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>global_moran <span class="ot">&lt;-</span> <span class="fu">global_moran_perm</span>(wm_q_DUC22<span class="sc">$</span>no_cases, wm_q_DUC22<span class="sc">$</span>nb, wm_q_DUC22<span class="sc">$</span>wt, <span class="at">nsim =</span> <span class="dv">99</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>global_moran</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Monte-Carlo simulation of Moran I
@@ -602,6 +617,19 @@ statistic = 0.21331, observed rank = 100, p-value &lt; 2.2e-16
 alternative hypothesis: two.sided</code></pre>
 </div>
 </div>
+<p>Based off our Moran’s test as well as our simulations, we can deduce that:</p>
+<ul>
+<li><p>Since our Moran’s value is positive (&gt;0 ) but only moderately, there is evidence for a moderate positive spatial autocorrelation, meaning that similar values tend to cluster together in space more than would be expected by chance.</p>
+<ul>
+<li><p>These results are both statistically significant with both having very small p-values that are definitely &lt;0.05.</p></li>
+<li><p>This is further supported by the simulation, as the observed rank of 100 out of 100 simulations means that the observed Moran’s I value was higher than all simulated values under the null hypothesis of no spatial autocorrelation.</p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="local-measures" class="level1">
+<h1>2.0 Local Measures</h1>
+<p>We will now confirm this with local measures.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>lisa_DUC22 <span class="ot">&lt;-</span> wm_q_DUC22 <span class="sc">%&gt;%</span> </span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">local_moran =</span> <span class="fu">local_moran</span>(no_cases, nb, wt, <span class="at">nsim =</span> <span class="dv">99</span>),</span>
@@ -824,6 +852,35 @@ tm_shape prior to each of them).</code></pre>
 </div>
 </div>
 </div>
+<p>Interesting. So there is a cold spot here? let’s find their name:<br>
+</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>cold_spot <span class="ot">&lt;-</span> HotColdSpotAnalysis_DUC22 <span class="sc">%&gt;%</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_sim <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(gi_star) <span class="sc">%&gt;%</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cold_spot<span class="sc">$</span>province_en)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Nakhon Sawan"</code></pre>
+</div>
+</div>
+<p>And there we have it! A cursory google search finds us that Nakhon Sawan is home the the central point of where Thailand’s waterways meet to form the Chao Phraya River. It has an army unit stationed there as well as well a large wetland. A possible explanation is that the combination of few people, hard to cross wetlands, as well as not much to be done or lack of foreign activity there means there is little incentive for drug dealers to use that location for much else but drug transit. As drugs are only there in a transitory matter, all the drug cases happen elsewhere in Thailand instead.</p>
+<p>We know from previous current knowledge that the northern hotspot can be attributed to the well known Golden Triangle. But then why is there a random hot spot at the south of Thailand?</p>
+<p>Let’s find that southern spot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>spots_1_to_2 <span class="ot">&lt;-</span> HotColdSpotAnalysis_DUC22 <span class="sc">%&gt;%</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(gi_star <span class="sc">&gt;=</span> <span class="dv">1</span> <span class="sc">&amp;</span> gi_star <span class="sc">&lt;</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_sim <span class="sc">&lt;</span> <span class="fl">0.05</span>)  <span class="co"># This ensures the results are statistically significant</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>spots_1_to_2<span class="sc">$</span>province_en</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Phatthalung"</code></pre>
+</div>
+</div>
+<p>Interesting. A cursory news search (<a href="https://www.bernama.com/en/news.php?id=2304082" class="uri">https://www.bernama.com/en/news.php?id=2304082</a>) suggests that this could be due to drug lords making Phattalung, a relatively landlocked state, a possible escapade location due to it’s lack of accessibility (only accessible by rail and land, no airports).</p>
 
 
 </section>
