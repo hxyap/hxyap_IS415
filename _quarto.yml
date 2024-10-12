@@ -20,6 +20,8 @@ website:
             href: "exercises/ex5/ex5.html"
           - text: "ex6"
             href: "exercises/ex6/ex6.html"
+          - text: "ex7"
+            href: "exercises/ex7/ex7.html"
       - text: "In-class Exercises"
         menu:
           - text: "ex1"
@@ -34,10 +36,14 @@ website:
             href: "In-class_Ex/ICE-5/ice5.html"
           - text: "ex6"
             href: "In-class_Ex/ICE-6/ice6.html"
+          - text: "ex7"
+            href: "In-class_Ex/ICE-7/app.R"
       - text: "takehomes"
         menu:
             - text: "ex1"
               href: "takehome/ex1/takehome1.html"
+            - text: "ex2"
+              href: "takehome/ex2/takehome2.html"
     right: 
       - href: index.qmd
         text: Home

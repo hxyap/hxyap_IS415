@@ -1,0 +1,16 @@
+sf
+tmap
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+purrr
+dplyr
+stringr
+forcats
+lubridate
+sfdep
+spData
+spdep
+magick

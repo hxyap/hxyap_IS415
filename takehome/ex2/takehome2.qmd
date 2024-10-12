@@ -1,0 +1,389 @@
+---
+title: "Takehome 2"
+date: "September 11, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+format:
+  html:
+    toc: true
+---
+
+# Introduction : Drug Abuse in Thailand
+
+Drug abuse and trafficking in Thailand present a complex and evolving challenge that demands rigorous research and analysis. This study focuses on Thailand due to its unique position in the global drug trade and its recent policy shifts, offering valuable insights into the spatial and temporal dynamics of drug issues in Southeast Asia. Thailand's proximity to the Golden Triangle, the largest drug production site in Asia, coupled with its developing transportation infrastructure, has positioned the country as both a significant market and a crucial transit route for illicit substances. The COVID-19 pandemic and its aftermath have added new dimensions to this landscape, as drug syndicates rapidly adapted their operations to changing circumstances. Our research aims to examine whether key indicators of drug abuse in Thailand are independent of spatial factors, while also exploring the temporal aspects of drug trends. By analyzing data on drug prevalence, pricing, distribution methods, and law enforcement efforts over recent years, we seek to uncover patterns that may inform more effective policies and interventions. The study considers these two of critical factors:
+
+1.  The effects of major events, such as the COVID-19 pandemic, on drug trafficking and consumption
+
+2.  The consequences of recent legislative changes, including the 2021 Narcotics Code and the 2022 Kratom Plant Act
+
+By examining these elements, we hope to contribute to a more nuanced understanding of drug issues in Thailand, potentially revealing insights that could be applicable to other regions facing similar challenges. This research is particularly timely as Thailand, like many countries, grapples with the post-pandemic resurgence of drug activities and seeks innovative approaches to address this persistent social and public health concern.
+
+```{r}
+pacman:: p_load(sf, tmap, tidyverse, sfdep,spdep)
+```
+
+```{r}
+drug_offenses <- read_csv("data/aspatial/thai_drug_offenses_2017_2022.csv") %>%
+  filter(types_of_drug_offenses == "drug_use_cases")
+```
+
+```{r}
+drug_offenses <- drug_offenses %>%
+  mutate(province_en = case_when(
+    province_en == "buogkan" ~ "Bueng Kan",
+    province_en == "Loburi" ~ "Lop Buri",
+    TRUE ~ province_en
+  ))
+```
+
+```{r}
+adm1 <- st_read("data/geospatial/tha_adm_rtsd_itos_20210121_shp", layer = "tha_admbnda_adm1_rtsd_20220121")
+```
+
+```{r}
+drug_offenses_filtered <- drug_offenses %>% select(-province_th)
+adm1_filtered <- adm1 %>% select(-ADM1_TH, -ADM1ALT1TH, -ADM1ALT2TH, -ADM0_TH)
+```
+
+```{r}
+jointable <- left_join(drug_offenses_filtered, adm1_filtered, by = c("province_en" = "ADM1_EN"))
+```
+
+```{r}
+summary(jointable)
+```
+
+```{r}
+drugoff_sf <- st_as_sf(jointable)
+
+# Set the CRS to match adm1
+st_crs(drugoff_sf) <- st_crs(adm1)
+
+# Verify the CRS
+print(st_crs(drugoff_sf))
+
+# Check the class of the geometry column
+print(class(drugoff_sf$geometry))
+```
+
+```{r}
+tmap_mode("plot")
+
+```
+
+```{r}
+plots <- list()
+
+for (i in 2017:2022){
+  p <- drugoff_sf %>%
+    filter(fiscal_year == i) %>%
+    tm_shape() +
+    tm_polygons("no_cases")
+  
+  plots[[paste0("plot", i)]] <- p
+}
+
+```
+
+```{r}
+drugoff_list <- split(drugoff_sf, drugoff_sf$fiscal_year)
+```
+
+```{r, cache=TRUE}
+#| cache: true
+ tm_shape(drugoff_sf) +
+  tm_fill("no_cases",
+          n = 5,
+          style = "equal") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Equal interval classification")
+```
+
+```{r}
+
+```
+
+```{r , cache=TRUE}
+#| cache: true
+tm_shape(drugoff_sf) +
+  tm_fill("no_cases",
+          n = 5,
+          style = "quantile") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Equal quantile classification")
+
+```
+
+As we can see from the equal intervals, our data is pretty skewed. Thus, we shall turn to equal quantiles to have a better visualization. With the right, we can see that actually it's only some regions that have a lot of cases, and those that do, have far more than regions than don't. revealing that our data is very skewed on a region by region basis. From this, we should look at southern and also northeast Thailand. A possible hypothesis is that the main distribution network for the Golden Triangle is located in Northeastern Thailand, with easy links to drug production and trafficking routes from Myanmar and Laos, with a secondary distribution network in Southern Thailand, allowing for potential distribution to more southerly regions, or suggesting maritime connections to the rest of Southeast Asia like Malaysia/ Indonesia.
+
+```{r}
+tmap_mode("plot")
+
+plot_list <- list()
+
+# Loop through the drugoff_list and create each year's plot, storing them in plot_list
+for (year in names(drugoff_list)) {
+  p <- tm_shape(drugoff_list[[year]]) +
+      tm_fill("no_cases",
+              n = 5,
+              style = "quantile",
+              title = "Number of Cases") +  # Set legend title
+      tm_borders(alpha = 0.5) +
+      tm_layout(main.title = paste("Equal Quantile Classification", year),
+                main.title.size = 0.8,         # Adjust the title size
+                main.title.position = c("center", "top"),  # Center the title
+                frame = FALSE,                # Remove the frame around the plot
+                legend.outside = TRUE,        # Place the legend outside the plot
+                legend.outside.position = "right")
+  
+  # Store the plot in the list
+  plot_list[[year]] <- p
+}
+
+# Arrange the plots in a 2x3 layout
+tmap_arrange(plotlist = plot_list, ncol = 2, nrow = 3)
+```
+
+```{r}
+#tm_shape(adm1_filtered) + tm_polygons() + tm_shape(ports) + tm_dots(size = 0.1)
+```
+
+# 1.0 Analyzing the impact of the Drug Offenses Act
+
+We will be looking into 2022 as it is the year after the 2021 drug offenses act was passed.
+
+```{r}
+drugoff_list[[6]]
+```
+
+```{r}
+# Generate neighbors list
+wm_q_druguse22 <- drugoff_list[[6]] %>%
+  mutate(nb = st_contiguity(geometry))
+
+# Manually modify the empty neighbor set
+# Suppose the empty neighbor set is at index 'empty_index' and its nearest neighbor is at index 'nearest_index'
+
+empty_index <- 42   # Index of the geometry with the empty neighbor set
+nearest_index <- 35  # Index of the nearest neighbor
+
+# Manually add the nearest neighbor to the empty set
+wm_q_druguse22$nb[[empty_index]] <- as.integer(nearest_index)
+
+# Now, calculate the weights after modifying the neighbor list
+wm_q_DUC22 <- wm_q_druguse22 %>%
+  mutate(wt = st_weights(nb, style = "W"),
+         .before = 1)
+
+```
+
+```{r}
+moranI_DUC22 <- global_moran(wm_q_DUC22$no_cases, wm_q_DUC22$nb, wm_q_DUC22$wt)
+
+glimpse(moranI_DUC22)
+
+```
+
+```{r}
+global_moran_test(wm_q_DUC22$no_cases, wm_q_DUC22$nb, wm_q_DUC22$wt)
+```
+
+set seed
+
+```{r}
+set.seed(42069)
+```
+
+```{r}
+global_moran_perm(wm_q_DUC22$no_cases, wm_q_DUC22$nb, wm_q_DUC22$wt, nsim = 99)
+```
+
+```{r}
+lisa_DUC22 <- wm_q_DUC22 %>% 
+  mutate(local_moran = local_moran(no_cases, nb, wt, nsim = 99),
+         .before = 1) %>%
+  unnest(local_moran)
+```
+
+```{r}
+tmap_mode("plot")
+```
+
+```{r}
+map1 <- tm_shape(lisa_DUC22) +
+  tm_fill("ii") + 
+  tm_borders(alpha = 0.5) +
+  tm_view(set.zoom.limits = c(6,8)) +
+  tm_layout(main.title = "local Moran's I of no_cases",
+            main.title.size = 0.8)
+
+map2 <- tm_shape(lisa_DUC22) +
+  tm_fill("p_ii",
+          breaks = c(0, 0.001, 0.01, 0.05, 1),
+              labels = c("0.001", "0.01", "0.05", "Not sig")) + 
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "p-value of local Moran's I",
+            main.title.size = 0.8)
+
+tmap_arrange(map1, map2, ncol = 2)
+```
+
+```{r}
+lisa_sig_DUC22 <- lisa_DUC22 %>%
+  filter(p_ii < 0.05)
+tmap_mode("plot")
+```
+
+```{r}
+tm_shape(lisa_DUC22) +
+  tm_polygons() +
+  tm_borders(alpha = 0.5) +
+tm_shape(lisa_sig_DUC22) +
+  tm_fill("mean") + 
+  tm_borders(alpha = 0.4)
+```
+
+```{r}
+wm_idw_DUC22 <- wm_q_druguse22 %>%
+  mutate(wts = st_inverse_distance(nb, geometry,
+                                   scale = 1,
+                                   alpha = 1),
+         .before = 1)
+```
+
+```{r}
+HotColdSpotAnalysis_DUC22 <- wm_idw_DUC22 %>% 
+  mutate(local_Gi = local_gstar_perm(
+    no_cases, nb, wt, nsim = 99),
+         .before = 1) %>%
+  unnest(local_Gi)
+HotColdSpotAnalysis_DUC22
+```
+
+```{r}
+tmap_mode("plot")
+```
+
+```{r}
+tm_shape(HotColdSpotAnalysis_DUC22) +
+  tm_fill("gi_star", palette = "-RdBu", style = "cont") + 
+  tm_borders(alpha = 0.5) +
+  tm_view(set.zoom.limits = c(6,8))
+```
+
+```{r}
+tmap_mode("plot")
+```
+
+```{r}
+tm_shape(HotColdSpotAnalysis_DUC22) + tm_fill("p_sim") + tm_borders(alpha = 0.5)
+```
+
+```{r}
+tmap_mode("plot")
+```
+
+```{r}
+map1 <- tm_shape(HotColdSpotAnalysis_DUC22) +
+  tm_fill("gi_star", palette = "-RdBu", style = "cont") + 
+  tm_borders(alpha = 0.5) +
+  tm_view(set.zoom.limits = c(6,8)) +
+  tm_layout(main.title = "Gi* of GDPPC",
+            main.title.size = 0.8)
+
+map2 <- tm_shape(HotColdSpotAnalysis_DUC22) +
+  tm_fill("p_value",
+          breaks = c(0, 0.001, 0.01, 0.05, 1),
+              labels = c("0.001", "0.01", "0.05", "Not sig")) + 
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "p-value of Gi*",
+            main.title.size = 0.8)
+
+tmap_arrange(map1, map2, ncol = 2)
+```
+
+```{r}
+HCSA_sig_DUC22 <- HotColdSpotAnalysis_DUC22  %>%
+  filter(p_sim < 0.05)
+tmap_mode("plot")
+```
+
+```{r}
+tm_shape(HotColdSpotAnalysis_DUC22) +
+  tm_polygons() +
+  tm_borders(alpha = 0.5) +
+tm_shape(HCSA_sig_DUC22) +
+  tm_fill("gi_star", palette = "-RdBu", style = "cont") + 
+  tm_borders(alpha = 0.4)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
