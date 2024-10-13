@@ -376,3 +376,120 @@ spots_1_to_2$province_en
 ```
 
 Interesting. A cursory news search (<https://www.bernama.com/en/news.php?id=2304082>) suggests that this could be due to drug lords making Phattalung, a relatively landlocked state, a possible escapade location due to it's lack of accessibility (only accessible by rail and land, no airports).
+
+## 3.0 Bonus
+
+For our bonus, we are going to do some EDA for fun since I ran out of time due to getting hit with food poisoning :)
+
+```{r}
+drug_unf <- read_csv("data/aspatial/thai_drug_offenses_2017_2022.csv")
+unique_types <- unique(drug_unf$types_of_drug_offenses)
+print(unique_types)
+```
+
+```{r}
+head(drug_unf)
+```
+
+```{r}
+# Step 1: Filter data for 2022, remove specified case types, and reshape
+wide_data <- drug_unf %>%
+  filter(fiscal_year == 2022) %>%
+  filter(!types_of_drug_offenses %in% c(
+    "suspects_in_export_cases",
+    "export_cases",
+    "suspects_in_import_cases",
+    "import_cases"
+  )) %>%
+  select(province_th, types_of_drug_offenses, no_cases) %>%
+  pivot_wider(names_from = types_of_drug_offenses, values_from = no_cases, values_fill = 0)
+
+```
+
+```{r}
+library(corrplot)
+# Step 2: Create co-occurrence matrix
+offense_matrix <- as.matrix(wide_data[,-1])  # Exclude the province column
+# Step 2.5: Remove "_cases" from column names
+colnames(offense_matrix) <- gsub("_cases$", "", colnames(offense_matrix))
+# Step 3: Check for columns with zero variance
+zero_var_cols <- apply(offense_matrix, 2, var) == 0
+if(any(zero_var_cols)) {
+  print("The following offense types have zero variance and will be removed:")
+  print(names(zero_var_cols)[zero_var_cols])
+  offense_matrix <- offense_matrix[, !zero_var_cols]
+}
+
+co_occurrence <- t(offense_matrix) %*% offense_matrix
+
+# Step 5: Handle NA and Inf values in normalization
+diag_values <- diag(co_occurrence)
+normalization_factor <- sqrt(diag_values %*% t(diag_values))
+
+# Replace 0 with a small number to avoid division by zero
+normalization_factor[normalization_factor == 0] <- 1e-10
+
+co_occurrence_norm <- co_occurrence / normalization_factor
+```
+
+```{r}
+# Step 6: Visualize the matrix using base R
+heatmap(co_occurrence_norm, 
+        Rowv = NA, Colv = NA, 
+        scale = "none",
+        main = "Normalized Co-occurrence of Drug Offense Types",
+        xlab = "Drug Offense Types", 
+        ylab = "Drug Offense Types")
+
+# Add text labels to the heatmap
+text(expand.grid(1:ncol(co_occurrence_norm), 1:nrow(co_occurrence_norm)),
+     labels = round(c(co_occurrence_norm), 2),
+     cex = 0.7)
+```
+
+Alternatively,
+
+```{r}
+# Step 6: Prepare data for ggplot
+melted_corr <- as.data.frame(co_occurrence_norm) %>%
+  rownames_to_column(var = "Var1") %>%
+  pivot_longer(cols = -Var1, names_to = "Var2", values_to = "value")
+
+# Step 7: Create heatmap using ggplot2 with adjusted width and smaller text
+ggplot(melted_corr, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 2.5) + # Smaller cell text
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0.5) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8), # Smaller x-axis text
+    axis.text.y = element_text(size = 8), # Smaller y-axis text
+    axis.title = element_blank(),
+    plot.title = element_text(size = 12), # Smaller title
+    legend.title = element_text(size = 10), # Smaller legend title
+    legend.text = element_text(size = 8), # Smaller legend text
+    aspect.ratio = 0.7  # This makes the plot wider
+  ) +
+  labs(title = "Normalized Co-occurrence of Drug Offense Types",
+       fill = "Co-occurrence") +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))
+
+# Save the plot with a specific width and height
+ggsave("wide_heatmap_small_text.png", width = 12, height = 8, units = "in", dpi = 300)
+```
+
+So essentially we can probably just combine/ rename the suspects_in columns with their respective "suspect" less column it seems :/ Cool to know.\
+\
+We also now know that possession in general has high correlation with drug use cases, but trafficking/production has lower correlation. I think this opens some further questions like:\
+1) Where are the distribution cases located? Are they peak in the previously seen HCSA/ highlighted Moran's spots? Is the reason for our weird spots due to distributions?
+
+2\) Where is our trafficking cases highlighted? Previously, we can recall a lull in use cases in our favourite spot Nakhon Sawan. Due to its favourable location, is it possible there is a normal amount of trafficking cases there due to it being the centre of the country of sorts?
+
+3\) How are the cases connected? Can we map out the drug distribution networks through the general provincial data? We recall network based analysis...
+
+4\) Hey, we did the hard work, maybe we can do Hierachial clustering or GWR (Geographically Weighted Regression?
+
+Unfortunately it is 9pm as I write this with an upcoming group meeting, so that will be resolved next time by viewers' request\~
+
+Thanks for reading!
