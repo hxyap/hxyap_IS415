@@ -38,6 +38,8 @@ website:
             href: "In-class_Ex/ICE-6/ice6.html"
           - text: "ex7"
             href: "In-class_Ex/ICE-7/app.R"
+          - text: "ex9"
+            href: "In-class_Ex/ICE-9/ice9.html"
       - text: "takehomes"
         menu:
             - text: "ex1"

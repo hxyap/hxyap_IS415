@@ -1,0 +1,236 @@
+---
+title: "In-Class Exercise 9"
+author: "Yap Hong Xian"
+date: '2024-10-21'
+date-modified: '2024-10-21'
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## Loading Required Packages
+
+```{r}
+pacman::p_load(spdep, sp, tmap, sf, ClustGeo, cluster, factoextra,
+               NbClust, tidyverse, GGally)
+```
+
+We will be using `spdep` for the scatter function. `sp` for spatial data manipulation. `tmap` for plotting. `sf` for spatial data manipulation. `ClustGeo` for spatial clustering. `cluster` for clustering. `factoextra` for clustering. `NbClust` for clustering. `tidyverse` for data manipulation. `GGally` for plotting.
+
+## Import Data
+
+```{r}
+shan_sf <- read_rds("data/rds/shan_sf.rds")
+shan_ict <- read_rds("data/rds/shan_ict.rds")
+shan_sf_cluster <- read_rds("data/rds/shan_sf_cluster.rds")
+```
+
+```{r}
+write_rds(shan_sf_cluster, "data/rds/shan_sf_cluster.rds")
+```
+
+## Conventional Hierarchical Clustering
+
+### Hierarchical Clustering
+
+```{r}
+proxmat <- dist(shan_ict, method = 'euclidean')
+hclust_ward <- hclust(proxmat, method = 'ward.D')
+groups <- as.factor(cutree(hclust_ward, k=6))
+```
+
+### Appending to Geospatial Data
+
+```{r}
+shan_sf_cluster <- cbind(shan_sf, 
+                         as.matrix(groups)) %>%
+  rename(`CLUSTER`=`as.matrix.groups.`) %>%
+  select(-c(3:4, 7:9)) %>%
+  rename(TS = TS.x)
+```
+
+### Plotting Dendrogram
+
+```{r}
+plot(hclust_ward, cex = 0.6)
+rect.hclust(hclust_ward, k = 6, border = 2:5)
+```
+
+### Cluster Map
+
+```{r}
+qtm(shan_sf_cluster, "CLUSTER")
+```
+
+## Spatially Constrained Clustering: SKATER
+
+### Computing Nearest Neighbours
+
+```{r}
+shan.nb <- poly2nb(shan_sf)
+summary(shan.nb)
+```
+
+### Visualizing Neighbours
+
+```{r}
+plot(st_geometry(shan_sf), 
+     border=grey(.5))
+pts <- st_coordinates(st_centroid(shan_sf))
+plot(shan.nb, 
+     pts, 
+     col="blue", 
+     add=TRUE)
+```
+
+### Compute Minimum Spanning Tree (MST)
+
+First, we need to calculate the edge costs for the minimum spanning tree. This can be done by using the `nbcosts` function.
+
+```{r}
+lcosts <- nbcosts(shan.nb, shan_ict)
+```
+
+Next, we incorporate these weights into a weights object using the `nb2listw` function.
+
+```{r}
+shan.w <- nb2listw(shan.nb, 
+                   lcosts, 
+                   style="B")
+summary(shan.w)
+```
+
+Then, we call `mstree` to compute the minimum spanning tree.
+
+```{r}
+shan.mst <- mstree(shan.w)
+```
+
+```{r}
+plot(st_geometry(shan_sf), 
+     border=gray(.5))
+plot.mst(shan.mst, 
+         pts, 
+         col="blue", 
+         cex.lab=0.7, 
+         cex.circles=0.005, 
+         add=TRUE)
+```
+
+## Computing Spatially Constrained Clusters
+
+```{r}
+skater.clust6 <- skater(edges = shan.mst[,1:2], 
+                 data = shan_ict, 
+                 method = "euclidean", 
+                 ncuts = 5)
+```
+
+### Skater Tree
+
+```{r}
+plot(st_geometry(shan_sf), 
+     border=gray(.5))
+plot(skater.clust6, 
+     pts, 
+     cex.lab=.7,
+     groups.colors=c("red","green","blue", "brown", "pink"),
+     cex.circles=0.005, 
+     add=TRUE)
+```
+
+## Visualizing Clusters in Choropleth Map
+
+```{r}
+groups_mat <- as.matrix(skater.clust6$groups)
+shan_sf_spatialcluster <- cbind(shan_sf_cluster, as.factor(groups_mat)) %>%
+  rename(`skater_CLUSTER`=`as.factor.groups_mat.`)
+qtm(shan_sf_spatialcluster, "skater_CLUSTER")
+```
+
+### Plotting Cluster Map
+
+```{r}
+hclust.map <- qtm(shan_sf_cluster,
+                  "CLUSTER") + 
+  tm_borders(alpha = 0.5) +
+  tm_layout(legend.position = c(0.8, 0.6))
+
+shclust.map <- qtm(shan_sf_spatialcluster,
+                   "skater_CLUSTER") + 
+  tm_borders(alpha = 0.5) +
+  tm_layout(legend.position = c(0.7, 0.6))
+
+tmap_arrange(hclust.map, shclust.map,
+             asp=NA, ncol=2)
+```
+
+## Spatially Constrained Clustering: ClustGeo
+
+### Computing Spatial Distance Matrix
+
+```{r}
+dist <- st_distance(shan_sf, shan_sf)
+distmat <- as.dist(dist)
+```
+
+### Cluster Graphs
+
+```{r}
+cr <- choicealpha(proxmat, distmat, 
+                  range.alpha = seq(0, 1, 0.1), 
+                  K=6, graph = TRUE)
+```
+
+### Saving ClustGeo Output
+
+```{r}
+clustG <- hclustgeo(proxmat, distmat, alpha = 0.2)
+groups <- as.factor(cutree(clustG, k=6))
+shan_sf_clustGeo <- cbind(shan_sf, 
+                          as.matrix(groups)) %>%
+  rename(`clustGeo` = `as.matrix.groups.`)
+```
+
+### Visualizing ClustGeo Map
+
+```{r}
+qtm(shan_sf_clustGeo, "clustGeo")
+```
+
+### Comparing Cluster Maps
+
+```{r}
+hclust.map <- qtm(shan_sf_cluster,
+                  "CLUSTER") + 
+  tm_borders(alpha = 0.5) +
+  tm_layout(legend.position = c(0.8, 0.6))
+
+shclust.map <- qtm(shan_sf_spatialcluster,
+                   "skater_CLUSTER") + 
+  tm_borders(alpha = 0.5) +
+  tm_layout(legend.position = c(0.7, 0.6))
+
+clustGeo.map <- qtm(shan_sf_clustGeo,
+                   "clustGeo") + 
+  tm_borders(alpha = 0.5) +
+  tm_layout(legend.position = c(0.7, 0.6))
+
+tmap_arrange(hclust.map, shclust.map, 
+             clustGeo.map,
+             asp=NA, ncol=3)
+```
+
+## Characterizing Clusters
+
+```{r}
+ggparcoord(data = shan_sf_clustGeo, 
+           columns = c(17:21), 
+           scale = "globalminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Multiple Parallel Coordinates Plots of ICT Variables by Cluster") +
+  facet_grid(~ clustGeo) + 
+  theme(axis.text.x = element_text(angle = 30))
+```
