@@ -1,6 +1,7 @@
 .Rproj.user
 .Rhistory
 .Rdata
+.RDataTmp
 .RDataTmp1
 .RDataTmp2
 .httr-oauth
