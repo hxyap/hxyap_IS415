@@ -1,0 +1,13 @@
+name: takehome3-gwr
+title: ex3
+username: hxyap-is415-workbook
+account: hxyap-is415-workbook
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13210956
+bundleId: 9307528
+url: https://hxyap-is415-workbook.shinyapps.io/takehome3-gwr/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: takehome3.qmd

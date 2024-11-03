@@ -1,0 +1,82 @@
+---
+title: "Hands-on Exercise 11"
+author: "Yap Hong Xian"
+date: '2024-11-1'
+date-modified: '2024-11-1'
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+We first load our data:
+
+```{r}
+pacman::p_load(sf, spdep, GWmodel, SpatialML, 
+               tmap, rsample, Metrics, tidyverse)
+```
+
+```{r}
+mdata <- read_rds("data/model/mdata.rds")
+```
+
+```{r}
+set.seed(1234)
+resale_split <- initial_split(mdata, 
+                              prop = 6.5/10,)
+train_data <- training(resale_split)
+test_data <- testing(resale_split)
+```
+
+```{r}
+write_rds(train_data, "data/model/train_data.rds")
+write_rds(test_data, "data/model/test_data.rds")
+```
+
+## **1.1 Computing Correlation Matrix**
+
+Before loading the predictors into a predictive model, it is always a good practice to use correlation matrix to examine if there is sign of multicolinearity.
+
+```{r}
+mdata_nogeo <- mdata %>%
+  st_drop_geometry()
+corrplot::corrplot(cor(mdata_nogeo[, 2:17]), 
+                   diag = FALSE, 
+                   order = "AOE",
+                   tl.pos = "td", 
+                   tl.cex = 0.5, 
+                   method = "number", 
+                   type = "upper")
+```
+
+## 1.2 Retrieving stored data
+
+```{r}
+train_data <- read_rds("data/model/train_data.rds")
+test_data <- read_rds("data/model/test_data.rds")
+```
+
+```{r}
+price_mlr <- lm(resale_price ~ floor_area_sqm +
+                  storey_order + remaining_lease_mths +
+                  PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER +
+                  PROX_MRT + PROX_PARK + PROX_MALL + 
+                  PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
+                  WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
+                  WITHIN_1KM_PRISCH,
+                data=train_data)
+summary(price_mlr)
+```
+
+```{r}
+write_rds(price_mlr, "data/model/price_mlr.rds" ) 
+```
+
+## 1.3 **gwr predictive method**
+
+In this section, you will learn how to calibrate a model to predict HDB resale price by using geographically weighted regression method of [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html) package
+
+```{r}
+train_data_sp <- as_Spatial(train_data)
+train_data_sp
+```

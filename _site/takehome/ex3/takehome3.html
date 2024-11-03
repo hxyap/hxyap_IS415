@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-11-02">
+
+<title>hxyap - Takehome 3</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">hxyap</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../exercises/ex1/ex1.html">
+ <span class="dropdown-text">ex1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../exercises/ex2/ex2.html">
+ <span class="dropdown-text">ex2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../exercises/ex3/ex3.html">
+ <span class="dropdown-text">ex3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../exercises/ex5/ex5.html">
+ <span class="dropdown-text">ex5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../exercises/ex6/ex6.html">
+ <span class="dropdown-text">ex6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../exercises/ex7/ex7.html">
+ <span class="dropdown-text">ex7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../exercises/ex10/ex10.html">
+ <span class="dropdown-text">ex10</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">In-class Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/ICE-1/ice1.html">
+ <span class="dropdown-text">ex1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/ICE-2/ice2.html">
+ <span class="dropdown-text">ex2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/ICE-3/ice3.html">
+ <span class="dropdown-text">ex3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/ICE-4/ice4.html">
+ <span class="dropdown-text">ex4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/ICE-5/ice5.html">
+ <span class="dropdown-text">ex5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/ICE-6/ice6.html">
+ <span class="dropdown-text">ex6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/ICE-7/app.R">
+ <span class="dropdown-text">ex7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/ICE-9/ice9.html">
+ <span class="dropdown-text">ex9</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/ICE-10/ice10.html">
+ <span class="dropdown-text">ex10</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-takehomes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">takehomes</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-takehomes">    
+        <li>
+    <a class="dropdown-item" href="../../takehome/ex1/takehome1.html">
+ <span class="dropdown-text">ex1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../takehome/ex2/takehome2.html">
+ <span class="dropdown-text">ex2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../takehome/ex3/takehome3.html">
+ <span class="dropdown-text">ex3</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">Hong Xian’s IS415 Geospatial Analytics and Applications portfolio</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#project-methodology" id="toc-project-methodology" class="nav-link active" data-scroll-target="#project-methodology">Project Methodology</a></li>
+  <li><a href="#loading-packages" id="toc-loading-packages" class="nav-link" data-scroll-target="#loading-packages">Loading Packages</a></li>
+  <li><a href="#dataset-preparation" id="toc-dataset-preparation" class="nav-link" data-scroll-target="#dataset-preparation">Dataset Preparation</a></li>
+  <li><a href="#spatial-points-pattern-analysis-of-school-distribution-at-the-provincial-and-city-level" id="toc-spatial-points-pattern-analysis-of-school-distribution-at-the-provincial-and-city-level" class="nav-link" data-scroll-target="#spatial-points-pattern-analysis-of-school-distribution-at-the-provincial-and-city-level">1.0 Spatial Points Pattern Analysis of School Distribution at the Provincial and City Level</a>
+  <ul class="collapse">
+  <li><a href="#data-preprocessing" id="toc-data-preprocessing" class="nav-link" data-scroll-target="#data-preprocessing">1.1 Data Preprocessing</a></li>
+  <li><a href="#eda-at-the-provincial-level" id="toc-eda-at-the-provincial-level" class="nav-link" data-scroll-target="#eda-at-the-provincial-level">1.1 EDA at the Provincial Level</a></li>
+  </ul></li>
+  <li><a href="#additional-eda" id="toc-additional-eda" class="nav-link" data-scroll-target="#additional-eda">2.0 Additional EDA</a>
+  <ul class="collapse">
+  <li><a href="#key-observations" id="toc-key-observations" class="nav-link" data-scroll-target="#key-observations">Key Observations:</a></li>
+  <li><a href="#accessibility-implications" id="toc-accessibility-implications" class="nav-link" data-scroll-target="#accessibility-implications">Accessibility implications</a></li>
+  </ul></li>
+  <li><a href="#clustering-eda" id="toc-clustering-eda" class="nav-link" data-scroll-target="#clustering-eda">3.0 Clustering EDA</a></li>
+  <li><a href="#skater-clustering" id="toc-skater-clustering" class="nav-link" data-scroll-target="#skater-clustering">4.0 Skater Clustering</a>
+  <ul class="collapse">
+  <li><a href="#create-neighborhood" id="toc-create-neighborhood" class="nav-link" data-scroll-target="#create-neighborhood">4.1.1 Create neighborhood</a></li>
+  <li><a href="#takeaways-from-hclust-vs-skater" id="toc-takeaways-from-hclust-vs-skater" class="nav-link" data-scroll-target="#takeaways-from-hclust-vs-skater">4.1.2 Takeaways from hclust vs Skater</a></li>
+  </ul></li>
+  <li><a href="#gwr-for-education-level" id="toc-gwr-for-education-level" class="nav-link" data-scroll-target="#gwr-for-education-level">5.0 GWR for Education level</a>
+  <ul class="collapse">
+  <li><a href="#cluster-data-prep" id="toc-cluster-data-prep" class="nav-link" data-scroll-target="#cluster-data-prep">5.1.1 Cluster data prep</a></li>
+  <li><a href="#education-pattern-visualization" id="toc-education-pattern-visualization" class="nav-link" data-scroll-target="#education-pattern-visualization">5.1.1 Education pattern visualization</a></li>
+  <li><a href="#building-gwr-model" id="toc-building-gwr-model" class="nav-link" data-scroll-target="#building-gwr-model">5.1.2 Building GWR model</a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">5.1.3 Analysis</a></li>
+  </ul></li>
+  <li><a href="#its-time-for-gwr" id="toc-its-time-for-gwr" class="nav-link" data-scroll-target="#its-time-for-gwr">6.0 It’s time for GWR</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Takehome 3</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 2, 2024</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">November 3, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="project-methodology" class="level2">
+<h2 class="anchored" data-anchor-id="project-methodology">Project Methodology</h2>
+<p><strong>Data Collection</strong>:</p>
+<p>We gathered data on schools in Jakarta, including their location, type, and status. We also collected information on property prices and boundaries for administrative regions in Jakarta.</p>
+<p><strong>Geospatial Analysis</strong>:</p>
+<ol type="1">
+<li>Spatial Point Patterns Analysis for School Locations (Provincial and City level)</li>
+<li>LISA and HCSA Analysis of Schools (District level)</li>
+<li>Geographically weighted regression for education levels versus availability and accessibility of schools (Sub-district level)</li>
+</ol>
+<p>For my team, I’ll be covering a deeper dive into (3), which is GWR regression.</p>
+</section>
+<section id="loading-packages" class="level2">
+<h2 class="anchored" data-anchor-id="loading-packages">Loading Packages</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse, knitr, viridis, patchwork, gridExtra, kableExtra, sfdep, tmap, tmaptools, patchwork, scales, spdep, ggrepel, spatstat, GWmodel, gtsummary, olsrr, ClustGeo, corrplot, ggpubr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dataset-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-preparation">Dataset Preparation</h2>
+<p>There are 3 datasets we will be using:</p>
+<ul>
+<li><code>complete_data.csv</code>: Contains information about schools in Indonesia, including their location, type, and status.</li>
+<li><code>geoBoundaries-IDN-ADM2_simplified</code>: Contains simplified boundaries for administrative level 2 (ADM2) in Indonesia.</li>
+<li><code>BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA</code>: Contains detailed boundaries for villages (desa) in Jakarta.</li>
+</ul>
+</section>
+<section id="spatial-points-pattern-analysis-of-school-distribution-at-the-provincial-and-city-level" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-points-pattern-analysis-of-school-distribution-at-the-provincial-and-city-level">1.0 Spatial Points Pattern Analysis of School Distribution at the Provincial and City Level</h2>
+<section id="data-preprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="data-preprocessing">1.1 Data Preprocessing</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>indo_schools_kaggle <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/complete_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 215371 Columns: 11
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (6): province_name, city_name, district_name, school_name, stage, status
+dbl (5): lat, long, province_area, total_population, total_education_age_pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(indo_schools_kaggle, <span class="at">n=</span><span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 11
+   province_name city_name    district_name school_name stage status   lat  long
+   &lt;chr&gt;         &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt;
+ 1 PAPUA         Kab. Tolika… Kec. Gilungb… SMP SATAP … SMP   N      -3.42  138.
+ 2 PAPUA         Kab. Tolika… Kec. Wunin    SD YPPGI W… SD    S      -3.48  139.
+ 3 PAPUA         Kab. Tolika… Kec. Bokondi… SMAN BOKON… SMA   N      -3.53  139.
+ 4 PAPUA         Kab. Tolika… Kec. Kuari    SD INPRES … SD    N      -3.52  139.
+ 5 PAPUA         Kab. Tolika… Kec. Karubaga SMAS YPPGI… SMA   S      -3.45  139.
+ 6 PAPUA         Kab. Tolika… Kec. Wunin    SD NEGERI … SD    N      -3.49  139.
+ 7 PAPUA         Kab. Tolika… Kec. Wina     SD INPRES … SD    N      -3.42  138.
+ 8 PAPUA         Kab. Lanny … Kec. Tiomneri SD Negeri … SD    N      -3.86  138.
+ 9 PAPUA         Kab. Lanny … Kec. Pirime   SMP YPPGI … SMP   S      -3.93  138.
+10 PAPUA         Kab. Lanny … Kec. Tiomneri SD INPRES … SD    N      -3.89  138.
+11 PAPUA         Kab. Lanny … Kec. Tiom     SD NEGERI … SD    N      -3.92  138.
+12 PAPUA         Kab. Lanny … Kec. Dimba    SMP NEGERI… SMP   N      -3.86  139.
+13 PAPUA         Kab. Lanny … Kec. Balingga SD Negeri … SD    N      -4.08  138.
+14 PAPUA         Kab. Lanny … Kec. Gamelia  SD YPPGI Y… SD    S      -3.94  139.
+15 PAPUA         Kab. Lanny … Kec. Gamelia  SD INPRES … SD    N      -3.87  139.
+16 PAPUA         Kab. Lanny … Kec. Tiom     SMP NEGERI… SMP   N      -3.92  138.
+17 PAPUA         Kab. Lanny … Kec. Makki    SMAN 1 MAK… SMA   N      -3.94  139.
+18 PAPUA         Kab. Lanny … Kec. Pirime   SMP NEGERI… SMP   N      -3.86  138.
+19 PAPUA         Kab. Lanny … Kec. Pirime   SMP NEGERI… SMP   N      -3.88  138.
+20 PAPUA         Kab. Lanny … Kec. Pirime   SD INPRES … SD    N      -3.89  139.
+# ℹ 3 more variables: province_area &lt;dbl&gt;, total_population &lt;dbl&gt;,
+#   total_education_age_population &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>jakarta_schools <span class="ot">&lt;-</span> indo_schools_kaggle <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(province_name <span class="sc">==</span> <span class="st">"DKI JAKARTA"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>         city_name <span class="sc">!=</span> <span class="st">"Kab. Kepulauan Seribu"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(long) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(lat)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"long"</span>, <span class="st">"lat"</span>), <span class="at">crs =</span> <span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">school_level =</span> <span class="fu">case_when</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        stage <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"SD"</span>, <span class="st">"SDLB"</span>) <span class="sc">~</span> <span class="st">"Elementary"</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        stage <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"SMP"</span>, <span class="st">"SMPLB"</span>) <span class="sc">~</span> <span class="st">"Junior High"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        stage <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"SMA"</span>, <span class="st">"SMK"</span>, <span class="st">"SMLB"</span>) <span class="sc">~</span> <span class="st">"Senior High"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Special Education"</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">school_type =</span> <span class="fu">if_else</span>(status <span class="sc">==</span> <span class="st">"N"</span>, <span class="st">"Public"</span>, <span class="st">"Private"</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(jakarta_schools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6 features and 11 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 106.8139 ymin: -6.1992 xmax: 106.8642 ymax: -6.1462
+Geodetic CRS:  WGS 84
+# A tibble: 6 × 12
+  province_name city_name   district_name school_name stage status province_area
+  &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt;
+1 DKI JAKARTA   Kota Jakar… Kec. Tanah A… SD NEGERI … SD    N                664
+2 DKI JAKARTA   Kota Jakar… Kec. Senen    SDN Kenari… SD    N                664
+3 DKI JAKARTA   Kota Jakar… Kec. Johar B… SD NEGERI … SD    N                664
+4 DKI JAKARTA   Kota Jakar… Kec. Menteng  SMAS PSKD … SMA   S                664
+5 DKI JAKARTA   Kota Jakar… Kec. Sawah B… SMKS STRAD… SMK   S                664
+6 DKI JAKARTA   Kota Jakar… Kec. Cempaka… SDN Cempak… SD    N                664
+# ℹ 5 more variables: total_population &lt;dbl&gt;,
+#   total_education_age_population &lt;dbl&gt;, geometry &lt;POINT [°]&gt;,
+#   school_level &lt;chr&gt;, school_type &lt;chr&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>adm2 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial"</span>, <span class="at">layer =</span> <span class="st">"geoBoundaries-IDN-ADM2_simplified"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(shapeName <span class="sc">%in%</span> <span class="fu">c</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Kota Jakarta Barat"</span>, <span class="st">"Kota Jakarta Pusat"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Kota Jakarta Selatan"</span>, <span class="st">"Kota Jakarta Timur"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Kota Jakarta Utara"</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `geoBoundaries-IDN-ADM2_simplified' from data source 
+  `C:\Users\yapho\Documents\SMU\smu y4\is415\hxyap_IS415\takehome\ex3\data\geospatial' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 519 features and 5 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 95.01115 ymin: -11.00762 xmax: 141.0194 ymax: 6.07693
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>batas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial"</span>, <span class="at">layer =</span> <span class="st">"BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA"</span>)  <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(OBJECT_ID, PROVINSI, KAB_KOTA, KECAMATAN, DESA_KELUR, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>         JUMLAH_PEN, JUMLAH_KK, LUAS_WILAY, KEPADATAN, geometry) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">province =</span> PROVINSI,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">city =</span> KAB_KOTA,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">district =</span> KECAMATAN,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">subdistrict =</span> DESA_KELUR,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">population =</span> JUMLAH_PEN,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_families =</span> JUMLAH_KK,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">area_size =</span> LUAS_WILAY,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">popn_density =</span> KEPADATAN</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(city) <span class="sc">&amp;</span> city <span class="sc">!=</span> <span class="st">"KEPULAUAN SERIBU"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>      city <span class="sc">==</span> <span class="st">"JAKARTA BARAT"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Barat"</span>,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>      city <span class="sc">==</span> <span class="st">"JAKARTA PUSAT"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Pusat"</span>,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>      city <span class="sc">==</span> <span class="st">"JAKARTA SELATAN"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Selatan"</span>,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>      city <span class="sc">==</span> <span class="st">"JAKARTA TIMUR"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Timur"</span>,</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>      city <span class="sc">==</span> <span class="st">"JAKARTA UTARA"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Utara"</span>,</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> city</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA' from data source 
+  `C:\Users\yapho\Documents\SMU\smu y4\is415\hxyap_IS415\takehome\ex3\data\geospatial' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 269 features and 161 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 106.3831 ymin: -6.370815 xmax: 106.9728 ymax: -5.184322
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(batas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6 features and 9 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 106.8105 ymin: -6.17575 xmax: 106.8711 ymax: -6.141043
+Geodetic CRS:  WGS 84
+  OBJECT_ID    province               city    district   subdistrict population
+1     25477 DKI JAKARTA Kota Jakarta Barat  TAMAN SARI     KEAGUNGAN      21609
+2     25478 DKI JAKARTA Kota Jakarta Barat  TAMAN SARI        GLODOK       9069
+3     25397 DKI JAKARTA Kota Jakarta Pusat   KEMAYORAN HARAPAN MULIA      29085
+4     25400 DKI JAKARTA Kota Jakarta Pusat   KEMAYORAN  CEMPAKA BARU      41913
+5     25390 DKI JAKARTA Kota Jakarta Pusat SAWAH BESAR    PASAR BARU      15793
+6     25391 DKI JAKARTA Kota Jakarta Pusat SAWAH BESAR  KARANG ANYAR      33383
+  total_families area_size popn_density                       geometry
+1           7255      0.36        60504 MULTIPOLYGON (((106.8164 -6...
+2           3273      0.37        24527 MULTIPOLYGON (((106.8148 -6...
+3           9217      0.53        54465 MULTIPOLYGON (((106.8576 -6...
+4          13766      0.97        42993 MULTIPOLYGON (((106.8631 -6...
+5           5599      1.76         8971 MULTIPOLYGON (((106.8369 -6...
+6          11276      0.47        71628 MULTIPOLYGON (((106.8316 -6...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>district_mapping <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TAMAN SARI"</span> <span class="ot">=</span> <span class="st">"Kec. Taman Sari"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KEMAYORAN"</span> <span class="ot">=</span> <span class="st">"Kec. Kemayoran"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SAWAH BESAR"</span> <span class="ot">=</span> <span class="st">"Kec. Sawah Besar"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"GAMBIR"</span> <span class="ot">=</span> <span class="st">"Kec. Gambir"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SENEN"</span> <span class="ot">=</span> <span class="st">"Kec. Senen"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CEMPAKA PUTIH"</span> <span class="ot">=</span> <span class="st">"Kec. Cempaka Putih"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MENTENG"</span> <span class="ot">=</span> <span class="st">"Kec. Menteng"</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TANAH ABANG"</span> <span class="ot">=</span> <span class="st">"Kec. Tanah Abang"</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"JOHAR BARU"</span> <span class="ot">=</span> <span class="st">"Kec. Johar Baru"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KOJA"</span> <span class="ot">=</span> <span class="st">"Kec. Koja"</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PENJARINGAN"</span> <span class="ot">=</span> <span class="st">"Kec. Penjaringan"</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TANJUNG PRIOK"</span> <span class="ot">=</span> <span class="st">"Kec. Tanjung Priok"</span>,</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CILINCING"</span> <span class="ot">=</span> <span class="st">"Kec. Cilincing"</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"GROGOL PETAMBURAN"</span> <span class="ot">=</span> <span class="st">"Kec. Grogol Petamburan"</span>,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PADEMANGAN"</span> <span class="ot">=</span> <span class="st">"Kec. Pademangan"</span>,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KELAPA GADING"</span> <span class="ot">=</span> <span class="st">"Kec. Kelapa Gading"</span>,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CENGKARENG"</span> <span class="ot">=</span> <span class="st">"Kec. Cengkareng"</span>,</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TAMBORA"</span> <span class="ot">=</span> <span class="st">"Kec. Tambora"</span>,</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KEBON JERUK"</span> <span class="ot">=</span> <span class="st">"Kec. Kebon Jeruk"</span>,</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KALIDERES"</span> <span class="ot">=</span> <span class="st">"Kec. Kali Deres"</span>,</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PAL MERAH"</span> <span class="ot">=</span> <span class="st">"Kec. Palmerah"</span>,</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"JATINEGARA"</span> <span class="ot">=</span> <span class="st">"Kec. Jatinegara"</span>,</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KEMBANGAN"</span> <span class="ot">=</span> <span class="st">"Kec. Kembangan"</span>,</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TEBET"</span> <span class="ot">=</span> <span class="st">"Kec. Tebet"</span>,</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SETIABUDI"</span> <span class="ot">=</span> <span class="st">"Kec. Setia Budi"</span>,</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MAMPANG PRAPATAN"</span> <span class="ot">=</span> <span class="st">"Kec. Mampang Prapatan"</span>,</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PASAR MINGGU"</span> <span class="ot">=</span> <span class="st">"Kec. Pasar Minggu"</span>,</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KEBAYORAN LAMA"</span> <span class="ot">=</span> <span class="st">"Kec. Kebayoran Lama"</span>,</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KEBAYORAN BARU"</span> <span class="ot">=</span> <span class="st">"Kec. Kebayoran Baru"</span>,</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CILANDAK"</span> <span class="ot">=</span> <span class="st">"Kec. Cilandak"</span>,</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PESANGGRAHAN"</span> <span class="ot">=</span> <span class="st">"Kec. Pesanggrahan"</span>,</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PANCORAN"</span> <span class="ot">=</span> <span class="st">"Kec. Pancoran"</span>,</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"JAGAKARSA"</span> <span class="ot">=</span> <span class="st">"Kec. Jagakarsa"</span>,</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MATRAMAN"</span> <span class="ot">=</span> <span class="st">"Kec. Matraman"</span>,</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PULOGADUNG"</span> <span class="ot">=</span> <span class="st">"Kec. Pulo Gadung"</span>,</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KRAMATJATI"</span> <span class="ot">=</span> <span class="st">"Kec. Kramat Jati"</span>,</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PASAR REBO"</span> <span class="ot">=</span> <span class="st">"Kec. Pasar Rebo"</span>,</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">"DUREN SAWIT"</span> <span class="ot">=</span> <span class="st">"Kec. Duren Sawit"</span>,</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MAKASAR"</span> <span class="ot">=</span> <span class="st">"Kec. Makasar"</span>,</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CIRACAS"</span> <span class="ot">=</span> <span class="st">"Kec. Ciracas"</span>,</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CIPAYUNG"</span> <span class="ot">=</span> <span class="st">"Kec. Cipayung"</span>,</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CAKUNG"</span> <span class="ot">=</span> <span class="st">"Kec. Cakung"</span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>batas <span class="ot">&lt;-</span> batas <span class="sc">%&gt;%</span></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">district =</span> district_mapping[district])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="eda-at-the-provincial-level" class="level3">
+<h3 class="anchored" data-anchor-id="eda-at-the-provincial-level">1.1 EDA at the Provincial Level</h3>
+<section id="overall-distribution-of-schools" class="level4">
+<h4 class="anchored" data-anchor-id="overall-distribution-of-schools">1.1.1 Overall Distribution of Schools</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> jakarta_schools) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> city_name, <span class="at">fill =</span> city_name)) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"plasma"</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of Schools Across Jakarta"</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"City"</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Schools"</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Key Observations</strong>:</p>
+<ul>
+<li>The plot reveals significant disparity in school distribution across Jakarta</li>
+<li>East Jakarta (Timur) has the highest number of schools, followed by West Jakarta (Barat) then South Jakarta (Selatan). This is consistent with the population density distribution in Jakarta.</li>
+</ul>
+</section>
+<section id="distribution-of-school-levels" class="level4">
+<h4 class="anchored" data-anchor-id="distribution-of-school-levels">1.1.2 Distribution of School Levels</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> jakarta_schools) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> city_name, <span class="at">fill =</span> school_level)) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"plasma"</span>) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of School Levels Across Jakarta"</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"City"</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Schools"</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"School Level"</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Key Observations</strong>:</p>
+<ul>
+<li>Across all municipalities, elementary schools are the most common</li>
+<li>There is a relatively consistent proportion of Junior and Senior High Schools</li>
+<li>Special Education schools are less common but present in all municipalities</li>
+<li>While total numbers differ, the proportional distribution of school levels remains fairly consistent across cities, suggesting <strong>planned distribution</strong> rather than random clustering</li>
+</ul>
+</section>
+<section id="school-density-across-jakarta" class="level4">
+<h4 class="anchored" data-anchor-id="school-density-across-jakarta">1.1.3 School Density Across Jakarta</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> adm2, <span class="fu">aes</span>(<span class="at">fill =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(adm2, jakarta_schools)))) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"plasma"</span>) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"School Density Across Jakarta"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Number of</span><span class="sc">\n</span><span class="st">Schools"</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="population-density-in-jakarta" class="level5">
+<h5 class="anchored" data-anchor-id="population-density-in-jakarta">1.1.4 Population Density in Jakarta</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> batas, <span class="fu">aes</span>(<span class="at">fill =</span> popn_density)) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">option =</span> <span class="st">"plasma"</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>()</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Population Density in Jakarta"</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Population</span><span class="sc">\n</span><span class="st">Density</span><span class="sc">\n</span><span class="st">(per km²)"</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Key Observations</strong>:</p>
+<ul>
+<li>The density map reveals high population clusters in central Jakarta (yellow/orange areas)</li>
+<li>There is an interesting mismatch with school density in some areas</li>
+<li>Several high-density pockets are scattered across Jakarta</li>
+</ul>
+</section>
+</section>
+<section id="summary" class="level4">
+<h4 class="anchored" data-anchor-id="summary">1.5 Summary</h4>
+<ul>
+<li>Our preliminary EDA at the provincial level is too macro to provide detailed insights, but necessary to understand the overall distribution of schools in Jakarta</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="additional-eda" class="level2">
+<h2 class="anchored" data-anchor-id="additional-eda">2.0 Additional EDA</h2>
+<p>We note that Jakarta uses</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert coordinate systems for accurate distance measurement </span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># UTM Zone 48S (EPSG:32748) is appropriate for Jakarta </span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>jakarta_schools_utm <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(jakarta_schools, <span class="dv">32748</span>) </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>adm2_utm <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(adm2, <span class="dv">32748</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>batas_utm <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(batas, <span class="dv">32748</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For jakarta_schools_utm</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(jakarta_schools_utm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 4,762
+Columns: 12
+$ province_name                  &lt;chr&gt; "DKI JAKARTA", "DKI JAKARTA", "DKI JAKA…
+$ city_name                      &lt;chr&gt; "Kota Jakarta Pusat", "Kota Jakarta Pus…
+$ district_name                  &lt;chr&gt; "Kec. Tanah Abang", "Kec. Senen", "Kec.…
+$ school_name                    &lt;chr&gt; "SD NEGERI KEBON MELATI 01 PG", "SDN Ke…
+$ stage                          &lt;chr&gt; "SD", "SD", "SD", "SMA", "SMK", "SD", "…
+$ status                         &lt;chr&gt; "N", "N", "N", "S", "S", "N", "S", "N",…
+$ province_area                  &lt;dbl&gt; 664, 664, 664, 664, 664, 664, 664, 664,…
+$ total_population               &lt;dbl&gt; 10679951, 10679951, 10679951, 10679951,…
+$ total_education_age_population &lt;dbl&gt; 3235408, 3235408, 3235408, 3235408, 323…
+$ geometry                       &lt;POINT [m]&gt; POINT (700704.4 9315085), POINT (…
+$ school_level                   &lt;chr&gt; "Elementary", "Elementary", "Elementary…
+$ school_type                    &lt;chr&gt; "Public", "Public", "Public", "Private"…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For batas_utm</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(batas_utm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 261
+Columns: 10
+$ OBJECT_ID      &lt;dbl&gt; 25477, 25478, 25397, 25400, 25390, 25391, 25394, 25386,…
+$ province       &lt;chr&gt; "DKI JAKARTA", "DKI JAKARTA", "DKI JAKARTA", "DKI JAKAR…
+$ city           &lt;chr&gt; "Kota Jakarta Barat", "Kota Jakarta Barat", "Kota Jakar…
+$ district       &lt;chr&gt; "Kec. Taman Sari", "Kec. Taman Sari", "Kec. Kemayoran",…
+$ subdistrict    &lt;chr&gt; "KEAGUNGAN", "GLODOK", "HARAPAN MULIA", "CEMPAKA BARU",…
+$ population     &lt;dbl&gt; 21609, 9069, 29085, 41913, 15793, 33383, 35906, 21828, …
+$ total_families &lt;dbl&gt; 7255, 3273, 9217, 13766, 5599, 11276, 12817, 7328, 3049…
+$ area_size      &lt;dbl&gt; 0.36, 0.37, 0.53, 0.97, 1.76, 0.47, 1.31, 1.14, 0.82, 0…
+$ popn_density   &lt;dbl&gt; 60504, 24527, 54465, 42993, 8971, 71628, 27463, 19144, …
+$ geometry       &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((700997 9320..., MULTIPOLYG…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For column names</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(jakarta_schools_utm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "province_name"                  "city_name"                     
+ [3] "district_name"                  "school_name"                   
+ [5] "stage"                          "status"                        
+ [7] "province_area"                  "total_population"              
+ [9] "total_education_age_population" "geometry"                      
+[11] "school_level"                   "school_type"                   </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(batas_utm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "OBJECT_ID"      "province"       "city"           "district"      
+ [5] "subdistrict"    "population"     "total_families" "area_size"     
+ [9] "popn_density"   "geometry"      </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For dimensions</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(jakarta_schools_utm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4762   12</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(batas_utm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 261  10</code></pre>
+</div>
+</div>
+<p>We’ll now look at school density per subdistrict:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate school density per subdistrict</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Join school counts with batas dataset</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>school_counts <span class="ot">&lt;-</span> <span class="fu">st_join</span>(batas_utm, jakarta_schools_utm) <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(OBJECT_ID) <span class="sc">%&gt;%</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_schools =</span> <span class="fu">n</span>(),</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">elementary_schools =</span> <span class="fu">sum</span>(school_level <span class="sc">==</span> <span class="st">"Elementary"</span>),</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">junior_schools =</span> <span class="fu">sum</span>(school_level <span class="sc">==</span> <span class="st">"Junior High"</span>),</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">senior_schools =</span> <span class="fu">sum</span>(school_level <span class="sc">==</span> <span class="st">"Senior High"</span>),</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">public_schools =</span> <span class="fu">sum</span>(school_type <span class="sc">==</span> <span class="st">"Public"</span>),</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">private_schools =</span> <span class="fu">sum</span>(school_type <span class="sc">==</span> <span class="st">"Private"</span>)</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize school density metrics</span></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>tmap mode set to plotting</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(school_counts) <span class="sc">+</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"total_schools"</span>, </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"quantile"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"viridis"</span>) <span class="sc">+</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>() <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">title =</span> <span class="st">"School Density by Subdistrict"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As we can see, there are some spots (in the middle and the north of Jakarta where there seems to be sparse coverage of schools. Let’s cross reference our school accessibility index for more info:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate centroids</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>centroids <span class="ot">&lt;-</span> <span class="fu">st_centroid</span>(batas_utm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create distance matrix</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>dist_matrix <span class="ot">&lt;-</span> <span class="fu">st_distance</span>(centroids, jakarta_schools_utm)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Find minimum distance for each centroid</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>min_distances <span class="ot">&lt;-</span> <span class="fu">apply</span>(dist_matrix, <span class="dv">1</span>, min)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add to batas</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>batas_utm<span class="sc">$</span>nearest_school_dist <span class="ot">&lt;-</span> min_distances</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(batas_utm) <span class="sc">+</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"nearest_school_dist"</span>, </span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"quantile"</span>,</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"viridis"</span>,</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Distance (m)"</span>) <span class="sc">+</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>() <span class="sc">+</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">title =</span> <span class="st">"Distance to Nearest School"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="key-observations" class="level3">
+<h3 class="anchored" data-anchor-id="key-observations">Key Observations:</h3>
+<ol type="1">
+<li><p>Spatial Distribution Patterns:</p></li>
+<li><p>Central Jakarta shows high school density (8-14 schools) but very short distances to nearest schools (4-97m)</p></li>
+<li><p>Outer regions, particularly in the east and west, have higher numbers of schools (26-65) but longer distances (294-1,014m)</p></li>
+<li><p>Some subdistricts show an interesting mismatch: high school counts but relatively long distances, suggesting uneven distribution within the subdistrict</p></li>
+</ol>
+</section>
+<section id="accessibility-implications" class="level3">
+<h3 class="anchored" data-anchor-id="accessibility-implications">Accessibility implications</h3>
+<ol type="1">
+<li><p>The central areas demonstrate better accessibility (darker purple in distance map)</p></li>
+<li><p>Peripheral areas (yellow) show reduced accessibility despite sometimes having more schools</p></li>
+<li><p>This suggests that school placement might not be optimally aligned with population distribution.</p></li>
+</ol>
+</section>
+</section>
+<section id="clustering-eda" class="level2">
+<h2 class="anchored" data-anchor-id="clustering-eda">3.0 Clustering EDA</h2>
+<p>We’ll start by using hierarchical clustering. Hierarchical clustering provides a systematic, data-driven approach to identify groups of subdistricts with similar educational characteristics. This helps us select representative areas for detailed GWR analysis while ensuring we capture the full range of educational patterns in Jakarta.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, create a normalized dataset with relevant variables</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>clustering_data <span class="ot">&lt;-</span> school_counts <span class="sc">%&gt;%</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span>  <span class="co"># Remove geometry for numerical calculations</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">school_density =</span> <span class="fu">as.numeric</span>(total_schools),</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">elementary_ratio =</span> <span class="fu">as.numeric</span>(elementary_schools <span class="sc">/</span> total_schools),</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">junior_ratio =</span> <span class="fu">as.numeric</span>(junior_schools <span class="sc">/</span> total_schools),</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">senior_ratio =</span> <span class="fu">as.numeric</span>(senior_schools <span class="sc">/</span> total_schools),</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">public_ratio =</span> <span class="fu">as.numeric</span>(public_schools <span class="sc">/</span> total_schools)</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select only numeric columns for clustering</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(school_density, elementary_ratio, junior_ratio, </span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>         senior_ratio, public_ratio)</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(clustering_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> school_density  elementary_ratio  junior_ratio     senior_ratio   
+ Min.   : 1.00   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+ 1st Qu.:10.00   1st Qu.:0.4615   1st Qu.:0.1429   1st Qu.:0.1429  
+ Median :16.00   Median :0.5600   Median :0.2000   Median :0.2000  
+ Mean   :18.14   Mean   :0.5650   Mean   :0.2085   Mean   :0.2100  
+ 3rd Qu.:24.00   3rd Qu.:0.6667   3rd Qu.:0.2688   3rd Qu.:0.2778  
+ Max.   :65.00   Max.   :1.0000   Max.   :0.4444   Max.   :1.0000  
+                 NA's   :2        NA's   :2        NA's   :2       
+  public_ratio   
+ Min.   :0.0000  
+ 1st Qu.:0.3604  
+ Median :0.4800  
+ Mean   :0.4888  
+ 3rd Qu.:0.6250  
+ Max.   :1.0000  
+ NA's   :2       </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(clustering_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [261 × 5] (S3: tbl_df/tbl/data.frame)
+ $ school_density  : num [1:261] 3 10 30 7 5 14 28 15 4 16 ...
+ $ elementary_ratio: num [1:261] 0.333 0.7 0.333 0.714 0.6 ...
+ $ junior_ratio    : num [1:261] 0 0.2 0.3 0.143 0.2 ...
+ $ senior_ratio    : num [1:261] 0.667 0.1 0.367 0.143 0.2 ...
+ $ public_ratio    : num [1:261] 1 0.7 0.267 0.857 0.2 ...</code></pre>
+</div>
+</div>
+<p>We now prepare our distance matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the data</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>normalized_data <span class="ot">&lt;-</span> <span class="fu">scale</span>(clustering_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>feature_dist <span class="ot">&lt;-</span> <span class="fu">dist</span>(normalized_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Perform hierarchical clustering</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>hc <span class="ot">&lt;-</span> <span class="fu">hclust</span>(feature_dist, <span class="at">method =</span> <span class="st">"ward.D2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Great! let’s now plot the dendrogram.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Plot dendrogram</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hc, <span class="at">main =</span> <span class="st">"Hierarchical Clustering of Jakarta Subdistricts"</span>,</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Subdistricts"</span>, <span class="at">ylab =</span> <span class="st">"Height"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Cut tree to get 5 clusters</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>hc_clusters <span class="ot">&lt;-</span> <span class="fu">cutree</span>(hc, <span class="at">k =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Add clusters back to spatial data</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>school_counts<span class="sc">$</span>hc_cluster <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(hc_clusters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. Visualize clusters spatially</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(school_counts) <span class="sc">+</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"hc_cluster"</span>, </span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"Set3"</span>,</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Hierarchical Clusters"</span>) <span class="sc">+</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>() <span class="sc">+</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">title =</span> <span class="st">"Traditional Hierarchical Clustering"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For hclust, we use Ward’s method, also called Ward’s minimum variance method, is a criterion used in hierarchical clustering that focuses on minimizing the total within-cluster variance. The “D2” variant specifically refers to the squared Euclidean distance implementation. It’s good for finding spatial clusters that represent similar administrative or functional areas.</p>
+</div>
+</div>
+</section>
+<section id="skater-clustering" class="level2">
+<h2 class="anchored" data-anchor-id="skater-clustering">4.0 Skater Clustering</h2>
+<p>We’ll now use Skater to take a glance from a MST (Minimum Spanning Tree) approach. Although we will probably use skater to define our local GWR later, and set up bandwidth parameters, we’ll still be considering our previous hclust.</p>
+<section id="create-neighborhood" class="level3">
+<h3 class="anchored" data-anchor-id="create-neighborhood">4.1.1 Create neighborhood</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>clustering_data <span class="ot">&lt;-</span> school_counts <span class="sc">%&gt;%</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">school_density =</span> <span class="fu">as.numeric</span>(total_schools),</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">elementary_ratio =</span> elementary_schools<span class="sc">/</span>total_schools,</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">junior_ratio =</span> junior_schools<span class="sc">/</span>total_schools,</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">senior_ratio =</span> senior_schools<span class="sc">/</span>total_schools,</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">public_ratio =</span> public_schools<span class="sc">/</span>total_schools</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(school_density, elementary_ratio, junior_ratio, </span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>         senior_ratio, public_ratio) <span class="sc">%&gt;%</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>jakarta_nb <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(school_counts, <span class="at">queen=</span><span class="cn">TRUE</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Calculate edge costs using the neighborhood structure</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>lcosts <span class="ot">&lt;-</span> <span class="fu">nbcosts</span>(jakarta_nb, clustering_data)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Create spatial weights with costs</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>jakarta.w <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(jakarta_nb, </span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>                     lcosts, </span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">style=</span><span class="st">"B"</span>)</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Create minimum spanning tree</span></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>jakarta.mst <span class="ot">&lt;-</span> <span class="fu">mstree</span>(jakarta.w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Get coordinates for plotting</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(<span class="fu">st_centroid</span>(school_counts))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Plot the MST</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(school_counts), </span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">border=</span><span class="fu">gray</span>(.<span class="dv">5</span>))</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.mst</span>(jakarta.mst, </span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>         coords, </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="st">"blue"</span>, </span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">cex.lab=</span><span class="fl">0.7</span>, </span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">cex.circles=</span><span class="fl">0.005</span>, </span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">add=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Compute SKATER clusters</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>clust5 <span class="ot">&lt;-</span> <span class="fu">skater</span>(<span class="at">edges =</span> jakarta.mst[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], </span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> <span class="fu">as.matrix</span>(clustering_data), </span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"euclidean"</span>, </span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ncuts =</span> <span class="dv">4</span>)  <span class="co"># This will give 5 clusters</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. Add clusters to spatial data</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>school_counts<span class="sc">$</span>skater_cluster <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(clust5<span class="sc">$</span>groups)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 9. Visualize final clusters</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(school_counts) <span class="sc">+</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_fill</span>(<span class="st">"skater_cluster"</span>, </span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">palette =</span> <span class="st">"Set3"</span>,</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">title =</span> <span class="st">"SKATER Clusters"</span>) <span class="sc">+</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_borders</span>() <span class="sc">+</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">title =</span> <span class="st">"School Clusters in Jakarta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 10. Check cluster sizes</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Number of schools in each cluster:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of schools in each cluster:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">table</span>(clust5<span class="sc">$</span>groups))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  1   2   3   4   5 
+204   6  20  23   8 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 11. Create cluster summary</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>cluster_summary <span class="ot">&lt;-</span> school_counts <span class="sc">%&gt;%</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(skater_cluster) <span class="sc">%&gt;%</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">n_areas =</span> <span class="fu">n</span>(),</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">avg_schools =</span> <span class="fu">mean</span>(total_schools),</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">avg_elementary =</span> <span class="fu">mean</span>(elementary_schools),</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">avg_junior =</span> <span class="fu">mean</span>(junior_schools),</span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">avg_senior =</span> <span class="fu">mean</span>(senior_schools)</span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Cluster Summary:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Cluster Summary:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cluster_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 6
+  skater_cluster n_areas avg_schools avg_elementary avg_junior avg_senior
+  &lt;fct&gt;            &lt;int&gt;       &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+1 1                  204        15.2           8.29       3.26       3.35
+2 2                    6         2.5          NA         NA         NA   
+3 3                   20        34.3          18.0        8.6        7.35
+4 4                   23        29.3          16.4        5.61       6.74
+5 5                    8        32.6          18.5        7.25       6.62</code></pre>
+</div>
+</div>
+</section>
+<section id="takeaways-from-hclust-vs-skater" class="level3">
+<h3 class="anchored" data-anchor-id="takeaways-from-hclust-vs-skater">4.1.2 Takeaways from hclust vs Skater</h3>
+<p>SKATER has a more uneven distribution with one dominant cluster (turquoise) covering most of Jakarta, compared to hierarchical clustering with a more fragmented clustering.</p>
+</section>
+</section>
+<section id="gwr-for-education-level" class="level2">
+<h2 class="anchored" data-anchor-id="gwr-for-education-level">5.0 GWR for Education level</h2>
+<p>We’ll first extract the education levels from our initial batas dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First read the original file with all columns </span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>batas_full <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial"</span>, <span class="at">layer =</span> <span class="st">"BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA' from data source 
+  `C:\Users\yapho\Documents\SMU\smu y4\is415\hxyap_IS415\takehome\ex3\data\geospatial' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 269 features and 161 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 106.3831 ymin: -6.370815 xmax: 106.9728 ymax: -5.184322
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>batas_full_utm <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(batas_full, <span class="dv">32748</span>)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create education metrics with original column names then rename</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>batas_edu_levels <span class="ot">&lt;-</span> batas_full_utm <span class="sc">%&gt;%</span></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Higher education ratio (diploma and above)</span></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">higher_ed_ratio =</span> (DIPLOMA_I <span class="sc">+</span> DIPLOMA_II <span class="sc">+</span> DIPLOMA_IV <span class="sc">+</span> </span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>                      STRATA_II <span class="sc">+</span> STRATA_III) <span class="sc">/</span> JUMLAH_PEN,</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Basic education completion ratio</span></span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">basic_ed_ratio =</span> (TAMAT_SD <span class="sc">+</span> SLTP <span class="sc">+</span> SLTA) <span class="sc">/</span> JUMLAH_PEN,</span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># No education ratio </span></span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">no_ed_ratio =</span> (TIDAK_BELU <span class="sc">+</span> BELUM_TAMA) <span class="sc">/</span> JUMLAH_PEN</span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select and rename columns</span></span>
+<span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a>    PROVINSI, KAB_KOTA, KECAMATAN, DESA_KELUR,</span>
+<span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a>    JUMLAH_PEN, higher_ed_ratio, basic_ed_ratio, </span>
+<span id="cb67-18"><a href="#cb67-18" aria-hidden="true" tabindex="-1"></a>    no_ed_ratio, geometry</span>
+<span id="cb67-19"><a href="#cb67-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb67-20"><a href="#cb67-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb67-21"><a href="#cb67-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">province =</span> PROVINSI,</span>
+<span id="cb67-22"><a href="#cb67-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">city =</span> KAB_KOTA,</span>
+<span id="cb67-23"><a href="#cb67-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">district =</span> KECAMATAN,</span>
+<span id="cb67-24"><a href="#cb67-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">subdistrict =</span> DESA_KELUR,</span>
+<span id="cb67-25"><a href="#cb67-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">population =</span> JUMLAH_PEN</span>
+<span id="cb67-26"><a href="#cb67-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb67-27"><a href="#cb67-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter and standardize city names</span></span>
+<span id="cb67-28"><a href="#cb67-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(city) <span class="sc">&amp;</span> city <span class="sc">!=</span> <span class="st">"KEPULAUAN SERIBU"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb67-29"><a href="#cb67-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">case_when</span>(</span>
+<span id="cb67-30"><a href="#cb67-30" aria-hidden="true" tabindex="-1"></a>    city <span class="sc">==</span> <span class="st">"JAKARTA BARAT"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Barat"</span>,</span>
+<span id="cb67-31"><a href="#cb67-31" aria-hidden="true" tabindex="-1"></a>    city <span class="sc">==</span> <span class="st">"JAKARTA PUSAT"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Pusat"</span>,</span>
+<span id="cb67-32"><a href="#cb67-32" aria-hidden="true" tabindex="-1"></a>    city <span class="sc">==</span> <span class="st">"JAKARTA SELATAN"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Selatan"</span>,</span>
+<span id="cb67-33"><a href="#cb67-33" aria-hidden="true" tabindex="-1"></a>    city <span class="sc">==</span> <span class="st">"JAKARTA TIMUR"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Timur"</span>,</span>
+<span id="cb67-34"><a href="#cb67-34" aria-hidden="true" tabindex="-1"></a>    city <span class="sc">==</span> <span class="st">"JAKARTA UTARA"</span> <span class="sc">~</span> <span class="st">"Kota Jakarta Utara"</span>,</span>
+<span id="cb67-35"><a href="#cb67-35" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> city</span>
+<span id="cb67-36"><a href="#cb67-36" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now proceed with the cluster analysis</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>east_cluster_edu <span class="ot">&lt;-</span> batas_edu_levels <span class="sc">%&gt;%</span></span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"Kota Jakarta Timur"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>central_cluster_edu <span class="ot">&lt;-</span> batas_edu_levels <span class="sc">%&gt;%</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"Kota Jakarta Pusat"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="cluster-data-prep" class="level3">
+<h3 class="anchored" data-anchor-id="cluster-data-prep">5.1.1 Cluster data prep</h3>
+<p>Now that we have our filtered education levels for our clusters, let’s begin.</p>
+</section>
+<section id="education-pattern-visualization" class="level3">
+<h3 class="anchored" data-anchor-id="education-pattern-visualization">5.1.1 Education pattern visualization</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Visualize education patterns</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>edu_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(batas_edu_levels) <span class="sc">+</span></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">tm_polygons</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">tm_shape</span>(east_cluster_edu) <span class="sc">+</span></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"higher_ed_ratio"</span>, </span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">palette =</span> <span class="st">"Reds"</span>,</span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Higher Education Ratio"</span>) <span class="sc">+</span></span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a> <span class="fu">tm_shape</span>(central_cluster_edu) <span class="sc">+</span></span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"higher_ed_ratio"</span>,</span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">palette =</span> <span class="st">"Blues"</span>,</span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Higher Education Ratio"</span>) <span class="sc">+</span></span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a> <span class="fu">tm_layout</span>(<span class="at">title =</span> <span class="st">"Education Levels: East vs Central Jakarta"</span>)</span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(edu_map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="building-gwr-model" class="level3">
+<h3 class="anchored" data-anchor-id="building-gwr-model">5.1.2 Building GWR model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>district_boundaries <span class="ot">&lt;-</span> batas_utm <span class="sc">%&gt;%</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(city, district) <span class="sc">%&gt;%</span></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_population =</span> <span class="fu">sum</span>(population),</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_area =</span> <span class="fu">sum</span>(area_size),</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">popn_density =</span> total_population <span class="sc">/</span> total_area,</span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">do_union =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">'drop'</span></span>
+<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-11"><a href="#cb71-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Then do your school density analysis at district level</span></span>
+<span id="cb71-12"><a href="#cb71-12" aria-hidden="true" tabindex="-1"></a>school_density_analysis <span class="ot">&lt;-</span> district_boundaries <span class="sc">%&gt;%</span></span>
+<span id="cb71-13"><a href="#cb71-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb71-14"><a href="#cb71-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_schools =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(., jakarta_schools_utm)),</span>
+<span id="cb71-15"><a href="#cb71-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">elementary_schools =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(., </span>
+<span id="cb71-16"><a href="#cb71-16" aria-hidden="true" tabindex="-1"></a>                               jakarta_schools_utm[jakarta_schools_utm<span class="sc">$</span>school_level <span class="sc">==</span> <span class="st">"Elementary"</span>,])),</span>
+<span id="cb71-17"><a href="#cb71-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">junior_schools =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(., </span>
+<span id="cb71-18"><a href="#cb71-18" aria-hidden="true" tabindex="-1"></a>                           jakarta_schools_utm[jakarta_schools_utm<span class="sc">$</span>school_level <span class="sc">==</span> <span class="st">"Junior High"</span>,])),</span>
+<span id="cb71-19"><a href="#cb71-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">senior_schools =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(., </span>
+<span id="cb71-20"><a href="#cb71-20" aria-hidden="true" tabindex="-1"></a>                           jakarta_schools_utm[jakarta_schools_utm<span class="sc">$</span>school_level <span class="sc">==</span> <span class="st">"Senior High"</span>,])),</span>
+<span id="cb71-21"><a href="#cb71-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">special_schools =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(., </span>
+<span id="cb71-22"><a href="#cb71-22" aria-hidden="true" tabindex="-1"></a>                            jakarta_schools_utm[jakarta_schools_utm<span class="sc">$</span>school_level <span class="sc">==</span> <span class="st">"Special Education"</span>,])),</span>
+<span id="cb71-23"><a href="#cb71-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate school density (schools per square km)</span></span>
+<span id="cb71-24"><a href="#cb71-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">school_density =</span> total_schools <span class="sc">/</span> total_area,</span>
+<span id="cb71-25"><a href="#cb71-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">elementary_density =</span> elementary_schools <span class="sc">/</span> total_area,</span>
+<span id="cb71-26"><a href="#cb71-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">junior_high_density =</span> junior_schools <span class="sc">/</span> total_area,</span>
+<span id="cb71-27"><a href="#cb71-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">senior_high_density =</span> senior_schools <span class="sc">/</span> total_area,</span>
+<span id="cb71-28"><a href="#cb71-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">special_ed_density =</span> special_schools <span class="sc">/</span> total_area</span>
+<span id="cb71-29"><a href="#cb71-29" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(school_density_analysis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6 features and 15 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 686587.9 ymin: 9311572 xmax: 700349.5 ymax: 9325980
+Projected CRS: WGS 84 / UTM zone 48S
+# A tibble: 6 × 16
+  city               district           total_population total_area popn_density
+  &lt;chr&gt;              &lt;chr&gt;                         &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
+1 Kota Jakarta Barat Kec. Cengkareng              562072      26.5        21178.
+2 Kota Jakarta Barat Kec. Grogol Petam…           239565      11.0        21878.
+3 Kota Jakarta Barat Kec. Kali Deres              435837      28.8        15144.
+4 Kota Jakarta Barat Kec. Kebon Jeruk             355830      17.4        20497.
+5 Kota Jakarta Barat Kec. Kembangan               296004      25.5        11617.
+6 Kota Jakarta Barat Kec. Palmerah                231232       7.44       31080.
+# ℹ 11 more variables: geometry &lt;POLYGON [m]&gt;, total_schools &lt;int&gt;,
+#   elementary_schools &lt;int&gt;, junior_schools &lt;int&gt;, senior_schools &lt;int&gt;,
+#   special_schools &lt;int&gt;, school_density &lt;dbl&gt;, elementary_density &lt;dbl&gt;,
+#   junior_high_density &lt;dbl&gt;, senior_high_density &lt;dbl&gt;,
+#   special_ed_density &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Basic correlation analysis</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>analysis_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Education ratios</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">higher_ed_ratio =</span> batas_edu_levels<span class="sc">$</span>higher_ed_ratio,</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">basic_ed_ratio =</span> batas_edu_levels<span class="sc">$</span>basic_ed_ratio,</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">no_ed_ratio =</span> batas_edu_levels<span class="sc">$</span>no_ed_ratio,</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># School accessibility metrics</span></span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">school_density =</span> clustering_data<span class="sc">$</span>school_density,</span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">elementary_ratio =</span> clustering_data<span class="sc">$</span>elementary_ratio,</span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">junior_ratio =</span> clustering_data<span class="sc">$</span>junior_ratio,</span>
+<span id="cb74-12"><a href="#cb74-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">senior_ratio =</span> clustering_data<span class="sc">$</span>senior_ratio,</span>
+<span id="cb74-13"><a href="#cb74-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">public_ratio =</span> clustering_data<span class="sc">$</span>public_ratio,</span>
+<span id="cb74-14"><a href="#cb74-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">nearest_school_dist =</span> batas_utm<span class="sc">$</span>nearest_school_dist</span>
+<span id="cb74-15"><a href="#cb74-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create correlation matrix</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>correlation_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(analysis_data, <span class="at">use =</span> <span class="st">"complete.obs"</span>)</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize correlations</span></span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(correlation_matrix, </span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">method =</span> <span class="st">"color"</span>, </span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">addCoef.col =</span> <span class="st">"black"</span>, </span>
+<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">number.cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb75-10"><a href="#cb75-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb75-11"><a href="#cb75-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Correlation Matrix: Education Levels and School Accessibility"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create scatter plots for key relationships</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(analysis_data, <span class="fu">aes</span>(<span class="at">x =</span> school_density, <span class="at">y =</span> higher_ed_ratio)) <span class="sc">+</span></span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Higher Education vs School Density"</span>,</span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"School Density"</span>,</span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Higher Education Ratio"</span>) <span class="sc">+</span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(analysis_data, <span class="fu">aes</span>(<span class="at">x =</span> nearest_school_dist, <span class="at">y =</span> higher_ed_ratio)) <span class="sc">+</span></span>
+<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Higher Education vs Distance to Nearest School"</span>,</span>
+<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Distance to Nearest School"</span>,</span>
+<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Higher Education Ratio"</span>) <span class="sc">+</span></span>
+<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb76-17"><a href="#cb76-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-18"><a href="#cb76-18" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(analysis_data, <span class="fu">aes</span>(<span class="at">x =</span> senior_ratio, <span class="at">y =</span> higher_ed_ratio)) <span class="sc">+</span></span>
+<span id="cb76-19"><a href="#cb76-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb76-20"><a href="#cb76-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb76-21"><a href="#cb76-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Higher Education vs Senior School Ratio"</span>,</span>
+<span id="cb76-22"><a href="#cb76-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Senior School Ratio"</span>,</span>
+<span id="cb76-23"><a href="#cb76-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Higher Education Ratio"</span>) <span class="sc">+</span></span>
+<span id="cb76-24"><a href="#cb76-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb76-25"><a href="#cb76-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-26"><a href="#cb76-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange plots</span></span>
+<span id="cb76-27"><a href="#cb76-27" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p2, p3, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'
+`geom_smooth()` using formula = 'y ~ x'
+`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing non-finite outside the scale range
+(`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit multiple regression model</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(higher_ed_ratio <span class="sc">~</span> school_density <span class="sc">+</span> nearest_school_dist <span class="sc">+</span> </span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>            elementary_ratio <span class="sc">+</span> junior_ratio <span class="sc">+</span> senior_ratio <span class="sc">+</span> public_ratio,</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> analysis_data)</span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Model diagnostics</span></span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = higher_ed_ratio ~ school_density + nearest_school_dist + 
+    elementary_ratio + junior_ratio + senior_ratio + public_ratio, 
+    data = analysis_data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.14810 -0.05414 -0.00542  0.03036  0.32091 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)          2.971e-01  1.313e-01   2.263   0.0245 *
+school_density       7.974e-04  4.377e-04   1.822   0.0696 .
+nearest_school_dist  1.361e-05  3.077e-05   0.442   0.6587  
+elementary_ratio    -1.444e-01  1.315e-01  -1.099   0.2730  
+junior_ratio        -1.464e-01  1.407e-01  -1.041   0.2990  
+senior_ratio        -2.078e-01  1.353e-01  -1.535   0.1259  
+public_ratio         1.610e-03  2.695e-02   0.060   0.9524  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.076 on 252 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.0269,    Adjusted R-squared:  0.003728 
+F-statistic: 1.161 on 6 and 252 DF,  p-value: 0.3278</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ols_vif_tol</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Variables  Tolerance       VIF
+1      school_density 0.95295384  1.049369
+2 nearest_school_dist 0.97602641  1.024562
+3    elementary_ratio 0.05078453 19.691034
+4        junior_ratio 0.12818234  7.801387
+5        senior_ratio 0.08188472 12.212291
+6        public_ratio 0.76809224  1.301927</code></pre>
+</div>
+</div>
+</section>
+<section id="analysis" class="level3">
+<h3 class="anchored" data-anchor-id="analysis">5.1.3 Analysis</h3>
+<ul>
+<li><p>The very low R-squared (0.02692) and adjusted R-squared (0.003747) suggest that:</p>
+<ul>
+<li><p>The global model explains very little of the variation in higher education ratios</p></li>
+<li><p>GWR might be more appropriate since it can capture local variations that this global model misses</p></li>
+</ul></li>
+</ul>
+<!-- -->
+<ul>
+<li><p>Variable selection for GWR:</p>
+<ul>
+<li><p>Only school_density shows marginal significance (p = 0.0697)</p></li>
+<li><p>nearest_school_dist has very low significance (p = 0.6549)</p></li>
+<li><p>The ratio variables all have relatively high p-values</p></li>
+</ul></li>
+</ul>
+<p>We will now compare simple and complex models.</p>
+</section>
+</section>
+<section id="its-time-for-gwr" class="level2">
+<h2 class="anchored" data-anchor-id="its-time-for-gwr">6.0 It’s time for GWR</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First identify complete cases</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>complete_indices <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="sc">!</span><span class="fu">is.na</span>(clustering_data<span class="sc">$</span>senior_ratio))</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate centroids first, explicitly handling the warning</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>centroids <span class="ot">&lt;-</span> <span class="fu">st_centroid</span>(batas_edu_levels, <span class="at">of_largest_polygon =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>centroid_coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(centroids)[complete_indices,]</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create spatial dataframes with modern CRS syntax</span></span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>simple_gwr_data <span class="ot">&lt;-</span> <span class="fu">SpatialPointsDataFrame</span>(</span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">coords =</span> centroid_coords,</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">higher_ed_ratio =</span> batas_edu_levels<span class="sc">$</span>higher_ed_ratio[complete_indices],</span>
+<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">school_density =</span> clustering_data<span class="sc">$</span>school_density[complete_indices]</span>
+<span id="cb86-9"><a href="#cb86-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb86-10"><a href="#cb86-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">proj4string =</span> <span class="fu">CRS</span>(<span class="st">"EPSG:32748"</span>)  <span class="co"># Modern syntax for UTM Zone 48S</span></span>
+<span id="cb86-11"><a href="#cb86-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb86-12"><a href="#cb86-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-13"><a href="#cb86-13" aria-hidden="true" tabindex="-1"></a>selected_gwr_data <span class="ot">&lt;-</span> <span class="fu">SpatialPointsDataFrame</span>(</span>
+<span id="cb86-14"><a href="#cb86-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">coords =</span> centroid_coords,</span>
+<span id="cb86-15"><a href="#cb86-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb86-16"><a href="#cb86-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">higher_ed_ratio =</span> batas_edu_levels<span class="sc">$</span>higher_ed_ratio[complete_indices],</span>
+<span id="cb86-17"><a href="#cb86-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">school_density =</span> clustering_data<span class="sc">$</span>school_density[complete_indices],</span>
+<span id="cb86-18"><a href="#cb86-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">senior_ratio =</span> clustering_data<span class="sc">$</span>senior_ratio[complete_indices]</span>
+<span id="cb86-19"><a href="#cb86-19" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb86-20"><a href="#cb86-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">proj4string =</span> <span class="fu">CRS</span>(<span class="st">"EPSG:32748"</span>)  <span class="co"># Modern syntax for UTM Zone 48S</span></span>
+<span id="cb86-21"><a href="#cb86-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb86-22"><a href="#cb86-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-23"><a href="#cb86-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Since the data is already in UTM Zone 48S, we don't need to transform it</span></span>
+<span id="cb86-24"><a href="#cb86-24" aria-hidden="true" tabindex="-1"></a>simple_gwr_data_proj <span class="ot">&lt;-</span> simple_gwr_data</span>
+<span id="cb86-25"><a href="#cb86-25" aria-hidden="true" tabindex="-1"></a>selected_gwr_data_proj <span class="ot">&lt;-</span> selected_gwr_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Cool. Let’s now do other variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>bw.fixed <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> higher_ed_ratio <span class="sc">~</span> school_density, </span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> simple_gwr_data_proj,</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">approach =</span> <span class="st">"CV"</span>,</span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"gaussian"</span>,</span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">adaptive =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">longlat =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fixed bandwidth: 22400.97 CV score: 1.482623 
+Fixed bandwidth: 13847.33 CV score: 1.446493 
+Fixed bandwidth: 8560.89 CV score: 1.365928 
+Fixed bandwidth: 5293.689 CV score: 1.229182 
+Fixed bandwidth: 3274.449 CV score: 1.11576 
+Fixed bandwidth: 2026.489 CV score: 1.05054 
+Fixed bandwidth: 1255.208 CV score: 1.046343 
+Fixed bandwidth: 778.5296 CV score: 1.416962 
+Fixed bandwidth: 1549.811 CV score: 1.033807 
+Fixed bandwidth: 1731.886 CV score: 1.037553 
+Fixed bandwidth: 1437.283 CV score: 1.034906 
+Fixed bandwidth: 1619.357 CV score: 1.034602 
+Fixed bandwidth: 1506.829 CV score: 1.033832 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run fixed bandwidth GWR</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>gwr.fixed <span class="ot">&lt;-</span> <span class="fu">gwr.basic</span>(</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> higher_ed_ratio <span class="sc">~</span> school_density,</span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> simple_gwr_data_proj,</span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">bw =</span> bw.fixed,</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"gaussian"</span>,</span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">adaptive =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">longlat =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-10"><a href="#cb89-10" aria-hidden="true" tabindex="-1"></a>bw.adaptive <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(</span>
+<span id="cb89-11"><a href="#cb89-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> higher_ed_ratio <span class="sc">~</span> school_density,</span>
+<span id="cb89-12"><a href="#cb89-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> simple_gwr_data_proj,</span>
+<span id="cb89-13"><a href="#cb89-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">approach =</span> <span class="st">"CV"</span>,</span>
+<span id="cb89-14"><a href="#cb89-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"gaussian"</span>,</span>
+<span id="cb89-15"><a href="#cb89-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">adaptive =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb89-16"><a href="#cb89-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">longlat =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Adaptive bandwidth: 167 CV score: 1.429762 
+Adaptive bandwidth: 111 CV score: 1.38874 
+Adaptive bandwidth: 75 CV score: 1.341174 
+Adaptive bandwidth: 54 CV score: 1.297753 
+Adaptive bandwidth: 40 CV score: 1.256997 
+Adaptive bandwidth: 32 CV score: 1.229152 
+Adaptive bandwidth: 26 CV score: 1.20383 
+Adaptive bandwidth: 23 CV score: 1.184859 
+Adaptive bandwidth: 20 CV score: 1.168994 
+Adaptive bandwidth: 19 CV score: 1.160711 
+Adaptive bandwidth: 18 CV score: 1.157655 
+Adaptive bandwidth: 17 CV score: 1.152698 
+Adaptive bandwidth: 17 CV score: 1.152698 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run adaptive bandwidth GWR</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>gwr.adaptive <span class="ot">&lt;-</span> <span class="fu">gwr.basic</span>(</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> higher_ed_ratio <span class="sc">~</span> school_density,</span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> simple_gwr_data_proj,</span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">bw =</span> bw.adaptive,</span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"gaussian"</span>,</span>
+<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">adaptive =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">longlat =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert SDF into sf data.frame</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>gwr.sf.fixed <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(gwr.fixed<span class="sc">$</span>SDF) <span class="sc">%&gt;%</span></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="fu">st_crs</span>(batas_edu_levels))</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>gwr.sf.adaptive <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(gwr.adaptive<span class="sc">$</span>SDF) <span class="sc">%&gt;%</span></span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="fu">st_crs</span>(batas_edu_levels))</span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare models</span></span>
+<span id="cb92-9"><a href="#cb92-9" aria-hidden="true" tabindex="-1"></a>model_comparison <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb92-10"><a href="#cb92-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Fixed"</span>, <span class="st">"Adaptive"</span>),</span>
+<span id="cb92-11"><a href="#cb92-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">Bandwidth =</span> <span class="fu">c</span>(bw.fixed, bw.adaptive),</span>
+<span id="cb92-12"><a href="#cb92-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">AICc =</span> <span class="fu">c</span>(gwr.fixed<span class="sc">$</span>GW.diagnostic<span class="sc">$</span>AICc,</span>
+<span id="cb92-13"><a href="#cb92-13" aria-hidden="true" tabindex="-1"></a>           gwr.adaptive<span class="sc">$</span>GW.diagnostic<span class="sc">$</span>AICc),</span>
+<span id="cb92-14"><a href="#cb92-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">R2 =</span> <span class="fu">c</span>(gwr.fixed<span class="sc">$</span>GW.diagnostic<span class="sc">$</span>gw.R2,</span>
+<span id="cb92-15"><a href="#cb92-15" aria-hidden="true" tabindex="-1"></a>         gwr.adaptive<span class="sc">$</span>GW.diagnostic<span class="sc">$</span>gw.R2),</span>
+<span id="cb92-16"><a href="#cb92-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Adj_R2 =</span> <span class="fu">c</span>(gwr.fixed<span class="sc">$</span>GW.diagnostic<span class="sc">$</span>gwR2.adj,</span>
+<span id="cb92-17"><a href="#cb92-17" aria-hidden="true" tabindex="-1"></a>             gwr.adaptive<span class="sc">$</span>GW.diagnostic<span class="sc">$</span>gwR2.adj)</span>
+<span id="cb92-18"><a href="#cb92-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb92-19"><a href="#cb92-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-20"><a href="#cb92-20" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Model Diagnostics:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Model Diagnostics:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(model_comparison)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Model Bandwidth      AICc        R2    Adj_R2
+1    Fixed  1549.811 -631.6885 0.5947280 0.3526755
+2 Adaptive    17.000 -665.0109 0.3251825 0.2586090</code></pre>
+</div>
+</div>
+<p>ok cool. Although AICC for selected is lower, it’s more complex than the simple GWR. thus we should probably stick to the simple GWR so it’s easier to compute and interpret.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>fixed_r2_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(batas_edu_levels) <span class="sc">+</span></span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(gwr.sf.fixed) <span class="sc">+</span>  </span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">col =</span> <span class="st">"Local_R2"</span>,</span>
+<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">size =</span> <span class="fl">0.1</span>,</span>
+<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">border.col =</span> <span class="st">"gray60"</span>,</span>
+<span id="cb96-7"><a href="#cb96-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">border.lwd =</span> <span class="dv">1</span>,</span>
+<span id="cb96-8"><a href="#cb96-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"viridis"</span>,</span>
+<span id="cb96-9"><a href="#cb96-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Local R² (Fixed)"</span>) <span class="sc">+</span></span>
+<span id="cb96-10"><a href="#cb96-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Fixed Bandwidth GWR"</span>,</span>
+<span id="cb96-11"><a href="#cb96-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="dv">1</span>)</span>
+<span id="cb96-12"><a href="#cb96-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-13"><a href="#cb96-13" aria-hidden="true" tabindex="-1"></a>adaptive_r2_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(batas_edu_levels) <span class="sc">+</span></span>
+<span id="cb96-14"><a href="#cb96-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb96-15"><a href="#cb96-15" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(gwr.sf.adaptive) <span class="sc">+</span>  </span>
+<span id="cb96-16"><a href="#cb96-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">col =</span> <span class="st">"Local_R2"</span>,</span>
+<span id="cb96-17"><a href="#cb96-17" aria-hidden="true" tabindex="-1"></a>          <span class="at">size =</span> <span class="fl">0.1</span>,</span>
+<span id="cb96-18"><a href="#cb96-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">border.col =</span> <span class="st">"gray60"</span>,</span>
+<span id="cb96-19"><a href="#cb96-19" aria-hidden="true" tabindex="-1"></a>          <span class="at">border.lwd =</span> <span class="dv">1</span>,</span>
+<span id="cb96-20"><a href="#cb96-20" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"viridis"</span>,</span>
+<span id="cb96-21"><a href="#cb96-21" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Local R² (Adaptive)"</span>) <span class="sc">+</span></span>
+<span id="cb96-22"><a href="#cb96-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Adaptive Bandwidth GWR"</span>,</span>
+<span id="cb96-23"><a href="#cb96-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="dv">1</span>)</span>
+<span id="cb96-24"><a href="#cb96-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-25"><a href="#cb96-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(fixed_r2_map, adaptive_r2_map, </span>
+<span id="cb96-26"><a href="#cb96-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>fixed_coef_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(batas_edu_levels) <span class="sc">+</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(gwr.sf.fixed) <span class="sc">+</span>  </span>
+<span id="cb97-4"><a href="#cb97-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">col =</span> <span class="st">"school_density"</span>,</span>
+<span id="cb97-5"><a href="#cb97-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">size =</span> <span class="fl">0.1</span>,</span>
+<span id="cb97-6"><a href="#cb97-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">border.col =</span> <span class="st">"gray60"</span>,</span>
+<span id="cb97-7"><a href="#cb97-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">border.lwd =</span> <span class="dv">1</span>,</span>
+<span id="cb97-8"><a href="#cb97-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"RdBu"</span>,</span>
+<span id="cb97-9"><a href="#cb97-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Coefficient (Fixed)"</span>) <span class="sc">+</span></span>
+<span id="cb97-10"><a href="#cb97-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"School Density Effect (Fixed)"</span>,</span>
+<span id="cb97-11"><a href="#cb97-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="dv">1</span>)</span>
+<span id="cb97-12"><a href="#cb97-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb97-13"><a href="#cb97-13" aria-hidden="true" tabindex="-1"></a>adaptive_coef_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(batas_edu_levels) <span class="sc">+</span></span>
+<span id="cb97-14"><a href="#cb97-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb97-15"><a href="#cb97-15" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(gwr.sf.adaptive) <span class="sc">+</span>  </span>
+<span id="cb97-16"><a href="#cb97-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">col =</span> <span class="st">"school_density"</span>,</span>
+<span id="cb97-17"><a href="#cb97-17" aria-hidden="true" tabindex="-1"></a>          <span class="at">size =</span> <span class="fl">0.1</span>,</span>
+<span id="cb97-18"><a href="#cb97-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">border.col =</span> <span class="st">"gray60"</span>,</span>
+<span id="cb97-19"><a href="#cb97-19" aria-hidden="true" tabindex="-1"></a>          <span class="at">border.lwd =</span> <span class="dv">1</span>,</span>
+<span id="cb97-20"><a href="#cb97-20" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"RdBu"</span>,</span>
+<span id="cb97-21"><a href="#cb97-21" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Coefficient (Adaptive)"</span>) <span class="sc">+</span></span>
+<span id="cb97-22"><a href="#cb97-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"School Density Effect (Adaptive)"</span>,</span>
+<span id="cb97-23"><a href="#cb97-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="dv">1</span>)</span>
+<span id="cb97-24"><a href="#cb97-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb97-25"><a href="#cb97-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(fixed_coef_map, adaptive_coef_map, </span>
+<span id="cb97-26"><a href="#cb97-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Variable(s) "school_density" contains positive and negative values, so midpoint is set to 0. Set midpoint = NA to show the full spectrum of the color palette.
+Variable(s) "school_density" contains positive and negative values, so midpoint is set to 0. Set midpoint = NA to show the full spectrum of the color palette.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of Local R2</span></span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Local R² Summary (Fixed):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Local R² Summary (Fixed):</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(gwr.fixed<span class="sc">$</span>SDF<span class="sc">$</span>Local_R2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.1598  0.3613  0.5836  0.5535  0.6912  0.9980 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Local R² Summary (Adaptive):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Local R² Summary (Adaptive):</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(gwr.adaptive<span class="sc">$</span>SDF<span class="sc">$</span>Local_R2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.1176  0.2020  0.2773  0.2829  0.3805  0.4695 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of Coefficients</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Coefficient Summary (Fixed):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Coefficient Summary (Fixed):</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(gwr.fixed<span class="sc">$</span>SDF<span class="sc">$</span>school_density))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+-5.817e-03 -7.093e-04  1.125e-05  2.957e-04  9.816e-04  5.726e-03 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Coefficient Summary (Adaptive):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Coefficient Summary (Adaptive):</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(gwr.adaptive<span class="sc">$</span>SDF<span class="sc">$</span>school_density))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+-0.0012656 -0.0004350  0.0001717  0.0004574  0.0010657  0.0037250 </code></pre>
+</div>
+</div>
+<p>We’ll now export the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transform coordinates back to WGS84 for mapping</span></span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>simple_gwr_data_wgs84 <span class="ot">&lt;-</span> <span class="fu">spTransform</span>(simple_gwr_data_proj, <span class="fu">CRS</span>(<span class="st">"EPSG:4326"</span>))</span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>gwr_results <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Model results</span></span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fixed =</span> <span class="fu">list</span>(</span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> gwr.fixed,</span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">bandwidth =</span> bw.fixed,</span>
+<span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">local_R2 =</span> gwr.fixed<span class="sc">$</span>SDF<span class="sc">$</span>Local_R2,</span>
+<span id="cb115-10"><a href="#cb115-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">coefficients =</span> gwr.fixed<span class="sc">$</span>SDF<span class="sc">$</span>school_density,</span>
+<span id="cb115-11"><a href="#cb115-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">diagnostics =</span> gwr.fixed<span class="sc">$</span>GW.diagnostic</span>
+<span id="cb115-12"><a href="#cb115-12" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb115-13"><a href="#cb115-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb115-14"><a href="#cb115-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">adaptive =</span> <span class="fu">list</span>(</span>
+<span id="cb115-15"><a href="#cb115-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> gwr.adaptive,</span>
+<span id="cb115-16"><a href="#cb115-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">bandwidth =</span> bw.adaptive,</span>
+<span id="cb115-17"><a href="#cb115-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">local_R2 =</span> gwr.adaptive<span class="sc">$</span>SDF<span class="sc">$</span>Local_R2,</span>
+<span id="cb115-18"><a href="#cb115-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">coefficients =</span> gwr.adaptive<span class="sc">$</span>SDF<span class="sc">$</span>school_density,</span>
+<span id="cb115-19"><a href="#cb115-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">diagnostics =</span> gwr.adaptive<span class="sc">$</span>GW.diagnostic</span>
+<span id="cb115-20"><a href="#cb115-20" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb115-21"><a href="#cb115-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb115-22"><a href="#cb115-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Spatial data with both coordinate systems</span></span>
+<span id="cb115-23"><a href="#cb115-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">spatial =</span> <span class="fu">list</span>(</span>
+<span id="cb115-24"><a href="#cb115-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">coordinates_utm =</span> <span class="fu">coordinates</span>(simple_gwr_data_proj),  <span class="co"># UTM coordinates for analysis</span></span>
+<span id="cb115-25"><a href="#cb115-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">coordinates_wgs84 =</span> <span class="fu">coordinates</span>(simple_gwr_data_wgs84),  <span class="co"># WGS84 coordinates for mapping</span></span>
+<span id="cb115-26"><a href="#cb115-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">batas =</span> <span class="fu">st_transform</span>(batas_edu_levels, <span class="dv">4326</span>),  <span class="co"># Transform boundaries to WGS84 too</span></span>
+<span id="cb115-27"><a href="#cb115-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">utm_crs =</span> <span class="st">"EPSG:32748"</span>,</span>
+<span id="cb115-28"><a href="#cb115-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">wgs84_crs =</span> <span class="st">"EPSG:4326"</span></span>
+<span id="cb115-29"><a href="#cb115-29" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb115-30"><a href="#cb115-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb115-31"><a href="#cb115-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Original data</span></span>
+<span id="cb115-32"><a href="#cb115-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">list</span>(</span>
+<span id="cb115-33"><a href="#cb115-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">higher_ed_ratio =</span> simple_gwr_data<span class="sc">$</span>higher_ed_ratio,</span>
+<span id="cb115-34"><a href="#cb115-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">school_density =</span> simple_gwr_data<span class="sc">$</span>school_density</span>
+<span id="cb115-35"><a href="#cb115-35" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb115-36"><a href="#cb115-36" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb115-37"><a href="#cb115-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-38"><a href="#cb115-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to RDS</span></span>
+<span id="cb115-39"><a href="#cb115-39" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(gwr_results, <span class="st">"data/rds/gwr_results.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Below is the interactive shinyapp:</p>
+<p><a href="https://hxyap-is415-workbook.shinyapps.io/takehome3-gwr/" class="uri">https://hxyap-is415-workbook.shinyapps.io/takehome3-gwr/</a></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

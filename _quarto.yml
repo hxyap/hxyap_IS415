@@ -50,6 +50,8 @@ website:
               href: "takehome/ex1/takehome1.html"
             - text: "ex2"
               href: "takehome/ex2/takehome2.html"
+            - text: "ex3"
+              href: "takehome/ex3/takehome3.html"
     right: 
       - href: index.qmd
         text: Home
