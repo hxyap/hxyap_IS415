@@ -1164,17 +1164,17 @@ After looking at our data and analysis, I came up with 2 possible goals for our 
 
 Based on these, there were some designs drafted:
 
-![Prototype 1](data/images/proto1.png){width="400"} ![Prototype 2](data/images/proto2.png){width="400"} ![Prototype 3](data/images/proto3.png){width="400"}
+![Prototype 1](img/proto1.png){width="400"} ![Prototype 2](img/proto2.png){width="400"} ![Prototype 3](img/proto3.png){width="400"}
 
 In the end, I ended up with a variant of Prototype 1 and 3 as #2 might squeeze the navigational elements too close when integrating with my teams' components. I liked the side bar on 3, but I also liked the comfortable UI toggle from Prototype 1 next to the downloads which lets policy makers easily download the data after tabbing through the visualizations.
 
 Thus #1 and #3 birthed my final prototype, which fulfilled all the points mentioned above in my "Users' wants" list –
 
-![Final UI](data/images/final.png){width="400"}
+![Final UI](img/final.png){width="400"}
 
 Below is an annotation of how this final design, inspired from the previous designs, neatly fulfils the user's wants.
 
-![Annotated final UI](data/images/annotated.png){width="400"}
+![Annotated final UI](img/annotated.png){width="400"}
 
 Thus, we now settle on this final UI which helps us efficiently and quickly communicate insights to policy makers, and delivers the analysis and data we've done so far through this simple dashboard.
 
