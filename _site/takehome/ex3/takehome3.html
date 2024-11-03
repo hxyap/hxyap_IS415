@@ -276,6 +276,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#local-gwr-for-targeted-investment" id="toc-local-gwr-for-targeted-investment" class="nav-link" data-scroll-target="#local-gwr-for-targeted-investment">7.0 Local GWR for targeted investment</a></li>
   </ul></li>
+  <li><a href="#prototyping-ui-design." id="toc-prototyping-ui-design." class="nav-link" data-scroll-target="#prototyping-ui-design.">8.0 Prototyping UI design.</a>
+  <ul class="collapse">
+  <li><a href="#answering-the-questions" id="toc-answering-the-questions" class="nav-link" data-scroll-target="#answering-the-questions">8.1.1 Answering the questions</a></li>
+  <li><a href="#storyboarding-for-features" id="toc-storyboarding-for-features" class="nav-link" data-scroll-target="#storyboarding-for-features">8.2 Storyboarding for features</a></li>
+  <li><a href="#ui-design-conclusion" id="toc-ui-design-conclusion" class="nav-link" data-scroll-target="#ui-design-conclusion">8.3 UI Design conclusion</a></li>
+  </ul></li>
+  <li><a href="#improvements-and-followup" id="toc-improvements-and-followup" class="nav-link" data-scroll-target="#improvements-and-followup">9.0 Improvements and Followup</a></li>
   </ul>
 </nav>
     </div>
@@ -1850,14 +1857,78 @@ Summary Statistics for Kota Jakarta Utara :</code></pre>
 <span id="cb128-15"><a href="#cb128-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb128-16"><a href="#cb128-16" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(opportunity_data, <span class="st">"data/rds/opp_score.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Thanks for following along. We also have a shinyapp for you to explore and export our data, and to play and interact with our visualizations. For further reading, do read into the PPDB which explains the zoning policy in Indonesia, with its fair share of criticism on equity. We drew similar inspiration from its measures (accessibility, density, commute) etc to construct a simpler but hopefully similar model, and I hope this has inspired you and helped you learn about about how decisions are made when it comes to investing and implementing policy to uplift youths.</p>
-<p>Below is the interactive shinyapp:</p>
-<p><a href="https://hxyap-is415-workbook.shinyapps.io/takehome3-gwr/" class="uri">https://hxyap-is415-workbook.shinyapps.io/takehome3-gwr/</a></p>
-<p>Thank you,</p>
-<p>From G1T7</p>
-
-
 </section>
+</section>
+<section id="prototyping-ui-design." class="level2">
+<h2 class="anchored" data-anchor-id="prototyping-ui-design.">8.0 Prototyping UI design.</h2>
+<p>For UI design prototyping, these were my guiding questions:</p>
+<ol type="1">
+<li>What am I measuring?</li>
+<li>Who is it for?</li>
+<li>When and how are we looking at it?</li>
+</ol>
+<p>Let’s address these questions and how I used them to build some prototypes.</p>
+<section id="answering-the-questions" class="level3">
+<h3 class="anchored" data-anchor-id="answering-the-questions">8.1.1 Answering the questions</h3>
+<p>Given that I took on handling the GWR analysis on this app, it was a natural conclusion from our course work to think about using fixed/adaptive bandwidth to build a predictive model, and from there extrapolate insights about the predictiveness of the parameters we’ve chosen.</p>
+<p>But then, who is it for? Given the nature of the data, my assumption was that we would be building this for potential policymakers in order to choose what regions or subdistricts to look into, as seen in the previous analysis. Thus, we followed the journey of our data to conclude and find some sub districts in Jakarta to focus on when it came to efforts to expanding density of public senior high schools and such, in order to make higher education more accessible and easy with proven results based on the relevancy of density instead of other potential confounding factors, which we have handled through R2 and other metrics.</p>
+<p>This leads us to our final question: When and how? Since this dashboard is more of a snapshot of data than urgent, LIVE data, I think it is an easy assumption that we can use this as a simple visual dashboard to present our findings, with perhaps some features to download a csv for further analysis. Thus, this is where we start off for our UI design.</p>
+</section>
+<section id="storyboarding-for-features" class="level3">
+<h3 class="anchored" data-anchor-id="storyboarding-for-features">8.2 Storyboarding for features</h3>
+<p>After looking at our data and analysis, I came up with 2 possible goals for our dashboard:</p>
+<ol type="1">
+<li>GWR tab – the user should be able to:
+<ol type="1">
+<li>See local R^2 and coefficients at a glance</li>
+<li>Download a csv of the results for verification/use</li>
+<li>Choose between fixed and adaptive bandwidth</li>
+<li>Compare models at a glance</li>
+<li>(Optional) Search through results in the dashboard</li>
+</ol></li>
+<li>Analysis tab - the user should be able to:
+<ol type="1">
+<li>Show opportunity score and other metrics to pinpoint what districts / subdistricts to develop</li>
+<li>Look at statistics for a highlighted district at a glance.</li>
+<li>Download a csv for results</li>
+<li>(Optional) Search results of csv in dashboard.</li>
+</ol></li>
+</ol>
+<p>Based on these, there were some designs drafted:</p>
+<p><img src="data/images/proto1.png" class="img-fluid" width="400" alt="Prototype 1"> <img src="data/images/proto2.png" class="img-fluid" width="400" alt="Prototype 2"> <img src="data/images/proto3.png" class="img-fluid" width="400" alt="Prototype 3"></p>
+<p>In the end, I ended up with a variant of Prototype 1 and 3 as #2 might squeeze the navigational elements too close when integrating with my teams’ components. I liked the side bar on 3, but I also liked the comfortable UI toggle from Prototype 1 next to the downloads which lets policy makers easily download the data after tabbing through the visualizations.</p>
+<p>Thus #1 and #3 birthed my final prototype, which fulfilled all the points mentioned above in my “Users’ wants” list –</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/final.png" class="img-fluid figure-img" width="400"></p>
+<figcaption>Final UI</figcaption>
+</figure>
+</div>
+<p>Below is an annotation of how this final design, inspired from the previous designs, neatly fulfils the user’s wants.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/annotated.png" class="img-fluid figure-img" width="400"></p>
+<figcaption>Annotated final UI</figcaption>
+</figure>
+</div>
+<p>Thus, we now settle on this final UI which helps us efficiently and quickly communicate insights to policy makers, and delivers the analysis and data we’ve done so far through this simple dashboard.</p>
+</section>
+<section id="ui-design-conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="ui-design-conclusion">8.3 UI Design conclusion</h3>
+<p>Overall, this UI Design prototyping was heavily derived from both prototyping examples in class, as well as prior classes in UI design. This was a great explanation for my user wants checklist: <a href="https://www.atlassian.com/agile/project-management/user-stories" class="uri">https://www.atlassian.com/agile/project-management/user-stories</a>. By focusing on our potential end user, we can best choose features that ensures that all their potential needs are met by our dashboards and applications.</p>
+</section>
+</section>
+<section id="improvements-and-followup" class="level2">
+<h2 class="anchored" data-anchor-id="improvements-and-followup">9.0 Improvements and Followup</h2>
+<p>In my opinion, there might be some followup:</p>
+<ul>
+<li><p>Maybe a link to the original data source with credits?</p></li>
+<li><p>Some related research papers so the viewer can understand our inspiration and viewpoint</p></li>
+<li><p>Maybe some other prep material so they can use similar datasets and shp files as us so they can replicate our findings.</p></li>
+</ul>
+<p>This may be followed up in my team’s final product (G1T7).</p>
+
+
 </section>
 
 </main> <!-- /main -->
