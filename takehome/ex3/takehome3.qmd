@@ -51,6 +51,8 @@ indo_schools_kaggle <- read_csv("data/aspatial/complete_data.csv")
 head(indo_schools_kaggle, n=20)
 ```
 
+We do some filtering and data manipulation here to restrict our data to jakarta only.
+
 ```{r}
 jakarta_schools <- indo_schools_kaggle %>% 
   filter(province_name == "DKI JAKARTA",
@@ -109,6 +111,8 @@ batas <- st_read("data/geospatial", layer = "BATAS_DESA_DESEMBER_2019_DUKCAPIL_D
 ```{r}
 head(batas)
 ```
+
+We map our districts here manually.
 
 ```{r}
 district_mapping <- c(
@@ -445,6 +449,8 @@ clustering_data <- school_counts %>%
 
 ```
 
+After the neighbour is done, we construct the queens matrix/spatial weights with costs.
+
 ```{r}
 jakarta_nb <- poly2nb(school_counts, queen=TRUE)
 # 2. Calculate edge costs using the neighborhood structure
@@ -519,6 +525,16 @@ print("Cluster Summary:")
 print(cluster_summary)
 
 ```
+
+Key Takeaways:
+
+1.  Clear spatial inequality in school distribution
+
+2.  Cluster 3 appears to be best-served educationally
+
+3.  Most areas fall into Cluster 1, suggesting this is the "standard" level of service
+
+4.  Secondary school availability is consistently lower than elementary
 
 ### 4.1.2 Takeaways from hclust vs Skater
 
@@ -603,6 +619,8 @@ edu_map <- tm_shape(batas_edu_levels) +
 
 print(edu_map)
 ```
+
+It seems central Jakarta trends more educated overall, with a more uniform distribution of education in central compared to East Jakarta. There seems to also be clustering of high education rates, suggesting possible neighborhood effects.
 
 ### 5.1.2 Building GWR model
 
@@ -725,8 +743,6 @@ ols_vif_tol(model)
 
     -   GWR might be more appropriate since it can capture local variations that this global model misses
 
-<!-- -->
-
 -   Variable selection for GWR:
 
     -   Only school_density shows marginal significance (p = 0.0697)
@@ -738,6 +754,24 @@ ols_vif_tol(model)
 We will now compare simple and complex models.
 
 ## 6.0 It's time for GWR
+
+Our analysis employs both fixed and adaptive bandwidth GWR to examine how school density affects higher education attainment across Jakarta. This dual approach provides complementary insights:
+
+1.  Spatial Variation in Relationships:
+
+-   Fixed bandwidth GWR reveals the base relationship between school accessibility and education levels at a consistent spatial scale
+
+-   Adaptive bandwidth GWR accounts for Jakarta's varying urban density, providing more localized insights in densely populated areas
+
+2.  Policy Implications:
+
+-   Areas with strong positive relationships between school density and education levels might benefit most from new schools
+
+-   Regions where the relationship is weak may need different interventions beyond improving school accessibility
+
+-   Local context matters: what works in one district may not work in another.
+
+We thus embark being using some centroids to calculate logical centers for regions in order to extrapolate our relevant data to build both models. Afterwards, we can compare them in order to derive some insights on how the factors have implications on education levels, both locally and globally.
 
 ```{r}
 # First identify complete cases
@@ -837,7 +871,11 @@ print("Model Diagnostics:")
 print(model_comparison)
 ```
 
-ok cool. Although AICC for selected is lower, it's more complex than the simple GWR. thus we should probably stick to the simple GWR so it's easier to compute and interpret.
+As we can see, our Fixed GWR has a higher R2, vs the adapative. This means in our fixed model the factors used have a higher relevancy to the education level compared to our adaptive model.
+
+Although AICC for selected (we drop accessibility in this case) is lower, it's more complex than the simple GWR. thus we should probably stick to the simple GWR so it's easier to compute and interpret.
+
+Below are some pretty plots to help us understand the implications of our model(s), as well as a sweet summary.
 
 ```{r}
 fixed_r2_map <- tm_shape(batas_edu_levels) +
@@ -867,6 +905,8 @@ tm_shape(gwr.sf.adaptive) +
 tmap_arrange(fixed_r2_map, adaptive_r2_map, 
             asp=1, ncol=2)
 ```
+
+Here's another visualization of the coefficients for the various subdistricts in both models. This will probably be helpful later on for further analysis on a local level.
 
 ```{r}
 fixed_coef_map <- tm_shape(batas_edu_levels) +
@@ -955,6 +995,145 @@ gwr_results <- list(
 saveRDS(gwr_results, "data/rds/gwr_results.rds")
 ```
 
+### 7.0 Local GWR for targeted investment
+
+We now move onto focusing on the local R\^2. Given the earlier mention of the secondary/primary and also carrying on, senior high+ divide, we would like to know where should policy makers start with in pilot studies for investing more into public schools. Furthermore, we also want them to invest in areas where their money is more effective, so we are looking for higher R2.
+
+Let's start by finding our target city in Jakarta.
+
+```{r}
+ # 1. Analyze city-level education patterns
+city_education_summary <- batas_edu_levels %>%
+  st_drop_geometry() %>%  # Remove geometry for grouping
+  group_by(city) %>%
+  summarise(
+    mean_higher_ed = mean(higher_ed_ratio, na.rm = TRUE),
+    population = sum(population, na.rm = TRUE)
+  ) %>%
+  arrange(mean_higher_ed)  # Find city with lowest higher education rates
+
+
+```
+
+```{r}
+city_education_summary
+```
+
+We'll choose Kota Jakarta Utara then! Let's create some district summaries for this city through some filter() and mutate for local R2.
+
+```{r}
+# Get target city (Jakarta Utara has lowest higher ed ratio)
+target_city <- "Kota Jakarta Utara"
+
+# 2. First create district level summaries for target city
+target_districts <- school_density_analysis %>%
+  filter(city == target_city) %>%
+  # Get GWR results for these districts
+  mutate(
+    local_R2 = gwr.fixed$SDF$Local_R2[1:n()],  # Make sure this matches your district ordering
+    local_coef = gwr.fixed$SDF$school_density[1:n()]
+  )
+```
+
+We then invent a metric called opportunity score to calculate
+
+```{r}
+# 3. Calculate opportunity scores
+opportunity_districts <- target_districts %>%
+  mutate(
+    # Standardize metrics
+    density_score = scale(senior_high_density),
+    r2_score = scale(local_R2),
+    coef_score = scale(local_coef),
+    
+    # Create composite opportunity score
+    opportunity_score = case_when(
+      !is.na(local_R2) ~ 
+        (r2_score * coef_score) * # Model strength
+        (-1 * density_score) * # Room for improvement (negative because lower density = more opportunity)
+        (1 / (1 + senior_high_density)) # Diminishing returns factor
+    ),
+    
+    # Categorize recommendations
+    recommendation = case_when(
+      opportunity_score > quantile(opportunity_score, 0.75, na.rm = TRUE) ~ "High Priority",
+      opportunity_score > quantile(opportunity_score, 0.5, na.rm = TRUE) ~ "Medium Priority",
+      opportunity_score > quantile(opportunity_score, 0.25, na.rm = TRUE) ~ "Lower Priority",
+      TRUE ~ "Monitor"
+    )
+  )
+```
+
+```{r}
+# 4. Visualize results
+ggplot() +
+  geom_sf(data = opportunity_districts, aes(fill = opportunity_score)) +
+  scale_fill_viridis_c(option = "magma") +
+  labs(title = paste("Opportunity Zones in", target_city),
+       subtitle = "Areas with High Potential Return on School Investment",
+       fill = "Opportunity\nScore") +
+  theme_minimal()
+```
+
+```{r}
+# 5. Create summary table for policymakers
+opportunity_summary <- opportunity_districts %>%
+  st_drop_geometry() %>%
+  select(
+    district,
+    current_density = senior_high_density,
+    local_R2,
+    local_coefficient = local_coef,
+    opportunity_score,
+    recommendation
+  ) %>%
+  arrange(desc(opportunity_score))
+
+# Print top opportunities
+print(head(opportunity_summary, n = 6))  # Show all districts in Jakarta Utara
+```
+
+Thus, through some data manipulation, we now have a shortlist of where we should invest in!
+
+```{r}
+# Additional summary statistics
+cat("\nSummary Statistics for", target_city, ":\n")
+summary_stats <- opportunity_summary %>%
+  summarise(
+    avg_density = mean(current_density, na.rm = TRUE),
+    avg_R2 = mean(local_R2, na.rm = TRUE),
+    avg_coef = mean(local_coefficient, na.rm = TRUE),
+    districts_high_priority = sum(recommendation == "High Priority", na.rm = TRUE),
+    districts_med_priority = sum(recommendation == "Medium Priority", na.rm = TRUE)
+  )
+print(summary_stats)
+```
+
+```{r}
+opportunity_districts_wgs84 <- st_transform(opportunity_districts, 4326)
+
+# Save opportunity scores with both projections
+opportunity_data <- list(
+  spatial = list(
+    districts_utm = opportunity_districts,
+    districts_wgs84 = opportunity_districts_wgs84,
+    utm_crs = "EPSG:32748",
+    wgs84_crs = "EPSG:4326"
+  ),
+  summary = opportunity_summary,
+  target_city = target_city,
+  stats = summary_stats
+)
+
+saveRDS(opportunity_data, "data/rds/opp_score.rds")
+```
+
+Thanks for following along. We also have a shinyapp for you to explore and export our data, and to play and interact with our visualizations. For further reading, do read into the PPDB which explains the zoning policy in Indonesia, with its fair share of criticism on equity. We drew similar inspiration from its measures (accessibility, density, commute) etc to construct a simpler but hopefully similar model, and I hope this has inspired you and helped you learn about about how decisions are made when it comes to investing and implementing policy to uplift youths.
+
 Below is the interactive shinyapp:
 
 <https://hxyap-is415-workbook.shinyapps.io/takehome3-gwr/>
+
+Thank you,
+
+From G1T7

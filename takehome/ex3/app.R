@@ -41,64 +41,106 @@ ui <- fluidPage(
   
   titlePanel("Jakarta GWR Analysis"),
   
-  fluidRow(
-    # Left sidebar with controls and summaries
-    column(3,
-           # Model Selection Panel
-           wellPanel(
-             h4("Model Selection"),
-             radioButtons("model_type", NULL,
-                          choices = c("Fixed Bandwidth" = "fixed",
-                                      "Adaptive Bandwidth" = "adaptive")),
-             
-             h4("Display Variable"),
-             selectInput("variable", NULL,
-                         choices = c(
-                           "Local R²" = "r2",
-                           "School Density Coefficient" = "coef"
-                         ))
-           ),
-           
-           # Model Comparison Panel
-           wellPanel(
-             div(
-               h4(
-                 span(class = "metric-header", "Model Comparison"),
-                 tags$span(
-                   class = "tooltip-icon",
-                   title = "AICc (Corrected Akaike Information Criterion) measures model fit. Lower values indicate better fit, adjusting for model complexity and sample size.",
-                   icon("info-circle")
+  sidebarLayout(
+    sidebarPanel(
+      # Add tab selection
+      tabsetPanel(
+        id = "sidebar_tabs",
+        
+        # Tab 1: Original GWR Analysis
+        tabPanel("GWR Analysis",
+                 # Model Selection Panel
+                 wellPanel(
+                   h4("Model Selection"),
+                   radioButtons("model_type", NULL,
+                                choices = c("Fixed Bandwidth" = "fixed",
+                                            "Adaptive Bandwidth" = "adaptive")),
+                   
+                   h4("Display Variable"),
+                   selectInput("variable", NULL,
+                               choices = c(
+                                 "Local R²" = "r2",
+                                 "School Density Coefficient" = "coef"
+                               ))
+                 ),
+                 
+                 # Model Comparison Panel
+                 wellPanel(
+                   div(
+                     h4(
+                       span(class = "metric-header", "Model Comparison"),
+                       tags$span(
+                         class = "tooltip-icon",
+                         title = "AICc measures model fit. Lower values indicate better fit.",
+                         icon("info-circle")
+                       )
+                     )
+                   ),
+                   tableOutput("model_summary")
+                 ),
+                 
+                 # Download Button
+                 wellPanel(
+                   downloadButton("download_data", "Download Results",
+                                  class = "btn-block")
                  )
-               )
-             ),
-             tableOutput("model_summary")
-           ),
-           
-           # Download Button
-           wellPanel(
-             downloadButton("download_data", "Download Results",
-                            class = "btn-block")
-           )
+        ),
+        
+        # Tab 2: Opportunity Analysis
+        tabPanel("Opportunity Analysis",
+                 wellPanel(
+                   h4("Opportunity Zones"),
+                   p("Showing priority areas for school development in North Jakarta"),
+                   br(),
+                   selectInput("opp_display", "Display Metric",
+                               choices = c(
+                                 "Opportunity Score" = "score",
+                                 "School Density" = "density",
+                                 "Local R²" = "r2"
+                               ))
+                 ),
+                 
+                 wellPanel(
+                   h4("Summary Statistics"),
+                   verbatimTextOutput("opp_summary")
+                 ),
+                 
+                 wellPanel(
+                   downloadButton("download_opp", "Download Opportunity Analysis",
+                                  class = "btn-block")
+                 )
+        )
+      ),
+      width = 3
     ),
     
-    # Main panel with map and table
-    column(9,
-           h4(textOutput("analysis_title")),
-           
-           # Map
-           leafletOutput("map", height = "500px"),
-           
-           # Results table
-           div(class = "stats-panel",
-               h4("Detailed Results"),
-               DTOutput("results_table")
-           )
+    mainPanel(
+      conditionalPanel(
+        condition = "input.sidebar_tabs == 'GWR Analysis'",
+        h4(textOutput("analysis_title")),
+        leafletOutput("map", height = "500px"),
+        div(class = "stats-panel",
+            h4("Detailed Results"),
+            DTOutput("results_table"))
+      ),
+      
+      conditionalPanel(
+        condition = "input.sidebar_tabs == 'Opportunity Analysis'",
+        h4("Opportunity Zones Analysis"),
+        leafletOutput("opp_map", height = "500px"),
+        div(class = "stats-panel",
+            h4("Priority Areas"),
+            DTOutput("opp_table"))
+      ),
+      width = 9
     )
   )
 )
 
 server <- function(input, output, session) {
+  # Load both datasets
   gwr_results <- readRDS("data/rds/gwr_results.rds")
+  opp_results <- readRDS("data/rds/opp_score.rds")
   
   # Create reactive to identify complete cases once
   complete_data <- reactive({
@@ -172,7 +214,7 @@ server <- function(input, output, session) {
   width = "100%",
   rownames = FALSE)
   
-  # Map
+  # Original GWR Map
   output$map <- renderLeaflet({
     data <- complete_data()
     values <- get_values()
@@ -185,7 +227,7 @@ server <- function(input, output, session) {
     
     leaflet(data$batas) %>%
       addTiles() %>%
-      setView(lng = 106.8456, lat = -6.2088, zoom = 11) %>%  # Center on Jakarta
+      setView(lng = 106.8456, lat = -6.2088, zoom = 11) %>%
       addPolygons(
         fillColor = ~pal(values),
         weight = 1,
@@ -207,7 +249,49 @@ server <- function(input, output, session) {
       )
   })
   
-  # Results table
+  # Opportunity Map
+  output$opp_map <- renderLeaflet({
+    req(input$opp_display)
+    
+    districts <- opp_results$spatial$districts_wgs84
+    values <- switch(input$opp_display,
+                     "score" = districts$opportunity_score,
+                     "density" = districts$senior_high_density,
+                     "r2" = districts$local_R2)
+    
+    title <- switch(input$opp_display,
+                    "score" = "Opportunity Score",
+                    "density" = "School Density",
+                    "r2" = "Local R²")
+    
+    pal <- colorNumeric("viridis", domain = values, na.color = "gray")
+    
+    leaflet(districts) %>%
+      addTiles() %>%
+      setView(lng = 106.8456, lat = -6.2088, zoom = 11) %>%
+      addPolygons(
+        fillColor = ~pal(values),
+        weight = 1,
+        opacity = 1,
+        color = "white",
+        fillOpacity = 0.7,
+        popup = ~paste(
+          "District:", district, "<br>",
+          title, ": ", round(values, 4), "<br>",
+          "Current Density:", round(senior_high_density, 2), "<br>",
+          "Priority Level:", recommendation
+        )
+      ) %>%
+      addLegend(
+        "bottomright",
+        pal = pal,
+        values = values,
+        title = title,
+        labFormat = labelFormat(digits = 3)
+      )
+  })
+  
+  # Results table for GWR
   output$results_table <- renderDT({
     data <- complete_data()
     
@@ -236,7 +320,38 @@ server <- function(input, output, session) {
     )
   })
   
-  # Download handler
+  # Results table for opportunity analysis
+  output$opp_table <- renderDT({
+    datatable(
+      opp_results$summary,
+      options = list(
+        pageLength = 6,
+        scrollX = TRUE,
+        dom = 'Bfrtip'
+      ),
+      colnames = c(
+        "District",
+        "Current Density",
+        "Local R²",
+        "Local Coefficient",
+        "Opportunity Score",
+        "Recommendation"
+      )
+    )
+  })
+  
+  # Summary statistics for opportunity analysis
+  output$opp_summary <- renderText({
+    paste(
+      "Target City:", opp_results$target_city, "\n",
+      "Average School Density:", round(opp_results$stats$avg_density, 2), "\n",
+      "Average Local R²:", round(opp_results$stats$avg_R2, 4), "\n",
+      "High Priority Districts:", opp_results$stats$districts_high_priority, "\n",
+      "Medium Priority Districts:", opp_results$stats$districts_med_priority
+    )
+  })
+  
+  # Original download handler
   output$download_data <- downloadHandler(
     filename = function() {
       paste0("gwr_analysis_", format(Sys.time(), "%Y%m%d"), ".csv")
@@ -256,6 +371,16 @@ server <- function(input, output, session) {
         file, 
         row.names = FALSE
       )
+    }
+  )
+  
+  # Download handler for opportunity analysis
+  output$download_opp <- downloadHandler(
+    filename = function() {
+      paste0("opportunity_analysis_", format(Sys.time(), "%Y%m%d"), ".csv")
+    },
+    content = function(file) {
+      write.csv(opp_results$summary, file, row.names = FALSE)
     }
   )
 }

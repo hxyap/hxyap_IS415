@@ -272,7 +272,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#building-gwr-model" id="toc-building-gwr-model" class="nav-link" data-scroll-target="#building-gwr-model">5.1.2 Building GWR model</a></li>
   <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">5.1.3 Analysis</a></li>
   </ul></li>
-  <li><a href="#its-time-for-gwr" id="toc-its-time-for-gwr" class="nav-link" data-scroll-target="#its-time-for-gwr">6.0 It’s time for GWR</a></li>
+  <li><a href="#its-time-for-gwr" id="toc-its-time-for-gwr" class="nav-link" data-scroll-target="#its-time-for-gwr">6.0 It’s time for GWR</a>
+  <ul class="collapse">
+  <li><a href="#local-gwr-for-targeted-investment" id="toc-local-gwr-for-targeted-investment" class="nav-link" data-scroll-target="#local-gwr-for-targeted-investment">7.0 Local GWR for targeted investment</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -384,6 +387,7 @@ dbl (5): lat, long, province_area, total_population, total_education_age_pop...
 #   total_education_age_population &lt;dbl&gt;</code></pre>
 </div>
 </div>
+<p>We do some filtering and data manipulation here to restrict our data to jakarta only.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>jakarta_schools <span class="ot">&lt;-</span> indo_schools_kaggle <span class="sc">%&gt;%</span> </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(province_name <span class="sc">==</span> <span class="st">"DKI JAKARTA"</span>,</span>
@@ -498,6 +502,7 @@ Geodetic CRS:  WGS 84
 6          11276      0.47        71628 MULTIPOLYGON (((106.8316 -6...</code></pre>
 </div>
 </div>
+<p>We map our districts here manually.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>district_mapping <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TAMAN SARI"</span> <span class="ot">=</span> <span class="st">"Kec. Taman Sari"</span>,</span>
@@ -955,6 +960,7 @@ Note
 <span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>         senior_ratio, public_ratio) <span class="sc">%&gt;%</span></span>
 <span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>After the neighbour is done, we construct the queens matrix/spatial weights with costs.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>jakarta_nb <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(school_counts, <span class="at">queen=</span><span class="cn">TRUE</span>)</span>
 <span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Calculate edge costs using the neighborhood structure</span></span>
@@ -1059,6 +1065,13 @@ Note
 5 5                    8        32.6          18.5        7.25       6.62</code></pre>
 </div>
 </div>
+<p>Key Takeaways:</p>
+<ol type="1">
+<li><p>Clear spatial inequality in school distribution</p></li>
+<li><p>Cluster 3 appears to be best-served educationally</p></li>
+<li><p>Most areas fall into Cluster 1, suggesting this is the “standard” level of service</p></li>
+<li><p>Secondary school availability is consistently lower than elementary</p></li>
+</ol>
 </section>
 <section id="takeaways-from-hclust-vs-skater" class="level3">
 <h3 class="anchored" data-anchor-id="takeaways-from-hclust-vs-skater">4.1.2 Takeaways from hclust vs Skater</h3>
@@ -1156,6 +1169,7 @@ Geodetic CRS:  WGS 84</code></pre>
 </div>
 </div>
 </div>
+<p>It seems central Jakarta trends more educated overall, with a more uniform distribution of education in central compared to East Jakarta. There seems to also be clustering of high education rates, suggesting possible neighborhood effects.</p>
 </section>
 <section id="building-gwr-model" class="level3">
 <h3 class="anchored" data-anchor-id="building-gwr-model">5.1.2 Building GWR model</h3>
@@ -1356,9 +1370,6 @@ F-statistic: 1.161 on 6 and 252 DF,  p-value: 0.3278</code></pre>
 <li><p>The global model explains very little of the variation in higher education ratios</p></li>
 <li><p>GWR might be more appropriate since it can capture local variations that this global model misses</p></li>
 </ul></li>
-</ul>
-<!-- -->
-<ul>
 <li><p>Variable selection for GWR:</p>
 <ul>
 <li><p>Only school_density shows marginal significance (p = 0.0697)</p></li>
@@ -1371,6 +1382,23 @@ F-statistic: 1.161 on 6 and 252 DF,  p-value: 0.3278</code></pre>
 </section>
 <section id="its-time-for-gwr" class="level2">
 <h2 class="anchored" data-anchor-id="its-time-for-gwr">6.0 It’s time for GWR</h2>
+<p>Our analysis employs both fixed and adaptive bandwidth GWR to examine how school density affects higher education attainment across Jakarta. This dual approach provides complementary insights:</p>
+<ol type="1">
+<li>Spatial Variation in Relationships:</li>
+</ol>
+<ul>
+<li><p>Fixed bandwidth GWR reveals the base relationship between school accessibility and education levels at a consistent spatial scale</p></li>
+<li><p>Adaptive bandwidth GWR accounts for Jakarta’s varying urban density, providing more localized insights in densely populated areas</p></li>
+</ul>
+<ol start="2" type="1">
+<li>Policy Implications:</li>
+</ol>
+<ul>
+<li><p>Areas with strong positive relationships between school density and education levels might benefit most from new schools</p></li>
+<li><p>Regions where the relationship is weak may need different interventions beyond improving school accessibility</p></li>
+<li><p>Local context matters: what works in one district may not work in another.</p></li>
+</ul>
+<p>We thus embark being using some centroids to calculate logical centers for regions in order to extrapolate our relevant data to build both models. Afterwards, we can compare them in order to derive some insights on how the factors have implications on education levels, both locally and globally.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First identify complete cases</span></span>
 <span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>complete_indices <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="sc">!</span><span class="fu">is.na</span>(clustering_data<span class="sc">$</span>senior_ratio))</span>
@@ -1501,7 +1529,9 @@ Adaptive bandwidth: 17 CV score: 1.152698 </code></pre>
 2 Adaptive    17.000 -665.0109 0.3251825 0.2586090</code></pre>
 </div>
 </div>
-<p>ok cool. Although AICC for selected is lower, it’s more complex than the simple GWR. thus we should probably stick to the simple GWR so it’s easier to compute and interpret.</p>
+<p>As we can see, our Fixed GWR has a higher R2, vs the adapative. This means in our fixed model the factors used have a higher relevancy to the education level compared to our adaptive model.</p>
+<p>Although AICC for selected (we drop accessibility in this case) is lower, it’s more complex than the simple GWR. thus we should probably stick to the simple GWR so it’s easier to compute and interpret.</p>
+<p>Below are some pretty plots to help us understand the implications of our model(s), as well as a sweet summary.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>fixed_r2_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(batas_edu_levels) <span class="sc">+</span></span>
 <span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
@@ -1537,6 +1567,7 @@ Adaptive bandwidth: 17 CV score: 1.152698 </code></pre>
 </div>
 </div>
 </div>
+<p>Here’s another visualization of the coefficients for the various subdistricts in both models. This will probably be helpful later on for further analysis on a local level.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>fixed_coef_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(batas_edu_levels) <span class="sc">+</span></span>
 <span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
@@ -1662,10 +1693,171 @@ Coefficient Summary (Adaptive):</code></pre>
 <span id="cb115-38"><a href="#cb115-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to RDS</span></span>
 <span id="cb115-39"><a href="#cb115-39" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(gwr_results, <span class="st">"data/rds/gwr_results.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<section id="local-gwr-for-targeted-investment" class="level3">
+<h3 class="anchored" data-anchor-id="local-gwr-for-targeted-investment">7.0 Local GWR for targeted investment</h3>
+<p>We now move onto focusing on the local R^2. Given the earlier mention of the secondary/primary and also carrying on, senior high+ divide, we would like to know where should policy makers start with in pilot studies for investing more into public schools. Furthermore, we also want them to invest in areas where their money is more effective, so we are looking for higher R2.</p>
+<p>Let’s start by finding our target city in Jakarta.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># 1. Analyze city-level education patterns</span></span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>city_education_summary <span class="ot">&lt;-</span> batas_edu_levels <span class="sc">%&gt;%</span></span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span>  <span class="co"># Remove geometry for grouping</span></span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(city) <span class="sc">%&gt;%</span></span>
+<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_higher_ed =</span> <span class="fu">mean</span>(higher_ed_ratio, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb116-7"><a href="#cb116-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">population =</span> <span class="fu">sum</span>(population, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb116-8"><a href="#cb116-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb116-9"><a href="#cb116-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(mean_higher_ed)  <span class="co"># Find city with lowest higher education rates</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>city_education_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  city                 mean_higher_ed population
+  &lt;chr&gt;                         &lt;dbl&gt;      &lt;dbl&gt;
+1 Kota Jakarta Utara            0.115    1811898
+2 Kota Jakarta Barat            0.128    2525194
+3 Kota Jakarta Pusat            0.153    1147917
+4 Kota Jakarta Timur            0.159    3169571
+5 Kota Jakarta Selatan          0.211    2328846</code></pre>
+</div>
+</div>
+<p>We’ll choose Kota Jakarta Utara then! Let’s create some district summaries for this city through some filter() and mutate for local R2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get target city (Jakarta Utara has lowest higher ed ratio)</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>target_city <span class="ot">&lt;-</span> <span class="st">"Kota Jakarta Utara"</span></span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. First create district level summaries for target city</span></span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a>target_districts <span class="ot">&lt;-</span> school_density_analysis <span class="sc">%&gt;%</span></span>
+<span id="cb119-6"><a href="#cb119-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(city <span class="sc">==</span> target_city) <span class="sc">%&gt;%</span></span>
+<span id="cb119-7"><a href="#cb119-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get GWR results for these districts</span></span>
+<span id="cb119-8"><a href="#cb119-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb119-9"><a href="#cb119-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">local_R2 =</span> gwr.fixed<span class="sc">$</span>SDF<span class="sc">$</span>Local_R2[<span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()],  <span class="co"># Make sure this matches your district ordering</span></span>
+<span id="cb119-10"><a href="#cb119-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">local_coef =</span> gwr.fixed<span class="sc">$</span>SDF<span class="sc">$</span>school_density[<span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()]</span>
+<span id="cb119-11"><a href="#cb119-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We then invent a metric called opportunity score to calculate</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Calculate opportunity scores</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>opportunity_districts <span class="ot">&lt;-</span> target_districts <span class="sc">%&gt;%</span></span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Standardize metrics</span></span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">density_score =</span> <span class="fu">scale</span>(senior_high_density),</span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">r2_score =</span> <span class="fu">scale</span>(local_R2),</span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef_score =</span> <span class="fu">scale</span>(local_coef),</span>
+<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb120-9"><a href="#cb120-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create composite opportunity score</span></span>
+<span id="cb120-10"><a href="#cb120-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">opportunity_score =</span> <span class="fu">case_when</span>(</span>
+<span id="cb120-11"><a href="#cb120-11" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(local_R2) <span class="sc">~</span> </span>
+<span id="cb120-12"><a href="#cb120-12" aria-hidden="true" tabindex="-1"></a>        (r2_score <span class="sc">*</span> coef_score) <span class="sc">*</span> <span class="co"># Model strength</span></span>
+<span id="cb120-13"><a href="#cb120-13" aria-hidden="true" tabindex="-1"></a>        (<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> density_score) <span class="sc">*</span> <span class="co"># Room for improvement (negative because lower density = more opportunity)</span></span>
+<span id="cb120-14"><a href="#cb120-14" aria-hidden="true" tabindex="-1"></a>        (<span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> senior_high_density)) <span class="co"># Diminishing returns factor</span></span>
+<span id="cb120-15"><a href="#cb120-15" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb120-16"><a href="#cb120-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb120-17"><a href="#cb120-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Categorize recommendations</span></span>
+<span id="cb120-18"><a href="#cb120-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">recommendation =</span> <span class="fu">case_when</span>(</span>
+<span id="cb120-19"><a href="#cb120-19" aria-hidden="true" tabindex="-1"></a>      opportunity_score <span class="sc">&gt;</span> <span class="fu">quantile</span>(opportunity_score, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"High Priority"</span>,</span>
+<span id="cb120-20"><a href="#cb120-20" aria-hidden="true" tabindex="-1"></a>      opportunity_score <span class="sc">&gt;</span> <span class="fu">quantile</span>(opportunity_score, <span class="fl">0.5</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Medium Priority"</span>,</span>
+<span id="cb120-21"><a href="#cb120-21" aria-hidden="true" tabindex="-1"></a>      opportunity_score <span class="sc">&gt;</span> <span class="fu">quantile</span>(opportunity_score, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Lower Priority"</span>,</span>
+<span id="cb120-22"><a href="#cb120-22" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Monitor"</span></span>
+<span id="cb120-23"><a href="#cb120-23" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb120-24"><a href="#cb120-24" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Visualize results</span></span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> opportunity_districts, <span class="fu">aes</span>(<span class="at">fill =</span> opportunity_score)) <span class="sc">+</span></span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"magma"</span>) <span class="sc">+</span></span>
+<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Opportunity Zones in"</span>, target_city),</span>
+<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Areas with High Potential Return on School Investment"</span>,</span>
+<span id="cb121-7"><a href="#cb121-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Opportunity</span><span class="sc">\n</span><span class="st">Score"</span>) <span class="sc">+</span></span>
+<span id="cb121-8"><a href="#cb121-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="takehome3_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Create summary table for policymakers</span></span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>opportunity_summary <span class="ot">&lt;-</span> opportunity_districts <span class="sc">%&gt;%</span></span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a>    district,</span>
+<span id="cb122-6"><a href="#cb122-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">current_density =</span> senior_high_density,</span>
+<span id="cb122-7"><a href="#cb122-7" aria-hidden="true" tabindex="-1"></a>    local_R2,</span>
+<span id="cb122-8"><a href="#cb122-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">local_coefficient =</span> local_coef,</span>
+<span id="cb122-9"><a href="#cb122-9" aria-hidden="true" tabindex="-1"></a>    opportunity_score,</span>
+<span id="cb122-10"><a href="#cb122-10" aria-hidden="true" tabindex="-1"></a>    recommendation</span>
+<span id="cb122-11"><a href="#cb122-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb122-12"><a href="#cb122-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(opportunity_score))</span>
+<span id="cb122-13"><a href="#cb122-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-14"><a href="#cb122-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Print top opportunities</span></span>
+<span id="cb122-15"><a href="#cb122-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(opportunity_summary, <span class="at">n =</span> <span class="dv">6</span>))  <span class="co"># Show all districts in Jakarta Utara</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+  district      current_density local_R2 local_coefficient opportunity_score[,1]
+  &lt;chr&gt;                   &lt;dbl&gt;    &lt;dbl&gt;             &lt;dbl&gt;                 &lt;dbl&gt;
+1 Kec. Pademan…           0.646    0.447         -0.000793                 0.344
+2 Kec. Koja               1.99     0.384         -0.000363                 0.233
+3 Kec. Kelapa …           1.41     0.693         -0.000835                 0.190
+4 Kec. Cilinci…           0.648    0.677         -0.000581                -0.152
+5 Kec. Tanjung…           1.78     0.615         -0.000258                -0.179
+6 Kec. Penjari…           0.764    0.371         -0.000213                -0.494
+# ℹ 1 more variable: recommendation &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>Thus, through some data manipulation, we now have a shortlist of where we should invest in!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Additional summary statistics</span></span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Summary Statistics for"</span>, target_city, <span class="st">":</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Summary Statistics for Kota Jakarta Utara :</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>summary_stats <span class="ot">&lt;-</span> opportunity_summary <span class="sc">%&gt;%</span></span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_density =</span> <span class="fu">mean</span>(current_density, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_R2 =</span> <span class="fu">mean</span>(local_R2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb126-5"><a href="#cb126-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_coef =</span> <span class="fu">mean</span>(local_coefficient, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb126-6"><a href="#cb126-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">districts_high_priority =</span> <span class="fu">sum</span>(recommendation <span class="sc">==</span> <span class="st">"High Priority"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb126-7"><a href="#cb126-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">districts_med_priority =</span> <span class="fu">sum</span>(recommendation <span class="sc">==</span> <span class="st">"Medium Priority"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb126-8"><a href="#cb126-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb126-9"><a href="#cb126-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(summary_stats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+  avg_density avg_R2  avg_coef districts_high_priority districts_med_priority
+        &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;                   &lt;int&gt;                  &lt;int&gt;
+1        1.21  0.531 -0.000507                       2                      1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>opportunity_districts_wgs84 <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(opportunity_districts, <span class="dv">4326</span>)</span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Save opportunity scores with both projections</span></span>
+<span id="cb128-4"><a href="#cb128-4" aria-hidden="true" tabindex="-1"></a>opportunity_data <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb128-5"><a href="#cb128-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">spatial =</span> <span class="fu">list</span>(</span>
+<span id="cb128-6"><a href="#cb128-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">districts_utm =</span> opportunity_districts,</span>
+<span id="cb128-7"><a href="#cb128-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">districts_wgs84 =</span> opportunity_districts_wgs84,</span>
+<span id="cb128-8"><a href="#cb128-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">utm_crs =</span> <span class="st">"EPSG:32748"</span>,</span>
+<span id="cb128-9"><a href="#cb128-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">wgs84_crs =</span> <span class="st">"EPSG:4326"</span></span>
+<span id="cb128-10"><a href="#cb128-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb128-11"><a href="#cb128-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">summary =</span> opportunity_summary,</span>
+<span id="cb128-12"><a href="#cb128-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">target_city =</span> target_city,</span>
+<span id="cb128-13"><a href="#cb128-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">stats =</span> summary_stats</span>
+<span id="cb128-14"><a href="#cb128-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb128-15"><a href="#cb128-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb128-16"><a href="#cb128-16" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(opportunity_data, <span class="st">"data/rds/opp_score.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Thanks for following along. We also have a shinyapp for you to explore and export our data, and to play and interact with our visualizations. For further reading, do read into the PPDB which explains the zoning policy in Indonesia, with its fair share of criticism on equity. We drew similar inspiration from its measures (accessibility, density, commute) etc to construct a simpler but hopefully similar model, and I hope this has inspired you and helped you learn about about how decisions are made when it comes to investing and implementing policy to uplift youths.</p>
 <p>Below is the interactive shinyapp:</p>
 <p><a href="https://hxyap-is415-workbook.shinyapps.io/takehome3-gwr/" class="uri">https://hxyap-is415-workbook.shinyapps.io/takehome3-gwr/</a></p>
+<p>Thank you,</p>
+<p>From G1T7</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
