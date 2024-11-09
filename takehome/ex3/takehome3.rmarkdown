@@ -1,0 +1,1253 @@
+---
+title: "Takehome 3"
+date: "November 2, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+format:
+  html:
+    toc: true
+---
+
+
+## Project Methodology
+
+**Data Collection**:
+
+We gathered data on schools in Jakarta, including their location, type, and status. We also collected information on property prices and boundaries for administrative regions in Jakarta.
+
+**Geospatial Analysis**:
+
+1.  Spatial Point Patterns Analysis for School Locations (Provincial and City level)
+2.  LISA and HCSA Analysis of Schools (District level)
+3.  Geographically weighted regression for education levels versus availability and accessibility of schools (Sub-district level)
+
+For my team, I'll be covering a deeper dive into (3), which is GWR regression.
+
+## Loading Packages
+
+
+```{r}
+pacman::p_load(sf, tidyverse, knitr, viridis, patchwork, gridExtra, kableExtra, sfdep, tmap, tmaptools, patchwork, scales, spdep, ggrepel, spatstat, GWmodel, gtsummary, olsrr, ClustGeo, corrplot, ggpubr)
+```
+
+
+## Dataset Preparation
+
+There are 3 datasets we will be using:
+
+-   `complete_data.csv`: Contains information about schools in Indonesia, including their location, type, and status.
+-   `geoBoundaries-IDN-ADM2_simplified`: Contains simplified boundaries for administrative level 2 (ADM2) in Indonesia.
+-   `BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA`: Contains detailed boundaries for villages (desa) in Jakarta.
+
+## 1.0 Spatial Points Pattern Analysis of School Distribution at the Provincial and City Level
+
+### 1.1 Data Preprocessing
+
+
+```{r}
+indo_schools_kaggle <- read_csv("data/aspatial/complete_data.csv")
+```
+
+```{r}
+head(indo_schools_kaggle, n=20)
+```
+
+
+We do some filtering and data manipulation here to restrict our data to jakarta only.
+
+
+```{r}
+jakarta_schools <- indo_schools_kaggle %>% 
+  filter(province_name == "DKI JAKARTA",
+         city_name != "Kab. Kepulauan Seribu") %>%
+  filter(!is.na(long) & !is.na(lat)) %>%
+  st_as_sf(coords = c("long", "lat"), crs = 4326) %>%
+  mutate(
+      school_level = case_when(
+        stage %in% c("SD", "SDLB") ~ "Elementary",
+        stage %in% c("SMP", "SMPLB") ~ "Junior High",
+        stage %in% c("SMA", "SMK", "SMLB") ~ "Senior High",
+        TRUE ~ "Special Education"
+      ),
+      school_type = if_else(status == "N", "Public", "Private")
+    )
+```
+
+```{r}
+head(jakarta_schools)
+```
+
+```{r}
+adm2 <- st_read("data/geospatial", layer = "geoBoundaries-IDN-ADM2_simplified") %>%
+  filter(shapeName %in% c(
+      "Kota Jakarta Barat", "Kota Jakarta Pusat",
+      "Kota Jakarta Selatan", "Kota Jakarta Timur",
+      "Kota Jakarta Utara"
+    ))
+```
+
+```{r}
+batas <- st_read("data/geospatial", layer = "BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA")  %>%
+    select(OBJECT_ID, PROVINSI, KAB_KOTA, KECAMATAN, DESA_KELUR, 
+         JUMLAH_PEN, JUMLAH_KK, LUAS_WILAY, KEPADATAN, geometry) %>%
+    rename(
+    province = PROVINSI,
+    city = KAB_KOTA,
+    district = KECAMATAN,
+    subdistrict = DESA_KELUR,
+    population = JUMLAH_PEN,
+    total_families = JUMLAH_KK,
+    area_size = LUAS_WILAY,
+    popn_density = KEPADATAN
+    ) %>%
+    filter(!is.na(city) & city != "KEPULAUAN SERIBU") %>%
+    mutate(city = case_when(
+      city == "JAKARTA BARAT" ~ "Kota Jakarta Barat",
+      city == "JAKARTA PUSAT" ~ "Kota Jakarta Pusat",
+      city == "JAKARTA SELATAN" ~ "Kota Jakarta Selatan",
+      city == "JAKARTA TIMUR" ~ "Kota Jakarta Timur",
+      city == "JAKARTA UTARA" ~ "Kota Jakarta Utara",
+      TRUE ~ city
+    ))
+```
+
+```{r}
+head(batas)
+```
+
+
+We map our districts here manually.
+
+
+```{r}
+district_mapping <- c(
+    "TAMAN SARI" = "Kec. Taman Sari",
+    "KEMAYORAN" = "Kec. Kemayoran",
+    "SAWAH BESAR" = "Kec. Sawah Besar",
+    "GAMBIR" = "Kec. Gambir",
+    "SENEN" = "Kec. Senen",
+    "CEMPAKA PUTIH" = "Kec. Cempaka Putih",
+    "MENTENG" = "Kec. Menteng",
+    "TANAH ABANG" = "Kec. Tanah Abang",
+    "JOHAR BARU" = "Kec. Johar Baru",
+    "KOJA" = "Kec. Koja",
+    "PENJARINGAN" = "Kec. Penjaringan",
+    "TANJUNG PRIOK" = "Kec. Tanjung Priok",
+    "CILINCING" = "Kec. Cilincing",
+    "GROGOL PETAMBURAN" = "Kec. Grogol Petamburan",
+    "PADEMANGAN" = "Kec. Pademangan",
+    "KELAPA GADING" = "Kec. Kelapa Gading",
+    "CENGKARENG" = "Kec. Cengkareng",
+    "TAMBORA" = "Kec. Tambora",
+    "KEBON JERUK" = "Kec. Kebon Jeruk",
+    "KALIDERES" = "Kec. Kali Deres",
+    "PAL MERAH" = "Kec. Palmerah",
+    "JATINEGARA" = "Kec. Jatinegara",
+    "KEMBANGAN" = "Kec. Kembangan",
+    "TEBET" = "Kec. Tebet",
+    "SETIABUDI" = "Kec. Setia Budi",
+    "MAMPANG PRAPATAN" = "Kec. Mampang Prapatan",
+    "PASAR MINGGU" = "Kec. Pasar Minggu",
+    "KEBAYORAN LAMA" = "Kec. Kebayoran Lama",
+    "KEBAYORAN BARU" = "Kec. Kebayoran Baru",
+    "CILANDAK" = "Kec. Cilandak",
+    "PESANGGRAHAN" = "Kec. Pesanggrahan",
+    "PANCORAN" = "Kec. Pancoran",
+    "JAGAKARSA" = "Kec. Jagakarsa",
+    "MATRAMAN" = "Kec. Matraman",
+    "PULOGADUNG" = "Kec. Pulo Gadung",
+    "KRAMATJATI" = "Kec. Kramat Jati",
+    "PASAR REBO" = "Kec. Pasar Rebo",
+    "DUREN SAWIT" = "Kec. Duren Sawit",
+    "MAKASAR" = "Kec. Makasar",
+    "CIRACAS" = "Kec. Ciracas",
+    "CIPAYUNG" = "Kec. Cipayung",
+    "CAKUNG" = "Kec. Cakung"
+)
+
+batas <- batas %>%
+  mutate(district = district_mapping[district])
+```
+
+
+### 1.1 EDA at the Provincial Level
+
+#### 1.1.1 Overall Distribution of Schools
+
+
+```{r}
+ggplot(data = jakarta_schools) +
+  geom_bar(aes(x = city_name, fill = city_name)) +
+  scale_fill_viridis_d(option = "plasma") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  labs(
+    title = "Distribution of Schools Across Jakarta",
+    x = "City",
+    y = "Number of Schools"
+  )
+```
+
+
+**Key Observations**:
+
+-   The plot reveals significant disparity in school distribution across Jakarta
+-   East Jakarta (Timur) has the highest number of schools, followed by West Jakarta (Barat) then South Jakarta (Selatan). This is consistent with the population density distribution in Jakarta.
+
+#### 1.1.2 Distribution of School Levels
+
+
+```{r}
+ggplot(data = jakarta_schools) +
+  geom_bar(aes(x = city_name, fill = school_level)) +
+  scale_fill_viridis_d(option = "plasma") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(size = 12, face = "bold")
+  ) +
+  labs(
+    title = "Distribution of School Levels Across Jakarta",
+    x = "City",
+    y = "Number of Schools",
+    fill = "School Level"
+  )
+```
+
+
+**Key Observations**:
+
+-   Across all municipalities, elementary schools are the most common
+-   There is a relatively consistent proportion of Junior and Senior High Schools
+-   Special Education schools are less common but present in all municipalities
+-   While total numbers differ, the proportional distribution of school levels remains fairly consistent across cities, suggesting **planned distribution** rather than random clustering
+
+#### 1.1.3 School Density Across Jakarta
+
+
+```{r}
+ggplot() +
+  geom_sf(data = adm2, aes(fill = lengths(st_intersects(adm2, jakarta_schools)))) +
+  scale_fill_viridis_c(option = "plasma") +
+  theme_minimal() +
+  labs(
+    title = "School Density Across Jakarta",
+    fill = "Number of\nSchools"
+  )
+```
+
+
+##### 1.1.4 Population Density in Jakarta
+
+
+```{r}
+ggplot() +
+  geom_sf(data = batas, aes(fill = popn_density)) +
+  scale_fill_viridis_c(
+    option = "plasma",
+    labels = scales::comma_format()
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Population Density in Jakarta",
+    fill = "Population\nDensity\n(per km²)"
+  )
+```
+
+
+**Key Observations**:
+
+-   The density map reveals high population clusters in central Jakarta (yellow/orange areas)
+-   There is an interesting mismatch with school density in some areas
+-   Several high-density pockets are scattered across Jakarta
+
+#### 1.5 Summary
+
+-   Our preliminary EDA at the provincial level is too macro to provide detailed insights, but necessary to understand the overall distribution of schools in Jakarta
+
+## 2.0 Additional EDA
+
+We note that Jakarta uses
+
+
+```{r}
+# Convert coordinate systems for accurate distance measurement 
+# UTM Zone 48S (EPSG:32748) is appropriate for Jakarta 
+jakarta_schools_utm <- st_transform(jakarta_schools, 32748) 
+adm2_utm <- st_transform(adm2, 32748)
+batas_utm <- st_transform(batas, 32748)
+```
+
+```{r}
+# For jakarta_schools_utm
+glimpse(jakarta_schools_utm)
+
+
+# For batas_utm
+glimpse(batas_utm)
+
+
+# For column names
+names(jakarta_schools_utm)
+names(batas_utm)
+
+# For dimensions
+dim(jakarta_schools_utm)
+dim(batas_utm)
+```
+
+
+We'll now look at school density per subdistrict:
+
+
+```{r}
+# Calculate school density per subdistrict
+# Join school counts with batas dataset
+school_counts <- st_join(batas_utm, jakarta_schools_utm) %>%
+  group_by(OBJECT_ID) %>%
+  summarise(
+    total_schools = n(),
+    elementary_schools = sum(school_level == "Elementary"),
+    junior_schools = sum(school_level == "Junior High"),
+    senior_schools = sum(school_level == "Senior High"),
+    public_schools = sum(school_type == "Public"),
+    private_schools = sum(school_type == "Private")
+  )
+
+# Visualize school density metrics
+tmap_mode("plot")
+tm_shape(school_counts) +
+  tm_fill("total_schools", 
+          style = "quantile",
+          palette = "viridis") +
+  tm_borders() +
+  tm_layout(title = "School Density by Subdistrict")
+```
+
+
+As we can see, there are some spots (in the middle and the north of Jakarta where there seems to be sparse coverage of schools. Let's cross reference our school accessibility index for more info:
+
+
+```{r}
+# Calculate centroids
+centroids <- st_centroid(batas_utm)
+
+# Create distance matrix
+dist_matrix <- st_distance(centroids, jakarta_schools_utm)
+
+# Find minimum distance for each centroid
+min_distances <- apply(dist_matrix, 1, min)
+
+# Add to batas
+batas_utm$nearest_school_dist <- min_distances
+
+# Visualize
+tm_shape(batas_utm) +
+  tm_fill("nearest_school_dist", 
+          style = "quantile",
+          palette = "viridis",
+          title = "Distance (m)") +
+  tm_borders() +
+  tm_layout(title = "Distance to Nearest School")
+```
+
+
+### Key Observations:
+
+1.  Spatial Distribution Patterns:
+
+2.  Central Jakarta shows high school density (8-14 schools) but very short distances to nearest schools (4-97m)
+
+3.  Outer regions, particularly in the east and west, have higher numbers of schools (26-65) but longer distances (294-1,014m)
+
+4.  Some subdistricts show an interesting mismatch: high school counts but relatively long distances, suggesting uneven distribution within the subdistrict
+
+### Accessibility implications
+
+1.  The central areas demonstrate better accessibility (darker purple in distance map)
+
+2.  Peripheral areas (yellow) show reduced accessibility despite sometimes having more schools
+
+3.  This suggests that school placement might not be optimally aligned with population distribution.
+
+## 3.0 Clustering EDA
+
+We'll start by using hierarchical clustering. Hierarchical clustering provides a systematic, data-driven approach to identify groups of subdistricts with similar educational characteristics. This helps us select representative areas for detailed GWR analysis while ensuring we capture the full range of educational patterns in Jakarta.
+
+
+```{r}
+# First, create a normalized dataset with relevant variables
+clustering_data <- school_counts %>%
+  st_drop_geometry() %>%  # Remove geometry for numerical calculations
+  mutate(
+    school_density = as.numeric(total_schools),
+    elementary_ratio = as.numeric(elementary_schools / total_schools),
+    junior_ratio = as.numeric(junior_schools / total_schools),
+    senior_ratio = as.numeric(senior_schools / total_schools),
+    public_ratio = as.numeric(public_schools / total_schools)
+  ) %>%
+  # Select only numeric columns for clustering
+  select(school_density, elementary_ratio, junior_ratio, 
+         senior_ratio, public_ratio)
+
+summary(clustering_data)
+str(clustering_data)
+```
+
+
+We now prepare our distance matrix.
+
+
+```{r}
+# Normalize the data
+normalized_data <- scale(clustering_data)
+```
+
+```{r}
+feature_dist <- dist(normalized_data)
+
+```
+
+```{r}
+# 4. Perform hierarchical clustering
+hc <- hclust(feature_dist, method = "ward.D2")
+```
+
+
+Great! let's now plot the dendrogram.
+
+
+```{r}
+# 5. Plot dendrogram
+plot(hc, main = "Hierarchical Clustering of Jakarta Subdistricts",
+     xlab = "Subdistricts", ylab = "Height")
+```
+
+```{r}
+# 6. Cut tree to get 5 clusters
+hc_clusters <- cutree(hc, k = 5)
+```
+
+```{r}
+# 7. Add clusters back to spatial data
+school_counts$hc_cluster <- as.factor(hc_clusters)
+```
+
+```{r}
+# 8. Visualize clusters spatially
+tm_shape(school_counts) +
+  tm_fill("hc_cluster", 
+          palette = "Set3",
+          title = "Hierarchical Clusters") +
+  tm_borders() +
+  tm_layout(title = "Traditional Hierarchical Clustering")
+
+```
+
+
+::: callout-note
+For hclust, we use Ward's method, also called Ward's minimum variance method, is a criterion used in hierarchical clustering that focuses on minimizing the total within-cluster variance. The "D2" variant specifically refers to the squared Euclidean distance implementation. It's good for finding spatial clusters that represent similar administrative or functional areas.
+:::
+
+## 4.0 Skater Clustering
+
+We'll now use Skater to take a glance from a MST (Minimum Spanning Tree) approach. Although we will probably use skater to define our local GWR later, and set up bandwidth parameters, we'll still be considering our previous hclust.
+
+### 4.1.1 Create neighborhood
+
+
+```{r}
+clustering_data <- school_counts %>%
+  st_drop_geometry() %>%
+  mutate(
+    school_density = as.numeric(total_schools),
+    elementary_ratio = elementary_schools/total_schools,
+    junior_ratio = junior_schools/total_schools,
+    senior_ratio = senior_schools/total_schools,
+    public_ratio = public_schools/total_schools
+  ) %>%
+  select(school_density, elementary_ratio, junior_ratio, 
+         senior_ratio, public_ratio) %>%
+  as.data.frame()
+
+```
+
+
+After the neighbour is done, we construct the queens matrix/spatial weights with costs.
+
+
+```{r}
+jakarta_nb <- poly2nb(school_counts, queen=TRUE)
+# 2. Calculate edge costs using the neighborhood structure
+lcosts <- nbcosts(jakarta_nb, clustering_data)
+
+# 3. Create spatial weights with costs
+jakarta.w <- nb2listw(jakarta_nb, 
+                     lcosts, 
+                     style="B")
+
+# 4. Create minimum spanning tree
+jakarta.mst <- mstree(jakarta.w)
+```
+
+```{r}
+# 5. Get coordinates for plotting
+coords <- st_coordinates(st_centroid(school_counts))
+
+# 6. Plot the MST
+plot(st_geometry(school_counts), 
+     border=gray(.5))
+plot.mst(jakarta.mst, 
+         coords, 
+         col="blue", 
+         cex.lab=0.7, 
+         cex.circles=0.005, 
+         add=TRUE)
+```
+
+```{r}
+# 7. Compute SKATER clusters
+clust5 <- skater(edges = jakarta.mst[,1:2], 
+                 data = as.matrix(clustering_data), 
+                 method = "euclidean", 
+                 ncuts = 4)  # This will give 5 clusters
+
+# 8. Add clusters to spatial data
+school_counts$skater_cluster <- as.factor(clust5$groups)
+
+```
+
+```{r}
+# 9. Visualize final clusters
+tm_shape(school_counts) +
+    tm_fill("skater_cluster", 
+            palette = "Set3",
+            title = "SKATER Clusters") +
+    tm_borders() +
+    tm_layout(title = "School Clusters in Jakarta")
+```
+
+```{r}
+# 10. Check cluster sizes
+print("Number of schools in each cluster:")
+print(table(clust5$groups))
+```
+
+```{r}
+# 11. Create cluster summary
+cluster_summary <- school_counts %>%
+    st_drop_geometry() %>%
+    group_by(skater_cluster) %>%
+    summarise(
+        n_areas = n(),
+        avg_schools = mean(total_schools),
+        avg_elementary = mean(elementary_schools),
+        avg_junior = mean(junior_schools),
+        avg_senior = mean(senior_schools)
+    )
+
+print("Cluster Summary:")
+print(cluster_summary)
+
+```
+
+
+Key Takeaways:
+
+1.  Clear spatial inequality in school distribution
+
+2.  Cluster 3 appears to be best-served educationally
+
+3.  Most areas fall into Cluster 1, suggesting this is the "standard" level of service
+
+4.  Secondary school availability is consistently lower than elementary
+
+### 4.1.2 Takeaways from hclust vs Skater
+
+SKATER has a more uneven distribution with one dominant cluster (turquoise) covering most of Jakarta, compared to hierarchical clustering with a more fragmented clustering.
+
+## 5.0 GWR for Education level
+
+We'll first extract the education levels from our initial batas dataset.
+
+
+```{r}
+# First read the original file with all columns 
+batas_full <- st_read("data/geospatial", layer = "BATAS_DESA_DESEMBER_2019_DUKCAPIL_DKI_JAKARTA")
+
+batas_full_utm <- st_transform(batas_full, 32748)
+
+# Create education metrics with original column names then rename
+batas_edu_levels <- batas_full_utm %>%
+  mutate(
+    # Higher education ratio (diploma and above)
+    higher_ed_ratio = (DIPLOMA_I + DIPLOMA_II + DIPLOMA_IV + 
+                      STRATA_II + STRATA_III) / JUMLAH_PEN,
+    # Basic education completion ratio
+    basic_ed_ratio = (TAMAT_SD + SLTP + SLTA) / JUMLAH_PEN,
+    # No education ratio 
+    no_ed_ratio = (TIDAK_BELU + BELUM_TAMA) / JUMLAH_PEN
+  ) %>%
+  # Select and rename columns
+  select(
+    PROVINSI, KAB_KOTA, KECAMATAN, DESA_KELUR,
+    JUMLAH_PEN, higher_ed_ratio, basic_ed_ratio, 
+    no_ed_ratio, geometry
+  ) %>%
+  rename(
+    province = PROVINSI,
+    city = KAB_KOTA,
+    district = KECAMATAN,
+    subdistrict = DESA_KELUR,
+    population = JUMLAH_PEN
+  ) %>%
+  # Filter and standardize city names
+  filter(!is.na(city) & city != "KEPULAUAN SERIBU") %>%
+  mutate(city = case_when(
+    city == "JAKARTA BARAT" ~ "Kota Jakarta Barat",
+    city == "JAKARTA PUSAT" ~ "Kota Jakarta Pusat",
+    city == "JAKARTA SELATAN" ~ "Kota Jakarta Selatan",
+    city == "JAKARTA TIMUR" ~ "Kota Jakarta Timur",
+    city == "JAKARTA UTARA" ~ "Kota Jakarta Utara",
+    TRUE ~ city
+  ))
+```
+
+```{r}
+# Now proceed with the cluster analysis
+east_cluster_edu <- batas_edu_levels %>%
+  filter(city == "Kota Jakarta Timur")
+```
+
+```{r}
+central_cluster_edu <- batas_edu_levels %>%
+  filter(city == "Kota Jakarta Pusat")
+```
+
+
+### 5.1.1 Cluster data prep
+
+Now that we have our filtered education levels for our clusters, let's begin.
+
+### 5.1.1 Education pattern visualization
+
+
+```{r}
+# 3. Visualize education patterns
+edu_map <- tm_shape(batas_edu_levels) +
+ tm_polygons(alpha = 0.1) +
+ tm_shape(east_cluster_edu) +
+ tm_fill(col = "higher_ed_ratio", 
+         palette = "Reds",
+         title = "Higher Education Ratio") +
+ tm_shape(central_cluster_edu) +
+ tm_fill(col = "higher_ed_ratio",
+         palette = "Blues",
+         title = "Higher Education Ratio") +
+ tm_layout(title = "Education Levels: East vs Central Jakarta")
+
+print(edu_map)
+```
+
+
+It seems central Jakarta trends more educated overall, with a more uniform distribution of education in central compared to East Jakarta. There seems to also be clustering of high education rates, suggesting possible neighborhood effects.
+
+### 5.1.2 Building GWR model
+
+
+```{r}
+district_boundaries <- batas_utm %>%
+  group_by(city, district) %>%
+  summarise(
+    total_population = sum(population),
+    total_area = sum(area_size),
+    popn_density = total_population / total_area,
+    do_union = TRUE,
+    .groups = 'drop'
+  )
+
+# Then do your school density analysis at district level
+school_density_analysis <- district_boundaries %>%
+  mutate(
+    total_schools = lengths(st_intersects(., jakarta_schools_utm)),
+    elementary_schools = lengths(st_intersects(., 
+                               jakarta_schools_utm[jakarta_schools_utm$school_level == "Elementary",])),
+    junior_schools = lengths(st_intersects(., 
+                           jakarta_schools_utm[jakarta_schools_utm$school_level == "Junior High",])),
+    senior_schools = lengths(st_intersects(., 
+                           jakarta_schools_utm[jakarta_schools_utm$school_level == "Senior High",])),
+    special_schools = lengths(st_intersects(., 
+                            jakarta_schools_utm[jakarta_schools_utm$school_level == "Special Education",])),
+    # Calculate school density (schools per square km)
+    school_density = total_schools / total_area,
+    elementary_density = elementary_schools / total_area,
+    junior_high_density = junior_schools / total_area,
+    senior_high_density = senior_schools / total_area,
+    special_ed_density = special_schools / total_area
+  )
+
+
+```
+
+```{r}
+head(school_density_analysis)
+```
+
+```{r}
+# 1. Basic correlation analysis
+analysis_data <- data.frame(
+  # Education ratios
+  higher_ed_ratio = batas_edu_levels$higher_ed_ratio,
+  basic_ed_ratio = batas_edu_levels$basic_ed_ratio,
+  no_ed_ratio = batas_edu_levels$no_ed_ratio,
+  
+  # School accessibility metrics
+  school_density = clustering_data$school_density,
+  elementary_ratio = clustering_data$elementary_ratio,
+  junior_ratio = clustering_data$junior_ratio,
+  senior_ratio = clustering_data$senior_ratio,
+  public_ratio = clustering_data$public_ratio,
+  nearest_school_dist = batas_utm$nearest_school_dist
+)
+```
+
+```{r}
+# Create correlation matrix
+correlation_matrix <- cor(analysis_data, use = "complete.obs")
+
+# Visualize correlations
+corrplot(correlation_matrix, 
+         method = "color", 
+         type = "upper",
+         addCoef.col = "black", 
+         number.cex = 0.7,
+         tl.cex = 0.7,
+         title = "Correlation Matrix: Education Levels and School Accessibility")
+```
+
+```{r}
+# Create scatter plots for key relationships
+p1 <- ggplot(analysis_data, aes(x = school_density, y = higher_ed_ratio)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(title = "Higher Education vs School Density",
+       x = "School Density",
+       y = "Higher Education Ratio") +
+  theme_minimal()
+
+p2 <- ggplot(analysis_data, aes(x = nearest_school_dist, y = higher_ed_ratio)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(title = "Higher Education vs Distance to Nearest School",
+       x = "Distance to Nearest School",
+       y = "Higher Education Ratio") +
+  theme_minimal()
+
+p3 <- ggplot(analysis_data, aes(x = senior_ratio, y = higher_ed_ratio)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(title = "Higher Education vs Senior School Ratio",
+       x = "Senior School Ratio",
+       y = "Higher Education Ratio") +
+  theme_minimal()
+
+# Arrange plots
+grid.arrange(p1, p2, p3, ncol = 2)
+```
+
+```{r}
+# Fit multiple regression model
+model <- lm(higher_ed_ratio ~ school_density + nearest_school_dist + 
+            elementary_ratio + junior_ratio + senior_ratio + public_ratio,
+            data = analysis_data)
+
+# Model diagnostics
+summary(model)
+ols_vif_tol(model)
+```
+
+
+### 5.1.3 Analysis
+
+-   The very low R-squared (0.02692) and adjusted R-squared (0.003747) suggest that:
+
+    -   The global model explains very little of the variation in higher education ratios
+
+    -   GWR might be more appropriate since it can capture local variations that this global model misses
+
+-   Variable selection for GWR:
+
+    -   Only school_density shows marginal significance (p = 0.0697)
+
+    -   nearest_school_dist has very low significance (p = 0.6549)
+
+    -   The ratio variables all have relatively high p-values
+
+We will now compare simple and complex models.
+
+## 6.0 It's time for GWR
+
+Our analysis employs both fixed and adaptive bandwidth GWR to examine how school density affects higher education attainment across Jakarta. This dual approach provides complementary insights:
+
+1.  Spatial Variation in Relationships:
+
+-   Fixed bandwidth GWR reveals the base relationship between school accessibility and education levels at a consistent spatial scale
+
+-   Adaptive bandwidth GWR accounts for Jakarta's varying urban density, providing more localized insights in densely populated areas
+
+2.  Policy Implications:
+
+-   Areas with strong positive relationships between school density and education levels might benefit most from new schools
+
+-   Regions where the relationship is weak may need different interventions beyond improving school accessibility
+
+-   Local context matters: what works in one district may not work in another.
+
+We thus embark being using some centroids to calculate logical centers for regions in order to extrapolate our relevant data to build both models. Afterwards, we can compare them in order to derive some insights on how the factors have implications on education levels, both locally and globally.
+
+
+```{r}
+# First identify complete cases
+complete_indices <- which(!is.na(clustering_data$senior_ratio))
+
+# Calculate centroids first, explicitly handling the warning
+centroids <- st_centroid(batas_edu_levels, of_largest_polygon = TRUE)
+centroid_coords <- st_coordinates(centroids)[complete_indices,]
+
+# Create spatial dataframes with modern CRS syntax
+simple_gwr_data <- SpatialPointsDataFrame(
+  coords = centroid_coords,
+  data = data.frame(
+    higher_ed_ratio = batas_edu_levels$higher_ed_ratio[complete_indices],
+    school_density = clustering_data$school_density[complete_indices]
+  ),
+  proj4string = CRS("EPSG:32748")  # Modern syntax for UTM Zone 48S
+)
+
+selected_gwr_data <- SpatialPointsDataFrame(
+  coords = centroid_coords,
+  data = data.frame(
+    higher_ed_ratio = batas_edu_levels$higher_ed_ratio[complete_indices],
+    school_density = clustering_data$school_density[complete_indices],
+    senior_ratio = clustering_data$senior_ratio[complete_indices]
+  ),
+  proj4string = CRS("EPSG:32748")  # Modern syntax for UTM Zone 48S
+)
+
+# Since the data is already in UTM Zone 48S, we don't need to transform it
+simple_gwr_data_proj <- simple_gwr_data
+selected_gwr_data_proj <- selected_gwr_data
+
+```
+
+
+Cool. Let's now do other variables.
+
+
+```{r}
+
+bw.fixed <- bw.gwr(
+  formula = higher_ed_ratio ~ school_density, 
+  data = simple_gwr_data_proj,
+  approach = "CV",
+  kernel = "gaussian",
+  adaptive = FALSE,
+  longlat = FALSE)
+
+# Run fixed bandwidth GWR
+gwr.fixed <- gwr.basic(
+  formula = higher_ed_ratio ~ school_density,
+  data = simple_gwr_data_proj,
+  bw = bw.fixed,
+  kernel = "gaussian",
+  adaptive = FALSE,
+  longlat = FALSE)
+
+bw.adaptive <- bw.gwr(
+  formula = higher_ed_ratio ~ school_density,
+  data = simple_gwr_data_proj,
+  approach = "CV",
+  kernel = "gaussian",
+  adaptive = TRUE,
+  longlat = FALSE)
+
+# Run adaptive bandwidth GWR
+gwr.adaptive <- gwr.basic(
+  formula = higher_ed_ratio ~ school_density,
+  data = simple_gwr_data_proj,
+  bw = bw.adaptive,
+  kernel = "gaussian",
+  adaptive = TRUE,
+  longlat = FALSE)
+
+```
+
+```{r}
+# Convert SDF into sf data.frame
+gwr.sf.fixed <- st_as_sf(gwr.fixed$SDF) %>%
+  st_transform(st_crs(batas_edu_levels))
+
+gwr.sf.adaptive <- st_as_sf(gwr.adaptive$SDF) %>%
+  st_transform(st_crs(batas_edu_levels))
+
+# Compare models
+model_comparison <- data.frame(
+  Model = c("Fixed", "Adaptive"),
+  Bandwidth = c(bw.fixed, bw.adaptive),
+  AICc = c(gwr.fixed$GW.diagnostic$AICc,
+           gwr.adaptive$GW.diagnostic$AICc),
+  R2 = c(gwr.fixed$GW.diagnostic$gw.R2,
+         gwr.adaptive$GW.diagnostic$gw.R2),
+  Adj_R2 = c(gwr.fixed$GW.diagnostic$gwR2.adj,
+             gwr.adaptive$GW.diagnostic$gwR2.adj)
+)
+
+print("Model Diagnostics:")
+print(model_comparison)
+```
+
+
+As we can see, our Fixed GWR has a higher R2, vs the adapative. This means in our fixed model the factors used have a higher relevancy to the education level compared to our adaptive model.
+
+Although AICC for selected (we drop accessibility in this case) is lower, it's more complex than the simple GWR. thus we should probably stick to the simple GWR so it's easier to compute and interpret.
+
+Below are some pretty plots to help us understand the implications of our model(s), as well as a sweet summary.
+
+
+```{r}
+fixed_r2_map <- tm_shape(batas_edu_levels) +
+  tm_polygons(alpha = 0.1) +
+tm_shape(gwr.sf.fixed) +  
+  tm_dots(col = "Local_R2",
+          size = 0.1,
+          border.col = "gray60",
+          border.lwd = 1,
+          palette = "viridis",
+          title = "Local R² (Fixed)") +
+  tm_layout(main.title = "Fixed Bandwidth GWR",
+            main.title.size = 1)
+
+adaptive_r2_map <- tm_shape(batas_edu_levels) +
+  tm_polygons(alpha = 0.1) +
+tm_shape(gwr.sf.adaptive) +  
+  tm_dots(col = "Local_R2",
+          size = 0.1,
+          border.col = "gray60",
+          border.lwd = 1,
+          palette = "viridis",
+          title = "Local R² (Adaptive)") +
+  tm_layout(main.title = "Adaptive Bandwidth GWR",
+            main.title.size = 1)
+
+tmap_arrange(fixed_r2_map, adaptive_r2_map, 
+            asp=1, ncol=2)
+```
+
+
+Here's another visualization of the coefficients for the various subdistricts in both models. This will probably be helpful later on for further analysis on a local level.
+
+
+```{r}
+fixed_coef_map <- tm_shape(batas_edu_levels) +
+  tm_polygons(alpha = 0.1) +
+tm_shape(gwr.sf.fixed) +  
+  tm_dots(col = "school_density",
+          size = 0.1,
+          border.col = "gray60",
+          border.lwd = 1,
+          palette = "RdBu",
+          title = "Coefficient (Fixed)") +
+  tm_layout(main.title = "School Density Effect (Fixed)",
+            main.title.size = 1)
+
+adaptive_coef_map <- tm_shape(batas_edu_levels) +
+  tm_polygons(alpha = 0.1) +
+tm_shape(gwr.sf.adaptive) +  
+  tm_dots(col = "school_density",
+          size = 0.1,
+          border.col = "gray60",
+          border.lwd = 1,
+          palette = "RdBu",
+          title = "Coefficient (Adaptive)") +
+  tm_layout(main.title = "School Density Effect (Adaptive)",
+            main.title.size = 1)
+
+tmap_arrange(fixed_coef_map, adaptive_coef_map, 
+            asp=1, ncol=2)
+```
+
+```{r}
+# Summary of Local R2
+cat("\nLocal R² Summary (Fixed):\n")
+print(summary(gwr.fixed$SDF$Local_R2))
+cat("\nLocal R² Summary (Adaptive):\n")
+print(summary(gwr.adaptive$SDF$Local_R2))
+
+# Summary of Coefficients
+cat("\nCoefficient Summary (Fixed):\n")
+print(summary(gwr.fixed$SDF$school_density))
+cat("\nCoefficient Summary (Adaptive):\n")
+print(summary(gwr.adaptive$SDF$school_density))
+```
+
+
+We'll now export the data.
+
+
+```{r}
+# Transform coordinates back to WGS84 for mapping
+simple_gwr_data_wgs84 <- spTransform(simple_gwr_data_proj, CRS("EPSG:4326"))
+
+gwr_results <- list(
+  # Model results
+  fixed = list(
+    model = gwr.fixed,
+    bandwidth = bw.fixed,
+    local_R2 = gwr.fixed$SDF$Local_R2,
+    coefficients = gwr.fixed$SDF$school_density,
+    diagnostics = gwr.fixed$GW.diagnostic
+  ),
+  
+  adaptive = list(
+    model = gwr.adaptive,
+    bandwidth = bw.adaptive,
+    local_R2 = gwr.adaptive$SDF$Local_R2,
+    coefficients = gwr.adaptive$SDF$school_density,
+    diagnostics = gwr.adaptive$GW.diagnostic
+  ),
+  
+  # Spatial data with both coordinate systems
+  spatial = list(
+    coordinates_utm = coordinates(simple_gwr_data_proj),  # UTM coordinates for analysis
+    coordinates_wgs84 = coordinates(simple_gwr_data_wgs84),  # WGS84 coordinates for mapping
+    batas = st_transform(batas_edu_levels, 4326),  # Transform boundaries to WGS84 too
+    utm_crs = "EPSG:32748",
+    wgs84_crs = "EPSG:4326"
+  ),
+  
+  # Original data
+  data = list(
+    higher_ed_ratio = simple_gwr_data$higher_ed_ratio,
+    school_density = simple_gwr_data$school_density
+  )
+)
+
+# Save to RDS
+saveRDS(gwr_results, "data/rds/gwr_results.rds")
+```
+
+
+### 7.0 Local GWR for targeted investment
+
+We now move onto focusing on the local R\^2. Given the earlier mention of the secondary/primary and also carrying on, senior high+ divide, we would like to know where should policy makers start with in pilot studies for investing more into public schools. Furthermore, we also want them to invest in areas where their money is more effective, so we are looking for higher R2.
+
+Let's start by finding our target city in Jakarta.
+
+
+```{r}
+ # 1. Analyze city-level education patterns
+city_education_summary <- batas_edu_levels %>%
+  st_drop_geometry() %>%  # Remove geometry for grouping
+  group_by(city) %>%
+  summarise(
+    mean_higher_ed = mean(higher_ed_ratio, na.rm = TRUE),
+    population = sum(population, na.rm = TRUE)
+  ) %>%
+  arrange(mean_higher_ed)  # Find city with lowest higher education rates
+
+
+```
+
+```{r}
+city_education_summary
+```
+
+
+We'll choose Kota Jakarta Utara then! Let's create some district summaries for this city through some filter() and mutate for local R2.
+
+
+```{r}
+# Get target city (Jakarta Utara has lowest higher ed ratio)
+target_city <- "Kota Jakarta Utara"
+
+# 2. First create district level summaries for target city
+target_districts <- school_density_analysis %>%
+  filter(city == target_city) %>%
+  # Get GWR results for these districts
+  mutate(
+    local_R2 = gwr.fixed$SDF$Local_R2[1:n()],  # Make sure this matches your district ordering
+    local_coef = gwr.fixed$SDF$school_density[1:n()]
+  )
+```
+
+
+We then invent a metric called opportunity score to calculate
+
+
+```{r}
+# 3. Calculate opportunity scores
+opportunity_districts <- target_districts %>%
+  mutate(
+    # Standardize metrics
+    density_score = scale(senior_high_density),
+    r2_score = scale(local_R2),
+    coef_score = scale(local_coef),
+    
+    # Create composite opportunity score
+    opportunity_score = case_when(
+      !is.na(local_R2) ~ 
+        (r2_score * coef_score) * # Model strength
+        (-1 * density_score) * # Room for improvement (negative because lower density = more opportunity)
+        (1 / (1 + senior_high_density)) # Diminishing returns factor
+    ),
+    
+    # Categorize recommendations
+    recommendation = case_when(
+      opportunity_score > quantile(opportunity_score, 0.75, na.rm = TRUE) ~ "High Priority",
+      opportunity_score > quantile(opportunity_score, 0.5, na.rm = TRUE) ~ "Medium Priority",
+      opportunity_score > quantile(opportunity_score, 0.25, na.rm = TRUE) ~ "Lower Priority",
+      TRUE ~ "Monitor"
+    )
+  )
+```
+
+```{r}
+# 4. Visualize results
+ggplot() +
+  geom_sf(data = opportunity_districts, aes(fill = opportunity_score)) +
+  scale_fill_viridis_c(option = "magma") +
+  labs(title = paste("Opportunity Zones in", target_city),
+       subtitle = "Areas with High Potential Return on School Investment",
+       fill = "Opportunity\nScore") +
+  theme_minimal()
+```
+
+```{r}
+# 5. Create summary table for policymakers
+opportunity_summary <- opportunity_districts %>%
+  st_drop_geometry() %>%
+  select(
+    district,
+    current_density = senior_high_density,
+    local_R2,
+    local_coefficient = local_coef,
+    opportunity_score,
+    recommendation
+  ) %>%
+  arrange(desc(opportunity_score))
+
+# Print top opportunities
+print(head(opportunity_summary, n = 6))  # Show all districts in Jakarta Utara
+```
+
+
+Thus, through some data manipulation, we now have a shortlist of where we should invest in!
+
+
+```{r}
+# Additional summary statistics
+cat("\nSummary Statistics for", target_city, ":\n")
+summary_stats <- opportunity_summary %>%
+  summarise(
+    avg_density = mean(current_density, na.rm = TRUE),
+    avg_R2 = mean(local_R2, na.rm = TRUE),
+    avg_coef = mean(local_coefficient, na.rm = TRUE),
+    districts_high_priority = sum(recommendation == "High Priority", na.rm = TRUE),
+    districts_med_priority = sum(recommendation == "Medium Priority", na.rm = TRUE)
+  )
+print(summary_stats)
+```
+
+```{r}
+opportunity_districts_wgs84 <- st_transform(opportunity_districts, 4326)
+
+# Save opportunity scores with both projections
+opportunity_data <- list(
+  spatial = list(
+    districts_utm = opportunity_districts,
+    districts_wgs84 = opportunity_districts_wgs84,
+    utm_crs = "EPSG:32748",
+    wgs84_crs = "EPSG:4326"
+  ),
+  summary = opportunity_summary,
+  target_city = target_city,
+  stats = summary_stats
+)
+
+saveRDS(opportunity_data, "data/rds/opp_score.rds")
+```
+
+
+## 8.0 Prototyping UI design.
+
+For UI design prototyping, these were my guiding questions:
+
+1.  What am I measuring?
+2.  Who is it for?
+3.  When and how are we looking at it?
+
+Let's address these questions and how I used them to build some prototypes.
+
+### 8.1.1 Answering the questions
+
+Given that I took on handling the GWR analysis on this app, it was a natural conclusion from our course work to think about using fixed/adaptive bandwidth to build a predictive model, and from there extrapolate insights about the predictiveness of the parameters we've chosen.
+
+But then, who is it for? Given the nature of the data, my assumption was that we would be building this for potential policymakers in order to choose what regions or subdistricts to look into, as seen in the previous analysis. Thus, we followed the journey of our data to conclude and find some sub districts in Jakarta to focus on when it came to efforts to expanding density of public senior high schools and such, in order to make higher education more accessible and easy with proven results based on the relevancy of density instead of other potential confounding factors, which we have handled through R2 and other metrics.
+
+This leads us to our final question: When and how? Since this dashboard is more of a snapshot of data than urgent, LIVE data, I think it is an easy assumption that we can use this as a simple visual dashboard to present our findings, with perhaps some features to download a csv for further analysis. Thus, this is where we start off for our UI design.
+
+### 8.2 Storyboarding for features
+
+After looking at our data and analysis, I came up with 2 possible goals for our dashboard:
+
+1.  GWR tab – the user should be able to:
+    1.  See local R\^2 and coefficients at a glance
+    2.  Download a csv of the results for verification/use
+    3.  Choose between fixed and adaptive bandwidth
+    4.  Compare models at a glance
+    5.  (Optional) Search through results in the dashboard
+2.  Analysis tab - the user should be able to:
+    1.  Show opportunity score and other metrics to pinpoint what districts / subdistricts to develop
+    2.  Look at statistics for a highlighted district at a glance.
+    3.  Download a csv for results
+    4.  (Optional) Search results of csv in dashboard.
+
+Based on these, there were some designs drafted:
+
+![Prototype 1](img/proto1.png){width="400"} ![Prototype 2](img/proto2.png){width="400"} ![Prototype 3](img/proto3.png){width="400"}
+
+In the end, I ended up with a variant of Prototype 1 and 3 as #2 might squeeze the navigational elements too close when integrating with my teams' components. I liked the side bar on 3, but I also liked the comfortable UI toggle from Prototype 1 next to the downloads which lets policy makers easily download the data after tabbing through the visualizations.
+
+Thus #1 and #3 birthed my final prototype, which fulfilled all the points mentioned above in my "Users' wants" list –
+
+![Final UI](img/final.png){width="400"}
+
+Below is an annotation of how this final design, inspired from the previous designs, neatly fulfils the user's wants.
+
+![Annotated final UI](img/annotated.png){width="400"}
+
+Thus, we now settle on this final UI which helps us efficiently and quickly communicate insights to policy makers, and delivers the analysis and data we've done so far through this simple dashboard.
+
+### 8.3 UI Design conclusion
+
+Overall, this UI Design prototyping was heavily derived from both prototyping examples in class, as well as prior classes in UI design. This was a great explanation for my user wants checklist: <https://www.atlassian.com/agile/project-management/user-stories>. By focusing on our potential end user, we can best choose features that ensures that all their potential needs are met by our dashboards and applications.
+
+## 9.0 Improvements and Followup
+
+In my opinion, there might be some followup:
+
+-   Maybe a link to the original data source with credits?
+
+-   Some related research papers so the viewer can understand our inspiration and viewpoint
+
+-   Maybe some other prep material so they can use similar datasets and shp files as us so they can replicate our findings.
+
+This may be followed up in my team's final product (G1T7).
+

@@ -24,6 +24,8 @@ website:
             href: "exercises/ex7/ex7.html"
           - text: "ex10"
             href: "exercises/ex10/ex10.html"
+          - text: "ex11"
+            href: "exercises/ex11/ex11.html"
       - text: "In-class Exercises"
         menu:
           - text: "ex1"
